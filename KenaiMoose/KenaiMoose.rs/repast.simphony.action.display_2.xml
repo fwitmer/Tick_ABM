@@ -1,13 +1,18 @@
 <repast.simphony.gis.visualization.engine.GISDisplayDescriptor simphonyVersion="2.5.0">
-  <name>GIS 2D</name>
-  <type>GIS</type>
+  <name>GIS 3D</name>
+  <type>GIS 3D</type>
   <styles>
     <entry>
       <string>kenaiMoose.Moose</string>
-      <string>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;sld:UserStyle xmlns=&quot;http://www.opengis.net/sld&quot; xmlns:sld=&quot;http://www.opengis.net/sld&quot; xmlns:gml=&quot;http://www.opengis.net/gml&quot; xmlns:ogc=&quot;http://www.opengis.net/ogc&quot;&gt;&lt;sld:Name&gt;Default Styler&lt;/sld:Name&gt;&lt;sld:FeatureTypeStyle&gt;&lt;sld:Name&gt;name&lt;/sld:Name&gt;&lt;sld:Rule&gt;&lt;sld:PointSymbolizer&gt;&lt;sld:Graphic&gt;&lt;sld:Mark&gt;&lt;sld:Fill&gt;&lt;sld:CssParameter name=&quot;fill&quot;&gt;#0000FF&lt;/sld:CssParameter&gt;&lt;/sld:Fill&gt;&lt;sld:Stroke/&gt;&lt;/sld:Mark&gt;&lt;sld:Size&gt;10.0&lt;/sld:Size&gt;&lt;/sld:Graphic&gt;&lt;/sld:PointSymbolizer&gt;&lt;/sld:Rule&gt;&lt;/sld:FeatureTypeStyle&gt;&lt;/sld:UserStyle&gt;</string>
+      <string>kenaiMoose.MooseStyle</string>
     </entry>
   </styles>
-  <editedStyles/>
+  <editedStyles>
+    <entry>
+      <string>kenaiMoose.Moose</string>
+      <null/>
+    </entry>
+  </editedStyles>
   <netStyles/>
   <editedNetStyles/>
   <frequency>ON_NEW</frequency>
@@ -18,12 +23,32 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-1505322734</hashCode>
+    <hashCode>735174362</hashCode>
   </schedParams>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
+      <string>Blue Marble May 2004</string>
+      <int>3</int>
+    </entry>
+    <entry>
       <string>kenaiMoose.Moose</string>
+      <int>5</int>
+    </entry>
+    <entry>
+      <string>Scale bar</string>
+      <int>2</int>
+    </entry>
+    <entry>
+      <string>./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif</string>
+      <int>4</int>
+    </entry>
+    <entry>
+      <string>Compass</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>USGS Topo Base Map</string>
       <int>0</int>
     </entry>
   </layerOrder>
@@ -33,20 +58,8 @@
       <attributes/>
       <type>geography</type>
     </repast.simphony.scenario.data.ProjectionData>
-    <repast.simphony.scenario.data.ProjectionData>
-      <id>infection network</id>
-      <attributes/>
-      <type>network</type>
-    </repast.simphony.scenario.data.ProjectionData>
   </projections>
   <projectionDescriptors>
-    <entry>
-      <string>infection network</string>
-      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
-        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
-        <props/>
-      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
-    </entry>
     <entry>
       <string>Kenai</string>
       <repast.simphony.visualization.gis.GisProjectionDescriptor>
@@ -55,11 +68,39 @@
       </repast.simphony.visualization.gis.GisProjectionDescriptor>
     </entry>
   </projectionDescriptors>
-  <props>
-    <entry>
-      <string>class repast.simphony.visualization.gis.DisplayGIS.SHP_FILE_STYLE_PROP</string>
-      <map/>
-    </entry>
-  </props>
+  <props/>
+  <backgroundColor>
+    <red>255</red>
+    <green>255</green>
+    <blue>255</blue>
+    <alpha>255</alpha>
+  </backgroundColor>
+  <renderQuality>MEDIUM</renderQuality>
+  <viewType>FLAT</viewType>
   <trackAgents>false</trackAgents>
+  <globeLayers>
+    <entry>
+      <string>Blue Marble May 2004</string>
+      <boolean>false</boolean>
+    </entry>
+    <entry>
+      <string>Scale bar</string>
+      <boolean>false</boolean>
+    </entry>
+    <entry>
+      <string>Compass</string>
+      <boolean>false</boolean>
+    </entry>
+    <entry>
+      <string>USGS Topo Base Map</string>
+      <boolean>false</boolean>
+    </entry>
+  </globeLayers>
+  <staticCoverages>
+    <entry>
+      <string>./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif</string>
+      <string>repast.simphony.visualization.gis3D.style.DefaultCoverageStyle</string>
+    </entry>
+  </staticCoverages>
+  <coverageLayers/>
 </repast.simphony.gis.visualization.engine.GISDisplayDescriptor>

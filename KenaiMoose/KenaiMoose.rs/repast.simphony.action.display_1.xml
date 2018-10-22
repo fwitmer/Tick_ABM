@@ -1,30 +1,15 @@
 <repast.simphony.gis.visualization.engine.GISDisplayDescriptor simphonyVersion="2.5.0">
-  <name>GIS 3D</name>
-  <type>GIS 3D</type>
+  <name>GIS 2D</name>
+  <type>GIS</type>
   <styles>
     <entry>
       <string>kenaiMoose.Moose</string>
-      <string>repast.simphony.visualization.gis3D.style.DefaultMarkStyle</string>
+      <string>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;sld:UserStyle xmlns=&quot;http://www.opengis.net/sld&quot; xmlns:sld=&quot;http://www.opengis.net/sld&quot; xmlns:gml=&quot;http://www.opengis.net/gml&quot; xmlns:ogc=&quot;http://www.opengis.net/ogc&quot;&gt;&lt;sld:Name&gt;Default Styler&lt;/sld:Name&gt;&lt;sld:FeatureTypeStyle&gt;&lt;sld:Name&gt;name&lt;/sld:Name&gt;&lt;sld:Rule&gt;&lt;sld:PointSymbolizer&gt;&lt;sld:Graphic&gt;&lt;sld:Mark&gt;&lt;sld:Fill&gt;&lt;sld:CssParameter name=&quot;fill&quot;&gt;#0000FF&lt;/sld:CssParameter&gt;&lt;/sld:Fill&gt;&lt;sld:Stroke/&gt;&lt;/sld:Mark&gt;&lt;sld:Size&gt;10.0&lt;/sld:Size&gt;&lt;/sld:Graphic&gt;&lt;/sld:PointSymbolizer&gt;&lt;/sld:Rule&gt;&lt;/sld:FeatureTypeStyle&gt;&lt;/sld:UserStyle&gt;</string>
     </entry>
   </styles>
-  <editedStyles>
-    <entry>
-      <string>kenaiMoose.Moose</string>
-      <null/>
-    </entry>
-  </editedStyles>
-  <netStyles>
-    <entry>
-      <string>infection network</string>
-      <string>repast.simphony.visualization.gis3D.style.DefaultNetworkStyleGIS</string>
-    </entry>
-  </netStyles>
-  <editedNetStyles>
-    <entry>
-      <string>infection network</string>
-      <null/>
-    </entry>
-  </editedNetStyles>
+  <editedStyles/>
+  <netStyles/>
+  <editedNetStyles/>
   <frequency>ON_NEW</frequency>
   <schedParams>
     <start>1.0</start>
@@ -33,20 +18,12 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-1353253111</hashCode>
+    <hashCode>-1505322734</hashCode>
   </schedParams>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>infection network</string>
-      <int>1</int>
-    </entry>
-    <entry>
       <string>kenaiMoose.Moose</string>
-      <int>2</int>
-    </entry>
-    <entry>
-      <string>i-cubed Landsat</string>
       <int>0</int>
     </entry>
   </layerOrder>
@@ -78,22 +55,11 @@
       </repast.simphony.visualization.gis.GisProjectionDescriptor>
     </entry>
   </projectionDescriptors>
-  <props/>
-  <backgroundColor>
-    <red>255</red>
-    <green>255</green>
-    <blue>255</blue>
-    <alpha>255</alpha>
-  </backgroundColor>
-  <renderQuality>MEDIUM</renderQuality>
-  <viewType>FLAT</viewType>
-  <trackAgents>false</trackAgents>
-  <globeLayers>
+  <props>
     <entry>
-      <string>i-cubed Landsat</string>
-      <boolean>false</boolean>
+      <string>class repast.simphony.visualization.gis.DisplayGIS.SHP_FILE_STYLE_PROP</string>
+      <map/>
     </entry>
-  </globeLayers>
-  <staticCoverages/>
-  <coverageLayers/>
+  </props>
+  <trackAgents>false</trackAgents>
 </repast.simphony.gis.visualization.engine.GISDisplayDescriptor>
