@@ -60,6 +60,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			
 			Point pnt = geoFac.createPoint(coord);
 			geography.move(moose, pnt);
+			cnt++;
 		}
 		
 		return context;
@@ -101,4 +102,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		// Returning features found in shapefile
 		return features;
 	}
+	
+	
 }
