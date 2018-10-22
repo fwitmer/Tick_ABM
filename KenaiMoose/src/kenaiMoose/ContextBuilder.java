@@ -17,6 +17,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 import repast.simphony.context.Context;
 import repast.simphony.context.space.gis.GeographyFactoryFinder;
@@ -115,9 +116,9 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 				System.out.println("Invalid geometry: " + feature.getID());
 			}
 			
-			if (geom instanceof MultiPolygon) {
-				MultiPolygon mp = (MultiPolygon)feature.getDefaultGeometry();
-				geom = (MultiPolygon)mp.getGeometryN(0);
+			if (geom instanceof Polygon) {
+				Polygon p = (Polygon)feature.getDefaultGeometry();
+				geom = (Polygon)p.getGeometryN(0);
 				
 				String name = (String)feature.getAttribute("name");
 				
