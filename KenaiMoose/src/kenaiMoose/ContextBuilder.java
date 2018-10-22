@@ -63,6 +63,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			cnt++;
 		}
 		
+		loadFeatures("data/SCTC_watersheds.shp", context, geography);
 		return context;
 	}
 	
@@ -101,6 +102,28 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		// Returning features found in shapefile
 		return features;
+	}
+	
+	private void loadFeatures (String filename, Context context, Geography geography) {
+		List<SimpleFeature> features = loadFeaturesFromShapefile(filename);
+		
+		for (SimpleFeature feature : features) {
+			Geometry geom = (Geometry)feature.getDefaultGeometry();
+			Object agent = null;
+			
+			if (!geom.isValid()) {
+				System.out.println("Invalid geometry: " + feature.getID());
+			}
+			
+			if (geom instanceof MultiPolygon) {
+				MultiPolygon mp = (MultiPolygon)feature.getDefaultGeometry();
+				geom = (MultiPolygon)mp.getGeometryN(0);
+				
+				String name = (String)feature.getAttribute("name");
+				
+				agent = new BoundaryZone(name);
+			}
+		}
 	}
 	
 	
