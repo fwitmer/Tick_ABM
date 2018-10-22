@@ -18,7 +18,11 @@ public class Moose {
 
 	// Establishing random moves for Moose agents
 	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.FIRST_PRIORITY)
-	public void wander() {
+	public void step() {
+		randomWalk();
+	}
+	
+	public void randomWalk() {
 		Context context = ContextUtils.getContext(this);
 		Geography<Moose> geography = (Geography)context.getProjection("Kenai");
 		
