@@ -117,7 +117,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			
 			if (geom instanceof MultiPolygon) {
 				MultiPolygon mp = (MultiPolygon)feature.getDefaultGeometry();
-				geom = (MultiPolygon)mp.getGeometryN(0);
+				geom = mp.getGeometryN(0);
 				
 				String name = (String)feature.getAttribute("name");
 				
