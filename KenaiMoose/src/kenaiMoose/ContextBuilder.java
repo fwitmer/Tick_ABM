@@ -34,7 +34,10 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		// Creating Geography projection for Moose vectors
 		GeographyParameters geoParams = new GeographyParameters();
+		geoParams.setCrs("EPSG:4269"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)
 		Geography geography = GeographyFactoryFinder.createGeographyFactory(null).createGeography("Kenai", context, geoParams);
+		System.out.println(geography.getCRS());
+		//geography.setCRS("EPSG:4269"); // Alternate method of setting CRS of projection
 		
 		// Placeholder for infection Network
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("infection network", context, true);
@@ -44,7 +47,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		GeometryFactory geoFac = new GeometryFactory();
 		
 		// Establishing Kenai boundary area from shapefile
-		String boundaryFile = "./data/SCTC_watersheds.shp";
+		String boundaryFile = "./data/SCTC_watersheds_projected.shp";
 		List<SimpleFeature> features = loadFeaturesFromShapefile(boundaryFile);
 		Geometry boundary = (MultiPolygon)features.iterator().next().getDefaultGeometry();
 		
@@ -56,6 +59,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
 		int cnt = 0;
 		for (Coordinate coord : mooseCoords) {
+			System.out.println(coord.toString());
 			Moose moose = new Moose("Moose " + cnt);
 			context.add(moose);
 			
@@ -123,6 +127,18 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 				String name = (String)feature.getAttribute("name");
 				
 				agent = new BoundaryZone(name);
+			}
+			
+			if (geom instanceof MultiPolygon) {
+				MultiPolygon mp = (MultiPolygon)feature.getDefaultGeometry();
+				geom = (Polygon)mp.getGeometryN(0);
+				
+				String name = (String)feature.getAttribute("name");
+				
+				agent = new BoundaryZone(name);
+			}
+			else {
+				System.out.println("Geometry found is: " + feature.getDefaultGeometry());
 			}
 		}
 	}
