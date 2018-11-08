@@ -47,7 +47,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		GeometryFactory geoFac = new GeometryFactory();
 		
 		// Establishing Kenai boundary area from shapefile
-		String boundaryFile = "./data/SCTC_watersheds_projected.shp";
+		String boundaryFile = "./data/KenaiWatershed3D_projected.shp";
 		List<SimpleFeature> features = loadFeaturesFromShapefile(boundaryFile);
 		Geometry boundary = (MultiPolygon)features.iterator().next().getDefaultGeometry();
 		
@@ -68,7 +68,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			cnt++;
 		}
 		
-		loadFeatures("data/SCTC_watersheds.shp", context, geography);
+		loadFeatures("data/KenaiWatershed3D_projected.shp", context, geography);
 		return context;
 	}
 	
