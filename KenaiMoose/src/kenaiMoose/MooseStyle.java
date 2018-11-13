@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import kenaiMoose.Moose;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.render.BasicWWTexture;
@@ -42,15 +42,20 @@ public class MooseStyle implements MarkStyle<Moose> {
 		 */
 		textureMap = new HashMap<String, WWTexture>();
 		
-		BufferedImage image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, 
-				new Dimension(50, 50), 0.7f,  Color.BLUE);
+		String filename = "icons/Moose_v3.png";
+		URL localURL = WorldWind.getDataFileStore().requestFile(filename);
 		
-		textureMap.put("blue circle", new BasicWWTexture(image));
-		
-		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, 
-				new Dimension(50, 50), 0.7f,  Color.YELLOW);
-		
-		textureMap.put("yellow circle", new BasicWWTexture(image));
+//		BufferedImage image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, 
+//				new Dimension(50, 50), 0.7f,  Color.BLUE);
+//		
+//		textureMap.put("blue circle", new BasicWWTexture(image));
+//		
+//		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, 
+//				new Dimension(50, 50), 0.7f,  Color.YELLOW);
+		if (localURL != null) {
+			System.out.println("Moose icon worked!");
+			textureMap.put("moose", new BasicWWTexture(localURL, false));
+		}
 	}
 	
 	/**
@@ -87,12 +92,7 @@ public class MooseStyle implements MarkStyle<Moose> {
 	 */
 	@Override
 	public double getElevation(Moose agent) {
-		//if (agent.isWater()){
-		//	return 1000;  // meters
-		//}
-		//else{
 			return 0;
-		//}
 	}
 	
 	/**
@@ -107,15 +107,7 @@ public class MooseStyle implements MarkStyle<Moose> {
 	 */
 	@Override
 	public WWTexture getTexture(Moose agent, WWTexture texture) {
-	
-		// WWTexture is null on first call.
-	
-		//if (agent.isWater()){
-			//return textureMap.get("blue circle");
-		//}
-		//else{
-			return textureMap.get("yellow circle");
-		//}
+			return textureMap.get("moose");
 	}
 	
 	/**
@@ -123,12 +115,7 @@ public class MooseStyle implements MarkStyle<Moose> {
 	 */
 	@Override
 	public double getScale(Moose agent) {
-		//if (agent.isWater()){
-			//return 0.4;
-		//}
-		//else{
-			return 0.2;
-		//}
+			return 0.4;
 	}
 
 	@Override
@@ -142,18 +129,12 @@ public class MooseStyle implements MarkStyle<Moose> {
 	 */
 	@Override
 	public String getLabel(Moose agent) {
-//		return "" + agent.getWaterRate();
 		return null;
 	}
 
 	@Override
 	public Color getLabelColor(Moose agent) {
-		/*if (agent.isWater()){
-			return Color.BLUE;
-		}
-		else{*/
 			return Color.YELLOW;
-		//}
 	}
 	
 	/**
@@ -177,12 +158,7 @@ public class MooseStyle implements MarkStyle<Moose> {
 	 */
 	@Override
 	public double getLineWidth(Moose agent) {
-		//if (agent.isWater()){
-		//	return 2;
-		//}
-		//else{
 			return 0;
-		//}
 	}
 
 	@Override
