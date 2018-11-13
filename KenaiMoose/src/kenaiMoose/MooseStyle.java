@@ -53,7 +53,6 @@ public class MooseStyle implements MarkStyle<Moose> {
 //		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, 
 //				new Dimension(50, 50), 0.7f,  Color.YELLOW);
 		if (localURL != null) {
-			System.out.println("Moose icon worked!");
 			textureMap.put("moose", new BasicWWTexture(localURL, false));
 		}
 	}
