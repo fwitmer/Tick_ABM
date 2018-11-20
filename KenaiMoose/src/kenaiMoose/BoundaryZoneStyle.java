@@ -16,7 +16,7 @@ public class BoundaryZoneStyle implements SurfaceShapeStyle<BoundaryZone> {
 
 	@Override
 	public Color getFillColor(BoundaryZone zone) {
-		return Color.YELLOW;
+		return Color.CYAN;
 	}
 
 	@Override

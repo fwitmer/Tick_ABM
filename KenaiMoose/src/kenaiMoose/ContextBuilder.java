@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.formula.functions.T;
+import org.geotools.coverage.GridSampleDimension;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.grid.io.GridCoverage2DReader;
+import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
@@ -26,6 +31,7 @@ import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
 import repast.simphony.space.graph.Network;
+import repast.simphony.space.grid.Grid;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
 	int numMoose = 10;
@@ -69,7 +75,33 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		}
 		
 		loadFeatures("data/KenaiWatershed3D_projected.shp", context, geography);
+		
+		try {
+			GridCoverage2D coverage = loadRaster(context);
+		} catch (IOException e) {
+			System.out.println("Error loading raster.");
+		}
+		
+		
 		return context;
+	}
+	
+	private GridCoverage2D loadRaster(Context context) throws IOException {
+		File file = new File("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif");
+		AbstractGridFormat format = GridFormatFinder.findFormat(file);
+		GridCoverage2DReader reader = format.getReader(file);
+		
+		if (reader != null) {
+			GridCoverage2D coverage = reader.read(null);
+//			GridSampleDimension[] gsd = coverage.getSampleDimensions();
+//			System.out.println(gsd.length);
+			context.add(reader);
+			return coverage;
+		}
+		else {
+			throw new IOException("No reader.");
+		}
+		
 	}
 	
 	private List<SimpleFeature> loadFeaturesFromShapefile(String filename) {
@@ -121,21 +153,30 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			}
 			
 			if (geom instanceof Polygon) {
+				System.out.println("Feature found! Polygon: " + feature.getID());
 				Polygon p = (Polygon)feature.getDefaultGeometry();
 				geom = (Polygon)p.getGeometryN(0);
 				
 				String name = (String)feature.getAttribute("name");
 				
 				agent = new BoundaryZone(name);
+				Geometry buffer = GeometryUtil.generateBuffer(geography, geom, 100);
+				context.add(agent);
+				context.add(buffer);
 			}
 			
 			if (geom instanceof MultiPolygon) {
+				System.out.println("Feature found! MultiPolygon: " + feature.getID());
 				MultiPolygon mp = (MultiPolygon)feature.getDefaultGeometry();
 				geom = (Polygon)mp.getGeometryN(0);
 				
 				String name = (String)feature.getAttribute("name");
 				
 				agent = new BoundaryZone(name);
+				
+				Geometry buffer = GeometryUtil.generateBuffer(geography, geom, 100);
+
+				geography.move(agent, geom);
 			}
 			else {
 				System.out.println("Geometry found is: " + feature.getDefaultGeometry());
