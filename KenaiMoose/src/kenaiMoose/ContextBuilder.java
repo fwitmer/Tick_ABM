@@ -74,6 +74,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			cnt++;
 		}
 		
+		// Loading shapefile features for visualization
 		loadFeatures("data/KenaiWatershed3D_projected.shp", context, geography);
 		
 		try {
@@ -92,11 +93,13 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		AbstractGridFormat format = GridFormatFinder.findFormat(file);
 		GridCoverage2DReader reader = format.getReader(file);
 		
+		// Storing raster data as a GridCoverage2D object, adding it to Context, and returning object
 		if (reader != null) {
 			GridCoverage2D coverage = reader.read(null);
-			GridSampleDimension[] gsd = coverage.getSampleDimensions();
-			System.out.println(gsd.length);
+			//GridSampleDimension[] gsd = coverage.getSampleDimensions();
+			//System.out.println(gsd.length);
 			context.add(reader);
+			context.add(coverage);
 			return coverage;
 		}
 		else {
@@ -154,7 +157,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			}
 			
 			if (geom instanceof Polygon) {
-				System.out.println("Feature found! Polygon: " + feature.getID());
+				System.out.println("Feature found! Polygon: " + feature.getID()); // Console output to confirm feature class
 				Polygon p = (Polygon)feature.getDefaultGeometry();
 				geom = (Polygon)p.getGeometryN(0);
 				
@@ -167,7 +170,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			}
 			
 			if (geom instanceof MultiPolygon) {
-				System.out.println("Feature found! MultiPolygon: " + feature.getID());
+				System.out.println("Feature found! MultiPolygon: " + feature.getID()); // Console output to confirm feature class
 				MultiPolygon mp = (MultiPolygon)feature.getDefaultGeometry();
 				geom = (Polygon)mp.getGeometryN(0);
 				
@@ -179,6 +182,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 				context.add(agent);
 				geography.move(agent, buffer);
 			}
+			// Reporting feature class found if none of the above
 			else {
 				System.out.println("Geometry found is: " + feature.getDefaultGeometry());
 			}

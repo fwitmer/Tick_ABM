@@ -45,13 +45,6 @@ public class MooseStyle implements MarkStyle<Moose> {
 		String filename = "icons/Moose_v3.png";
 		URL localURL = WorldWind.getDataFileStore().requestFile(filename);
 		
-//		BufferedImage image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, 
-//				new Dimension(50, 50), 0.7f,  Color.BLUE);
-//		
-//		textureMap.put("blue circle", new BasicWWTexture(image));
-//		
-//		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, 
-//				new Dimension(50, 50), 0.7f,  Color.YELLOW);
 		if (localURL != null) {
 			textureMap.put("moose", new BasicWWTexture(localURL, false));
 		}
@@ -104,14 +97,14 @@ public class MooseStyle implements MarkStyle<Moose> {
 	 *   be stored here and re-used by returning the appropriate image based on 
 	 *   the agent properties. 
 	 */
+	
+	// getTexture() is the only way to define the image used on the GIS 3D display
 	@Override
 	public WWTexture getTexture(Moose agent, WWTexture texture) {
 			return textureMap.get("moose");
 	}
 	
-	/**
-	 * Scale factor for the mark size.
-	 */
+	// Specify the size of designated image on GIS 3D display
 	@Override
 	public double getScale(Moose agent) {
 			return 0.4;

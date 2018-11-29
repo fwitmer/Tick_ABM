@@ -29,44 +29,15 @@ public class Moose {
 	public void step() {
 		randomWalk();
 	}
-	
-//	public void randomWalk() {
-//		Context context = ContextUtils.getContext(this);
-//		Geography<Moose> geography = (Geography)context.getProjection("Kenai");
-//		
-//		Coordinate prevLocation = geography.getGeometry(this).getCoordinate();
-//		boolean notMoved = true;
-//		do {
-//			// Randomizing new coordinates
-//			Coordinate coord = new Coordinate(prevLocation.x += RandomHelper.nextDoubleFromTo(-0.0005, 0.0005), 
-//					prevLocation.y += RandomHelper.nextDoubleFromTo(-0.0005, 0.0005));
-//			Point newPoint = geofac.createPoint(coord);
-//			
-//			// Checking for boundary and resetting coordinates if out of bounds
-//			if (newPoint.within(boundary)) {
-//				geography.move(this, newPoint);
-//				notMoved = false;
-//			}
-//			
-//			// Garbage collecting on failed attempt to move
-//			else {
-//				coord = null;
-//				newPoint = null;
-//			}
-//			
-//		} while (notMoved);
-//		
-//		//geography.moveByDisplacement(this, RandomHelper.nextDoubleFromTo(-0.0005, 0.0005), 
-//				//RandomHelper.nextDoubleFromTo(-0.0005, 0.0005));
-//	}
-	
-	
-	// This randomWalk() seems to run more efficiently than the above, no hangs and excessive object creation.
+		
+	// Logic for checking for proper bounds and raster data for each step
 	public void randomWalk() {
 		Context context = ContextUtils.getContext(this);
 		Geography<Moose> geography = (Geography)context.getProjection("Kenai");
 		
-		Coordinate prevLocation = geography.getGeometry(this).getCoordinate();
+		Coordinate prevLocation = geography.getGeometry(this).getCoordinate(); // Saving previous location to revert back to if out of bounds
+		
+		// Attempting to create new random Coordinate and Point from previous location
 		Coordinate coord = new Coordinate(prevLocation.x += RandomHelper.nextDoubleFromTo(-0.0005, 0.0005), 
 				prevLocation.y += RandomHelper.nextDoubleFromTo(-0.0005, 0.0005));
 		Point newPoint = geofac.createPoint(coord);
