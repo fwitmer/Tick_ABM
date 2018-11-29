@@ -77,7 +77,8 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		loadFeatures("data/KenaiWatershed3D_projected.shp", context, geography);
 		
 		try {
-			GridCoverage2D coverage = loadRaster(context);
+			GridCoverage2D elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
+			GridCoverage2D landuse_coverage = loadRaster("./data/ak_nlcd_2011_landcover_CLIP.tif", context);
 		} catch (IOException e) {
 			System.out.println("Error loading raster.");
 		}
@@ -86,15 +87,15 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		return context;
 	}
 	
-	private GridCoverage2D loadRaster(Context context) throws IOException {
-		File file = new File("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif");
+	private GridCoverage2D loadRaster(String filename, Context context) throws IOException {
+		File file = new File(filename);
 		AbstractGridFormat format = GridFormatFinder.findFormat(file);
 		GridCoverage2DReader reader = format.getReader(file);
 		
 		if (reader != null) {
 			GridCoverage2D coverage = reader.read(null);
-//			GridSampleDimension[] gsd = coverage.getSampleDimensions();
-//			System.out.println(gsd.length);
+			GridSampleDimension[] gsd = coverage.getSampleDimensions();
+			System.out.println(gsd.length);
 			context.add(reader);
 			return coverage;
 		}
@@ -175,8 +176,8 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 				agent = new BoundaryZone(name);
 				
 				Geometry buffer = GeometryUtil.generateBuffer(geography, geom, 100);
-
-				geography.move(agent, geom);
+				context.add(agent);
+				geography.move(agent, buffer);
 			}
 			else {
 				System.out.println("Geometry found is: " + feature.getDefaultGeometry());
