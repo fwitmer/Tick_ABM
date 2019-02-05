@@ -16,10 +16,14 @@ public class Tick {
 	
 	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.FIRST_PRIORITY)
 	public void step() {
-		
+		checkForVector();
 	}
 	// Logic checking for nearby vectors within specified range for latching
 	public void checkForVector() {
+		
+	}
+	// Logic for associating with vector
+	public void latch() {
 		
 	}
 
