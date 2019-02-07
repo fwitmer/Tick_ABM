@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.poi.ss.formula.functions.T;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.gce.geotiff.*;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridCoverage2DReader;
 import org.geotools.coverage.grid.io.GridFormatFinder;
@@ -35,6 +36,7 @@ import repast.simphony.space.grid.Grid;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
 	int numMoose = 10;
+	int numTicks = 50;
 	
 	public Context build(Context context) {
 		
@@ -59,6 +61,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
+		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numTicks);
 		
 		// Create Moose agents
 			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
@@ -71,6 +74,20 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			
 			Point pnt = geoFac.createPoint(coord);
 			geography.move(moose, pnt);
+			cnt++;
+		}
+		
+		// Create Tick agents
+			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
+			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
+		cnt = 0;
+		for (Coordinate coord : tickCoords) {
+			System.out.println(coord.toString());
+			Tick tick = new Tick("Tick " + cnt, boundary);
+			context.add(tick);
+			
+			Point pnt = geoFac.createPoint(coord);
+			geography.move(tick, pnt);
 			cnt++;
 		}
 		

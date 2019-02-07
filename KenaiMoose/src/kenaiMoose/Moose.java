@@ -15,7 +15,7 @@ import repast.simphony.util.ContextUtils;
 public class Moose {
 	
 	private String name;
-	private Geometry boundary;
+	private static Geometry boundary;
 	private GeometryFactory geofac = new GeometryFactory();
 	// TODO create and utilize energy value
 	
