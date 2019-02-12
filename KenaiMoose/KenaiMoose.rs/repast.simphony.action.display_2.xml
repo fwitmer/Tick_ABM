@@ -1,7 +1,11 @@
-<repast.simphony.gis.visualization.engine.GISDisplayDescriptor simphonyVersion="2.5.0">
+<repast.simphony.gis.visualization.engine.GISDisplayDescriptor simphonyVersion="2.6.0">
   <name>GIS 3D</name>
   <type>GIS 3D</type>
   <styles>
+    <entry>
+      <string>kenaiMoose.Tick</string>
+      <string>kenaiMoose.TickStyle</string>
+    </entry>
     <entry>
       <string>kenaiMoose.Moose</string>
       <string>kenaiMoose.MooseStyle</string>
@@ -12,6 +16,10 @@
     </entry>
   </styles>
   <editedStyles>
+    <entry>
+      <string>kenaiMoose.Tick</string>
+      <null/>
+    </entry>
     <entry>
       <string>kenaiMoose.Moose</string>
       <null/>
@@ -31,13 +39,17 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>377542345</hashCode>
+    <hashCode>-396538164</hashCode>
   </schedParams>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>kenaiMoose.Moose</string>
+      <string>kenaiMoose.Tick</string>
       <int>1</int>
+    </entry>
+    <entry>
+      <string>kenaiMoose.Moose</string>
+      <int>2</int>
     </entry>
     <entry>
       <string>kenaiMoose.BoundaryZone</string>

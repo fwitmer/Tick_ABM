@@ -1,4 +1,4 @@
-<repast.simphony.gis.visualization.engine.GISDisplayDescriptor simphonyVersion="2.5.0">
+<repast.simphony.gis.visualization.engine.GISDisplayDescriptor simphonyVersion="2.6.0">
   <name>GIS 2D</name>
   <type>GIS</type>
   <styles>

@@ -31,5 +31,9 @@ public class Tick {
 	public void latch() {
 		
 	}
+	
+	public void detach() {
+		
+	}
 
 }
