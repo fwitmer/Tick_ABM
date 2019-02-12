@@ -31,7 +31,7 @@ public class Tick {
 	public void latch() {
 		
 	}
-	
+	// Logic for disassociating with vector
 	public void detach() {
 		
 	}
