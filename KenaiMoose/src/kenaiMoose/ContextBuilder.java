@@ -96,7 +96,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		try {
 			GridCoverage2D elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
-			GridCoverage2D landuse_coverage = loadRaster("./data/ak_nlcd_2011_landcover_CLIP.tif", context);
+			GridCoverage2D landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
 		} catch (IOException e) {
 			System.out.println("Error loading raster.");
 		}

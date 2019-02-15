@@ -17,6 +17,7 @@ public class Moose {
 	private String name;
 	private static Geometry boundary;
 	private GeometryFactory geofac = new GeometryFactory();
+	private boolean isInfected = false;
 	// TODO create and utilize energy value
 	
 	public Moose(String name, Geometry boundary) {
