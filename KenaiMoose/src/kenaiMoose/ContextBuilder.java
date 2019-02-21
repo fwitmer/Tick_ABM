@@ -77,7 +77,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		int cnt = 0;
 		for (Coordinate coord : mooseCoords) {
 			System.out.println(coord.toString());
-			Moose moose = new Moose("Moose " + cnt, boundary);
+			Moose moose = new Moose("Moose " + cnt, boundary, landuse_coverage);
 			context.add(moose);
 			
 			Point pnt = geoFac.createPoint(coord);
