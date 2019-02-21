@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.formula.functions.T;
-import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.gce.geotiff.*;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridCoverage2DReader;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.geometry.DirectPosition2D;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.geometry.DirectPosition;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -32,7 +32,6 @@ import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
 import repast.simphony.space.graph.Network;
-import repast.simphony.space.grid.Grid;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
 	int numMoose = 10;
@@ -63,6 +62,15 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
 		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numTicks);
 		
+		GridCoverage2D landuse_coverage = null;
+		
+		try {
+			GridCoverage2D elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
+			landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
+		} catch (IOException e) {
+			System.out.println("Error loading raster.");
+		}
+		
 		// Create Moose agents
 			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
@@ -73,6 +81,13 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			context.add(moose);
 			
 			Point pnt = geoFac.createPoint(coord);
+			
+			// Example of how to use raster data - works!
+			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+	        int[] sample = (int[]) landuse_coverage.evaluate(position);
+	        sample = landuse_coverage.evaluate(position, sample);
+	        System.out.println(sample[0]);
+			
 			geography.move(moose, pnt);
 			cnt++;
 		}
@@ -93,13 +108,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		// Loading shapefile features for visualization
 		loadFeatures("data/KenaiWatershed3D_projected.shp", context, geography);
-		
-		try {
-			GridCoverage2D elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
-			GridCoverage2D landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
-		} catch (IOException e) {
-			System.out.println("Error loading raster.");
-		}
 		
 		
 		return context;
