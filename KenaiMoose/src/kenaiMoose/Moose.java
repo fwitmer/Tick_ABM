@@ -50,7 +50,7 @@ public class Moose {
 				prevLocation.y += RandomHelper.nextDoubleFromTo(-0.0005, 0.0005));
 		Point newPoint = geofac.createPoint(coord);
 		
-		// Ensuring within bounds
+		// Ensuring within bounds and not in water
 		while (!newPoint.within(boundary) || isWater(coord)) {
 			coord.x = prevLocation.x + RandomHelper.nextDoubleFromTo(-0.0005, 0.0005);
 			coord.y = prevLocation.y + RandomHelper.nextDoubleFromTo(-0.0005, 0.0005);
@@ -64,6 +64,10 @@ public class Moose {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public Geography getGeo() {
+		return geography;
 	}
 	
 	private boolean isWater(Coordinate coord) {
