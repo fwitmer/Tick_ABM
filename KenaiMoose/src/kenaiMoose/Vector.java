@@ -7,11 +7,13 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 import repast.simphony.context.Context;
+import repast.simphony.engine.schedule.ScheduleParameters;
+import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.util.ContextUtils;
 import repast.simphony.util.collections.IndexedIterable;
 
-public class Vector {
+public abstract class Vector {
 	
 	/* Private Variables
 	 * 		name - String for simple names of Vector agents
@@ -24,7 +26,7 @@ public class Vector {
 	private String name;
 	private static Geometry boundary;
 	private static GridCoverage2D landuse_coverage;
-	private GeometryFactory geofac = new GeometryFactory();
+	private GeometryFactory geoFac = new GeometryFactory();
 	private Context context;
 	private Geography<Vector> geography;
 	
@@ -64,5 +66,14 @@ public class Vector {
 	public Coordinate getCoord() {
 		return geography.getGeometry(this).getCoordinate();
 	}
+	
+	// Return Geography of Vector agent
+	public Geography<Vector> getGeo() {
+		return geography;
+	}
+	
+	// Method to control actions performed in each step
+	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.FIRST_PRIORITY)
+	public abstract void step();
 
 }
