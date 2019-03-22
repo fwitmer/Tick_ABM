@@ -75,5 +75,7 @@ public abstract class Vector {
 	// Method to control actions performed in each step
 	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.FIRST_PRIORITY)
 	public abstract void step();
+	
+	protected abstract void randomWalk();
 
 }
