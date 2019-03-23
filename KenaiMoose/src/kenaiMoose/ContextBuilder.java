@@ -62,10 +62,11 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
 		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numTicks);
 		
+		GridCoverage2D elev_coverage = null;
 		GridCoverage2D landuse_coverage = null;
 		
 		try {
-			GridCoverage2D elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
+			elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
 			landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
 		} catch (IOException e) {
 			System.out.println("Error loading raster.");
@@ -98,7 +99,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		cnt = 0;
 		for (Coordinate coord : tickCoords) {
 			System.out.println(coord.toString());
-			Tick tick = new Tick("Tick " + cnt, boundary);
+			Tick tick = new Tick("Tick " + cnt);
 			context.add(tick);
 			
 			Point pnt = geoFac.createPoint(coord);
@@ -121,8 +122,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		// Storing raster data as a GridCoverage2D object, adding it to Context, and returning object
 		if (reader != null) {
 			GridCoverage2D coverage = reader.read(null);
-			//GridSampleDimension[] gsd = coverage.getSampleDimensions();
-			//System.out.println(gsd.length);
 			context.add(reader);
 			context.add(coverage);
 			return coverage;

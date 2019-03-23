@@ -12,18 +12,12 @@ import repast.simphony.util.ContextUtils;
 public class Tick {
 	
 	private String name;
-	private static Geometry boundary;
 	private GeometryFactory geoFac = new GeometryFactory();
-	private int latchCount = 0;
-	private Moose ride;
-	private Context context;
-	private Geography<Tick> geography;
+	private int attach_count = 0;
+	private Vector host_vector;
 	
-	public Tick(String name, Geometry boundary) {
+	public Tick(String name) {
 		this.name = name;
-		this.boundary = boundary;
-		Context context = ContextUtils.getContext(this);
-		Geography<Tick> geography = (Geography)context.getProjection("Kenai");
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.FIRST_PRIORITY)
@@ -32,17 +26,22 @@ public class Tick {
 	}
 	
 	public Geography getGeo() {
+		Context context = ContextUtils.getContext(this);
+		Geography geography = (Geography)context.getProjection("Kenai");
 		return geography;
 	}
+	
 	// Logic checking for nearby vectors within specified range for latching
 	public void checkForVector() {
 		
 	}
-	// Logic for associating with vector
-	public void latch() {
+	
+	// Logic for attaching to vector
+	public void attach() {
 		
 	}
-	// Logic for disassociating with vector
+	
+	// Logic for detaching from vector
 	public void detach() {
 		
 	}
