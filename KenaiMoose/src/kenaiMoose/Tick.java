@@ -50,6 +50,10 @@ public class Tick {
 		return geography;
 	}
 	
+	public boolean isAttached() {
+		return attached;
+	}
+	
 	
 	// Logic for attaching to vector
 	public void attach(Vector vector) {

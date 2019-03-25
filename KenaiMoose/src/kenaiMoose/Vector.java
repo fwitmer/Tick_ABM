@@ -103,7 +103,9 @@ public abstract class Vector {
 		List<Tick> tickList = new ArrayList();
 		
 		for (Tick tick : infectingTicks) {
+			if(!tick.isAttached()) {
 				tickList.add((Tick)tick);
+			}
 		}
 		return tickList;
 	}
