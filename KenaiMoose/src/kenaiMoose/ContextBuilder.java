@@ -67,6 +67,8 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	try {
 		elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
 		landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
+		geography.addCoverage("AKALB Elevation", elev_coverage);
+		geography.addCoverage("NLCD Landuse", landuse_coverage);
 	} 
 	catch (IOException e) {
 		System.out.println("Error loading raster.");
@@ -78,7 +80,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		System.out.println("Creating " + numMoose + " Moose agents...");
 		int cnt = 0;
 		for (Coordinate coord : mooseCoords) {
-			Moose moose = new Moose("Moose " + cnt, boundary, landuse_coverage);
+			Moose moose = new Moose("Moose " + cnt, boundary);
 			context.add(moose);
 			
 			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);

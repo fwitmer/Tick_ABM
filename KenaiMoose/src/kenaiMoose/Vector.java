@@ -34,7 +34,6 @@ public abstract class Vector {
 	protected String name;
 	protected boolean is_infected = false;
 	protected static Geometry boundary;
-	protected static GridCoverage2D landuse_coverage;
 	protected GeometryFactory geoFac = new GeometryFactory();
 	protected double infection_radius;
 	protected Envelope infection_area;
@@ -42,15 +41,13 @@ public abstract class Vector {
 	
 	public Vector() {
 		name = "";
-		boundary = null;
-		landuse_coverage = null;	
+		boundary = null;	
 	}
 	
 	// Overloaded constructor for passing in name, boundary Geometry, and landuse_coverage GridCoverage2D
-	public Vector(String name, Geometry boundary, GridCoverage2D landuse_coverage) {
+	public Vector(String name, Geometry boundary) {
 		this.name = name;
 		this.boundary = boundary;
-		this.landuse_coverage = landuse_coverage;
 	}
 	
 	public String getName() {
@@ -115,6 +112,7 @@ public abstract class Vector {
 	public boolean isWater(Coordinate coord) {
 		Context context = ContextUtils.getContext(this);
 		Geography geography = (Geography)context.getProjection("Kenai");
+		GridCoverage2D landuse_coverage = geography.getCoverage("NLCD Landuse");
 		// Create DirectPosition used to evaluate GridCoverage2D
 		DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
 		int[] sample = (int[]) landuse_coverage.evaluate(position);
