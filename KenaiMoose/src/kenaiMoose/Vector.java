@@ -1,16 +1,22 @@
 package kenaiMoose;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.geometry.DirectPosition2D;
 import org.opengis.geometry.DirectPosition;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 
 import repast.simphony.context.Context;
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.util.ContextUtils;
 import repast.simphony.util.collections.IndexedIterable;
@@ -31,6 +37,8 @@ public abstract class Vector {
 	protected static GridCoverage2D landuse_coverage;
 	protected GeometryFactory geoFac = new GeometryFactory();
 	protected double infection_radius;
+	protected Envelope infection_area;
+	protected InfectionZone infection_zone;
 	
 	public Vector() {
 		name = "";
@@ -75,6 +83,34 @@ public abstract class Vector {
 		return (Geography)context.getProjection("Kenai");
 	}
 	
+	// Generate infection area Envelope around Vector
+	protected void addBuffer(double infection_radius) {
+		Context context = ContextUtils.getContext(this);
+		Geography geography = (Geography)context.getProjection("Kenai");
+		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
+		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
+		infection_zone = new InfectionZone();
+		context.add(infection_zone);
+		geography.move(infection_zone, infection_geom);
+	}
+	
+	// Return List of Ticks found within infection_area Envelope
+	protected List<Tick> getTicks() {
+		Context context = ContextUtils.getContext(this);
+		Geography geography = (Geography)context.getProjection("Kenai");
+		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
+		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
+		Envelope infection_envelope = infection_geom.getEnvelopeInternal();
+		
+		Iterable<Tick> infectingTicks = geography.getObjectsWithin(infection_envelope, Tick.class);
+		List<Tick> tickList = new ArrayList();
+		
+		for (Tick tick : infectingTicks) {
+				tickList.add((Tick)tick);
+		}
+		return tickList;
+	}
+	
 	// Check to see if area at coordinate is water in NLCD landuse raster
 	public boolean isWater(Coordinate coord) {
 		Context context = ContextUtils.getContext(this);
@@ -86,6 +122,16 @@ public abstract class Vector {
 			return true;
 		else
 			return false;
+	}
+	
+	protected void updateInfectionZone() {
+		Context context = ContextUtils.getContext(this);
+		Geography geography = (Geography)context.getProjection("Kenai");
+		
+		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
+		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
+		
+		geography.move(infection_zone, infection_geom);
 	}
 	
 	// Method to control actions performed in each step

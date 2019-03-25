@@ -34,11 +34,11 @@ import repast.simphony.space.gis.GeographyParameters;
 import repast.simphony.space.graph.Network;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
-	int numMoose = 10;
-	int numTicks = 50;
+	int numMoose = 100;
+	int numTicks = 1000;
 	
 	public Context build(Context context) {
-		
+		System.setProperty("org.geotools.referencing.forceXY", "true");
 		// Creating Geography projection for Moose vectors
 		GeographyParameters geoParams = new GeographyParameters();
 		geoParams.setCrs("EPSG:4269"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)

@@ -1,12 +1,11 @@
 package kenaiMoose;
 
+import java.util.List;
+
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.geometry.DirectPosition2D;
-import org.opengis.geometry.DirectPosition;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 import repast.simphony.context.Context;
@@ -20,13 +19,27 @@ public class Moose extends Vector {
 
 	public Moose(String name, Geometry boundary, GridCoverage2D landuse_coverage) {
 		super(name, boundary, landuse_coverage);
-		infection_radius = 0.0005;
+		infection_radius = 50;
+		
+	}
+	
+	@ScheduledMethod(start = 0)
+	public void init() {
+		addBuffer(infection_radius);
 	}
 
 	// Establishing random moves for Moose agents
 	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.FIRST_PRIORITY)
 	public void step() {
 		walk();
+		addBuffer(infection_radius);
+		List<Tick> tickList = getTicks();
+		if (tickList.size() > 0) {
+			System.out.println(name + " has been infected!");
+		}
+		for (Tick tick : tickList) {
+			tick.attach(this);
+		}
 	}
 		
 	// Logic for checking for proper bounds and raster data for each step
@@ -55,6 +68,8 @@ public class Moose extends Vector {
 		
 		// Updating Moose location
 		geography.move(this, newPoint);
+		// Updating InfectionZone
+		updateInfectionZone();
 	}
 	
 }
