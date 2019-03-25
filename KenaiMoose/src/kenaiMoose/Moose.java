@@ -26,14 +26,12 @@ public class Moose extends Vector {
 	@ScheduledMethod(start = 0)
 	public void init() {
 		addBuffer(infection_radius);
-		System.out.println("Moose init() called.");
 	}
 
 	// Establishing random moves for Moose agents
 	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.FIRST_PRIORITY)
 	public void step() {
 		walk();
-		addBuffer(infection_radius);
 		List<Tick> tickList = getTicks();
 		if (tickList.size() > 0) {
 			System.out.println(name + " has been infected!");
