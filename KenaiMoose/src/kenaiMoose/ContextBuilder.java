@@ -43,7 +43,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		GeographyParameters geoParams = new GeographyParameters();
 		geoParams.setCrs("EPSG:4269"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)
 		Geography geography = GeographyFactoryFinder.createGeographyFactory(null).createGeography("Kenai", context, geoParams);
-		System.out.println(geography.getCRS());
 		//geography.setCRS("EPSG:4269"); // Alternate method of setting CRS of projection
 		
 		// Placeholder for infection Network
@@ -65,47 +64,72 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		GridCoverage2D elev_coverage = null;
 		GridCoverage2D landuse_coverage = null;
 		
-		try {
-			elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
-			landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
-		} catch (IOException e) {
-			System.out.println("Error loading raster.");
-		}
+	try {
+		elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
+		landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
+	} 
+	catch (IOException e) {
+		System.out.println("Error loading raster.");
+	}
 		
 		// Create Moose agents
 			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
+		System.out.println("Creating " + numMoose + " Moose agents...");
 		int cnt = 0;
 		for (Coordinate coord : mooseCoords) {
-			System.out.println(coord.toString());
 			Moose moose = new Moose("Moose " + cnt, boundary, landuse_coverage);
 			context.add(moose);
 			
-			Point pnt = geoFac.createPoint(coord);
-			
-			// Example of how to use raster data - works!
 			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
 	        int[] sample = (int[]) landuse_coverage.evaluate(position);
 	        sample = landuse_coverage.evaluate(position, sample);
-	        System.out.println(sample[0]);
 			
-			geography.move(moose, pnt);
+	        // Checking for creation in water - if in water, keep creating new Coordinates until one is found not in water
+	        while (sample[0] == 11 || sample[0] == 12) {
+	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
+	        	coord = new_coord.get(0);
+        		position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+        		sample = landuse_coverage.evaluate(position, sample);
+	        }	
+			Point pnt = geoFac.createPoint(coord); // Create the Point geometry for Moose agent
+			System.out.println("	Moose created at: " + coord.toString());
+			System.out.println("		Landuse value: " + sample[0]);
+			geography.move(moose, pnt); // Moving Moose agent to Point
 			cnt++;
 		}
+		System.out.println(cnt + " Moose agents created.");
 		
 		// Create Tick agents
 			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
 		cnt = 0;
+		
+		System.out.println();
+		System.out.println("Creating " + numTicks + " Tick agents...");
 		for (Coordinate coord : tickCoords) {
-			System.out.println(coord.toString());
 			Tick tick = new Tick("Tick " + cnt);
 			context.add(tick);
 			
+			// Preparing to check for creation in water
+			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+	        int[] sample = (int[]) landuse_coverage.evaluate(position);
+	        sample = landuse_coverage.evaluate(position, sample);
+			
+	        // Checking for creation in water - if in water, keep creating new Coordinates until one is found not in water
+	        while (sample[0] == 11 || sample[0] == 12) {
+	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
+	        	coord = new_coord.get(0);
+        		position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+        		sample = landuse_coverage.evaluate(position, sample);
+	        }	
 			Point pnt = geoFac.createPoint(coord);
+			System.out.println("	Tick created at: " + coord.toString());
+			System.out.println("		Landuse value: " + sample[0]);
 			geography.move(tick, pnt);
 			cnt++;
 		}
+		System.out.println(cnt + " Tick agents created.");
 		
 		// Loading shapefile features for visualization
 		loadFeatures("data/KenaiWatershed3D_projected.shp", context, geography);

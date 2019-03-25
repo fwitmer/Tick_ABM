@@ -26,10 +26,11 @@ public abstract class Vector {
 	 * 		geography - gets the Geography projection object for the Vector agent
 	 */
 	protected String name;
-	protected boolean isInfected = false;
+	protected boolean is_infected = false;
 	protected static Geometry boundary;
 	protected static GridCoverage2D landuse_coverage;
 	protected GeometryFactory geoFac = new GeometryFactory();
+	protected double infection_radius;
 	
 	public Vector() {
 		name = "";
@@ -69,10 +70,9 @@ public abstract class Vector {
 	}
 	
 	// Return Geography of Vector agent
-	public Geography<Vector> getGeo() {
+	public Geography getGeo() {
 		Context context = ContextUtils.getContext(this);
-		Geography geography = (Geography)context.getProjection("Kenai");
-		return geography;
+		return (Geography)context.getProjection("Kenai");
 	}
 	
 	// Check to see if area at coordinate is water in NLCD landuse raster

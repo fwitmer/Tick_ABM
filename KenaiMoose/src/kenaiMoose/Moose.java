@@ -20,6 +20,7 @@ public class Moose extends Vector {
 
 	public Moose(String name, Geometry boundary, GridCoverage2D landuse_coverage) {
 		super(name, boundary, landuse_coverage);
+		infection_radius = 0.0005;
 	}
 
 	// Establishing random moves for Moose agents
