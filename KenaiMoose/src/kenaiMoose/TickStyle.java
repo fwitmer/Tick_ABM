@@ -104,7 +104,7 @@ public class TickStyle implements MarkStyle<Tick> {
 	// Specify the size of designated image on GIS 3D display
 	@Override
 	public double getScale(Tick agent) {
-			return 0.04;
+			return 0.02;
 	}
 
 	@Override
