@@ -1,4 +1,4 @@
-# Test moose and tick behavior
+# Agent based model and simulation of tick and moose behavior
 
 20 Sep 2018
 
