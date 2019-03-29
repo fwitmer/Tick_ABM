@@ -171,6 +171,7 @@ public abstract class Vector {
 				num_infecting_ticks++;
 			}
 		}
+		// Update color of InfectionZone based on infections
 		if (num_infecting_ticks > 0) {
 			infection_zone.setInfected(true);
 		}

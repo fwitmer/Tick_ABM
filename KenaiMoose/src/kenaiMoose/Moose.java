@@ -23,6 +23,8 @@ public class Moose extends Vector {
 		
 	}
 	
+	// init() called before first tick of model - add things that may require
+	// functionality before Moose object is added to Context and Geography
 	@ScheduledMethod(start = 0)
 	public void init() {
 		addBuffer(infection_radius);
@@ -34,9 +36,6 @@ public class Moose extends Vector {
 		walk();
 		List<Tick> tickList = getTicks();
 		processInfections(tickList);
-		if (getNumTicks() == 0) {
-			infection_zone.setInfected(false);
-		}
 	}
 		
 	// Logic for checking for proper bounds and raster data for each step

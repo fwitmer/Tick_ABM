@@ -55,14 +55,14 @@ public class Tick {
 	}
 	
 	
-	// Logic for attaching to vector
+	// Logic for attaching to Vector
 	public void attach(Vector vector) {
 		attached = true;
 		host_vector = vector;
 		System.out.println(name + " attached to " + host_vector.getName());
 	}
 	
-	// Logic for detaching from vector
+	// Logic for detaching from Vector
 	public void detach() {
 		attached = false;
 		attach_count = 0;

@@ -56,10 +56,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		String boundaryFile = "./data/KenaiWatershed3D_projected.shp";
 		List<SimpleFeature> features = loadFeaturesFromShapefile(boundaryFile);
 		Geometry boundary = (MultiPolygon)features.iterator().next().getDefaultGeometry();
-		Geometry boundary_geom = geoFac.createGeometry(boundary);
-		//BoundaryZone boundary_zone = new BoundaryZone();
-		//context.add(boundary_zone);
-		//geography.move(boundary_zone, boundary_geom);
 		
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
@@ -68,6 +64,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		GridCoverage2D elev_coverage = null;
 		GridCoverage2D landuse_coverage = null;
 		
+		// Try to load raster data and add as Coverage layer to geography projection
 	try {
 		elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
 		landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
@@ -144,6 +141,9 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		return context;
 	}
 	
+	// Load GeoTiff rasters and conver to a 2DGridCoverage to be returned
+	// NOTE: May work with other filetypes with varying effect
+	//       Rasters must contain appropriate worldfile for proper positioning in geography projection
 	private GridCoverage2D loadRaster(String filename, Context context) throws IOException {
 		File file = new File(filename);
 		AbstractGridFormat format = GridFormatFinder.findFormat(file);
@@ -162,6 +162,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 	}
 	
+	// Get features from a shapefile as a List for use in GIS logic
 	private List<SimpleFeature> loadFeaturesFromShapefile(String filename) {
 		
 		// Establish filepath
@@ -199,12 +200,13 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		return features;
 	}
 	
+	// Load features from a shapefile and establish them as an agent for GIS 3D visualization
 	private void loadFeatures (String filename, Context context, Geography geography) {
 		List<SimpleFeature> features = loadFeaturesFromShapefile(filename);
 		
 		for (SimpleFeature feature : features) {
 			Geometry geom = (Geometry)feature.getDefaultGeometry();
-			Object agent = null;
+			BoundaryZone boundary_zone = null;
 			
 			if (!geom.isValid()) {
 				System.out.println("Invalid geometry: " + feature.getID());
@@ -224,19 +226,24 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 				*/
 			}
 			
+			// Got a MultiPolygon, get each Polygon contained and add it as a BoundaryZone
 			if (geom instanceof MultiPolygon) {
 				System.out.println("Feature found! MultiPolygon: " + feature.getID()); // Console output to confirm feature class
 				MultiPolygon mp = (MultiPolygon)feature.getDefaultGeometry();
-				geom = (Polygon)mp.getGeometryN(0);
+				for (int i = 0; i < mp.getNumGeometries(); i++) {
+					geom = (Polygon)mp.getGeometryN(i);
+					boundary_zone = new BoundaryZone();
+					context.add(boundary_zone);
+					geography.move(boundary_zone, geom);
+				}
+				//geom = (Polygon)mp.getGeometryN(0);
 				
-				String name = (String)feature.getAttribute("name");
-				/*
-				agent = new BoundaryZone();
+				//boundary_zone = new BoundaryZone();
 				
-				Geometry buffer = GeometryUtil.generateBuffer(geography, geom, 100);
-				context.add(agent);
-				geography.move(agent, buffer);
-				*/
+				//Geometry buffer = GeometryUtil.generateBuffer(geography, geom, 100);
+				//context.add(boundary_zone);
+				//geography.move(boundary_zone, buffer);
+				
 			}
 			// Reporting feature class found if none of the above
 			else {
