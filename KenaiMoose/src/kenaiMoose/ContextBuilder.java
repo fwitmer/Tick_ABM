@@ -107,7 +107,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
 		cnt = 0;
-		
 		System.out.println();
 		System.out.println("Creating " + numTicks + " Tick agents...");
 		for (Coordinate coord : tickCoords) {
@@ -163,6 +162,10 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	}
 	
 	// Get features from a shapefile as a List for use in GIS logic
+	// Inputs:
+    //		filename - String representation of shapefile filename
+	// Outputs:
+	// 		List of SimpleFeatures containing each feature found in the shapefile
 	private List<SimpleFeature> loadFeaturesFromShapefile(String filename) {
 		
 		// Establish filepath
@@ -201,6 +204,11 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	}
 	
 	// Load features from a shapefile and establish them as an agent for GIS 3D visualization
+	// Inputs:
+    // 		filename - String for associated shapefile filename
+	//		context - Context layer created further up in build()
+    // Outputs:
+    //      Nothing returned - adds BoundaryZone agents for each polygon found in shapefile to Geography and Context
 	private void loadFeatures (String filename, Context context, Geography geography) {
 		List<SimpleFeature> features = loadFeaturesFromShapefile(filename);
 		
