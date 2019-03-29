@@ -21,12 +21,12 @@ public class BoundaryZoneStyle implements SurfaceShapeStyle<BoundaryZone> {
 
 	@Override
 	public double getFillOpacity(BoundaryZone obj) {
-		return 0.25;
+		return 0;
 	}
 
 	@Override
 	public Color getLineColor(BoundaryZone zone) {
-		return Color.BLACK;
+		return Color.RED;
 	}
 
 	@Override

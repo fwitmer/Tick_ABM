@@ -56,6 +56,10 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		String boundaryFile = "./data/KenaiWatershed3D_projected.shp";
 		List<SimpleFeature> features = loadFeaturesFromShapefile(boundaryFile);
 		Geometry boundary = (MultiPolygon)features.iterator().next().getDefaultGeometry();
+		Geometry boundary_geom = geoFac.createGeometry(boundary);
+		//BoundaryZone boundary_zone = new BoundaryZone();
+		//context.add(boundary_zone);
+		//geography.move(boundary_zone, boundary_geom);
 		
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
@@ -212,11 +216,12 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 				geom = (Polygon)p.getGeometryN(0);
 				
 				String name = (String)feature.getAttribute("name");
-				
-				agent = new BoundaryZone(name);
+				/*
+				agent = new BoundaryZone();
 				Geometry buffer = GeometryUtil.generateBuffer(geography, geom, 100);
 				context.add(agent);
 				context.add(buffer);
+				*/
 			}
 			
 			if (geom instanceof MultiPolygon) {
@@ -225,12 +230,13 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 				geom = (Polygon)mp.getGeometryN(0);
 				
 				String name = (String)feature.getAttribute("name");
-				
-				agent = new BoundaryZone(name);
+				/*
+				agent = new BoundaryZone();
 				
 				Geometry buffer = GeometryUtil.generateBuffer(geography, geom, 100);
 				context.add(agent);
 				geography.move(agent, buffer);
+				*/
 			}
 			// Reporting feature class found if none of the above
 			else {
