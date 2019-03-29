@@ -55,8 +55,8 @@ public class Moose extends Vector {
 				System.out.println("Stuck in water! Moose created in 11 or 12.");
 				break;
 			}
-			coord.x = prevLocation.x + RandomHelper.nextDoubleFromTo(-0.0005, 0.0005);
-			coord.y = prevLocation.y + RandomHelper.nextDoubleFromTo(-0.0005, 0.0005);
+			coord.x = prevLocation.x + RandomHelper.nextDoubleFromTo(-0.1000, 0.1000);
+			coord.y = prevLocation.y + RandomHelper.nextDoubleFromTo(-0.1000, 0.1000);
 			newPoint = geoFac.createPoint(coord);
 			stuck_in_water++;
 		}

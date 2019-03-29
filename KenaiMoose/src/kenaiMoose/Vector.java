@@ -165,17 +165,20 @@ public abstract class Vector {
 	
 	protected void processInfections(List<Tick> tickList) {
 		if (tickList.size() > 0) {
-			is_infected = true;
 			for (Tick tick : tickList) {
-				tick.attach(this);
-				num_infecting_ticks++;
+				if (!tick.isDelayed()) {
+					tick.attach(this);
+					num_infecting_ticks++;
+				}
 			}
 		}
 		// Update color of InfectionZone based on infections
 		if (num_infecting_ticks > 0) {
+			is_infected = true;
 			infection_zone.setInfected(true);
 		}
 		else if (num_infecting_ticks == 0) {
+			is_infected = false;
 			infection_zone.setInfected(false);
 		}
 	}

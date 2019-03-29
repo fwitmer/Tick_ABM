@@ -17,6 +17,9 @@ public class Tick {
 	private GeometryFactory geoFac = new GeometryFactory();
 	private int attach_count = 0;
 	private final int ATTACH_LENGTH = 7;
+	private boolean delayed;
+	private int delay_count = 0;
+	private final int ATTACH_DELAY = 20;
 	private Vector host_vector;
 	
 	public Tick(String name) {
@@ -27,9 +30,10 @@ public class Tick {
 	public void init() {
 		attached = false;
 		host_vector = null;
+		delayed = false;
 	}
 	
-	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.LAST_PRIORITY)
+	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
 		if(attached) {
 			if (attach_count >= ATTACH_LENGTH) {
@@ -40,8 +44,15 @@ public class Tick {
 			Point newPoint = geoFac.createPoint(newPosition);
 			Geography geography = getGeo();
 			geography.move(this, newPoint);
+			attach_count++;
 		}
-		attach_count++;
+		else if(delayed) {
+			if (delay_count >= ATTACH_DELAY) {
+				delayed = false;
+			}
+			delay_count++;
+		}
+		
 	}
 	
 	public Geography getGeo() {
@@ -54,17 +65,25 @@ public class Tick {
 		return attached;
 	}
 	
+	public boolean isDelayed() {
+		return delayed;
+	}
+	
 	
 	// Logic for attaching to Vector
 	public void attach(Vector vector) {
-		attached = true;
-		host_vector = vector;
-		System.out.println(name + " attached to " + host_vector.getName());
+		if (!delayed) {
+			attached = true;
+			host_vector = vector;
+			System.out.println(name + " attached to " + host_vector.getName());
+		}
 	}
 	
 	// Logic for detaching from Vector
 	public void detach() {
 		attached = false;
+		delayed = true;
+		delay_count = 0;
 		attach_count = 0;
 		host_vector.decreaseNumTicks();
 		System.out.println(name + " detached from " + host_vector.getName());
