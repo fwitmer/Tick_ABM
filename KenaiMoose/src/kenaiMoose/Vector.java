@@ -32,22 +32,27 @@ public abstract class Vector {
 	 * 		geography - gets the Geography projection object for the Vector agent
 	 */
 	protected String name;
-	protected boolean is_infected = false;
+	protected boolean is_infected;
 	protected static Geometry boundary;
 	protected GeometryFactory geoFac = new GeometryFactory();
 	protected double infection_radius;
 	protected Envelope infection_area;
 	protected InfectionZone infection_zone;
+	protected int num_infecting_ticks;
 	
 	public Vector() {
-		name = "";
-		boundary = null;	
+		this.name = "No name";
+		this.boundary = null;	
+		this.num_infecting_ticks = 0;
+		this.is_infected = false;
 	}
 	
 	// Overloaded constructor for passing in name, boundary Geometry, and landuse_coverage GridCoverage2D
 	public Vector(String name, Geometry boundary) {
 		this.name = name;
 		this.boundary = boundary;
+		this.num_infecting_ticks = 0;
+		this.is_infected = false;
 	}
 	
 	public String getName() {
@@ -58,8 +63,31 @@ public abstract class Vector {
 		this.name = name;
 	}
 	
+	public boolean isInfected() {
+		return is_infected;
+	}
+	
+	public void setInfected(boolean infected) {
+		this.is_infected = infected;
+	}
+	
+	public int getNumTicks() {
+		return num_infecting_ticks;
+	}
+	
+	public void decreaseNumTicks () {
+		if (num_infecting_ticks > 0) {
+			num_infecting_ticks--;
+			return;
+		}
+		else {
+			System.out.println(name + ": Tried to decrement number of ticks below 0!");
+		}
+	}
+	
 	// TODO: See if possible to access individual elements added to Context to find boundary
 	//		 without having to pass in through constructor
+	// *** CURRENTLY DOES NOTHING! ***
 	private Geometry getBoundary() {
 		Context context = ContextUtils.getContext(this);
 		Geography geography = (Geography)context.getProjection("Kenai");
@@ -80,7 +108,7 @@ public abstract class Vector {
 		return (Geography)context.getProjection("Kenai");
 	}
 	
-	// Generate infection area Envelope around Vector
+	// Generate InfectionZone agent around Vector
 	protected void addBuffer(double infection_radius) {
 		Context context = ContextUtils.getContext(this);
 		Geography geography = (Geography)context.getProjection("Kenai");
@@ -124,6 +152,7 @@ public abstract class Vector {
 			return false;
 	}
 	
+	// Move the associated InfectionZone to new Vector agent location after moving
 	protected void updateInfectionZone() {
 		Context context = ContextUtils.getContext(this);
 		Geography geography = (Geography)context.getProjection("Kenai");
@@ -132,6 +161,22 @@ public abstract class Vector {
 		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
 		
 		geography.move(infection_zone, infection_geom);
+	}
+	
+	protected void processInfections(List<Tick> tickList) {
+		if (tickList.size() > 0) {
+			is_infected = true;
+			for (Tick tick : tickList) {
+				tick.attach(this);
+				num_infecting_ticks++;
+			}
+		}
+		if (num_infecting_ticks > 0) {
+			infection_zone.setInfected(true);
+		}
+		else if (num_infecting_ticks == 0) {
+			infection_zone.setInfected(false);
+		}
 	}
 	
 	// Method to control actions performed in each step

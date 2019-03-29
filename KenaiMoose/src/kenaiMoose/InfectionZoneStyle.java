@@ -16,6 +16,9 @@ public class InfectionZoneStyle implements SurfaceShapeStyle<InfectionZone> {
 
 	@Override
 	public Color getFillColor(InfectionZone zone) {
+		if (zone.isInfected()) {
+			return Color.RED;
+		}
 		return Color.CYAN;
 	}
 

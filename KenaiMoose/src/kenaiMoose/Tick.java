@@ -66,6 +66,7 @@ public class Tick {
 	public void detach() {
 		attached = false;
 		attach_count = 0;
+		host_vector.decreaseNumTicks();
 		System.out.println(name + " detached from " + host_vector.getName());
 		host_vector = null;
 	}

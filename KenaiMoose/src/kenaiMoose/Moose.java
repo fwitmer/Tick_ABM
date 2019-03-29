@@ -19,7 +19,7 @@ public class Moose extends Vector {
 
 	public Moose(String name, Geometry boundary) {
 		super(name, boundary);
-		infection_radius = 50;
+		infection_radius = 500;
 		
 	}
 	
@@ -33,11 +33,9 @@ public class Moose extends Vector {
 	public void step() {
 		walk();
 		List<Tick> tickList = getTicks();
-		if (tickList.size() > 0) {
-			System.out.println(name + " has been infected!");
-		}
-		for (Tick tick : tickList) {
-			tick.attach(this);
+		processInfections(tickList);
+		if (getNumTicks() == 0) {
+			infection_zone.setInfected(false);
 		}
 	}
 		
