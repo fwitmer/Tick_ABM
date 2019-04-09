@@ -74,6 +74,14 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	catch (IOException e) {
 		System.out.println("Error loading raster.");
 	}
+	
+		/* // example of how RasterLayer would work if supported by context
+		File file = new File(".data/nlcd_GCS_NAD83.tif");
+		RasterLayer landuse_raster = new RasterLayer("NLCD Landuse", file);
+		context.addValueLayer(landuse_raster); // Doens't currently support RasterLayer
+		
+		int landuse_sample = landuse_raster.getIntegerGridValue(x, y); 
+		*/
 		
 		// Create Moose agents
 			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params

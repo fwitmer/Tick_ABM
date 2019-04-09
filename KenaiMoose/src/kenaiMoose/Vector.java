@@ -48,6 +48,7 @@ public abstract class Vector {
 	}
 	
 	// Overloaded constructor for passing in name, boundary Geometry, and landuse_coverage GridCoverage2D
+	// TODO: Add setBoundary() method to pass in boundary once to all Vector agents
 	public Vector(String name, Geometry boundary) {
 		this.name = name;
 		this.boundary = boundary;
