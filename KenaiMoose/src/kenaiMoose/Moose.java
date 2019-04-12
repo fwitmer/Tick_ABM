@@ -18,8 +18,8 @@ import repast.simphony.util.ContextUtils;
 public class Moose extends Vector {
 	
 
-	public Moose(String name, Geometry boundary) {
-		super(name, boundary);
+	public Moose(String name) {
+		super(name);
 		infection_radius = 500;
 		
 	}
@@ -43,8 +43,6 @@ public class Moose extends Vector {
 		
 	// Logic for checking for proper bounds and raster data for each step
 	protected void walk() {		
-		//Context context = ContextUtils.getContext(this);
-		//Geography geography = (Geography)context.getProjection("Kenai");
 		Coordinate prevLocation = geography.getGeometry(this).getCoordinate(); // Saving previous location to revert back to if out of bounds
 		
 		// Attempting to create new random Coordinate and Point from previous location

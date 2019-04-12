@@ -89,7 +89,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		System.out.println("Creating " + numMoose + " Moose agents...");
 		int cnt = 0;
 		for (Coordinate coord : mooseCoords) {
-			Moose moose = new Moose("Moose " + cnt, boundary);
+			Moose moose = new Moose("Moose " + cnt);
 			context.add(moose);
 			
 			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
@@ -109,6 +109,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			geography.move(moose, pnt); // Moving Moose agent to Point
 			cnt++;
 		}
+		Vector.setBoundary(boundary);
 		System.out.println(cnt + " Moose agents created.");
 		
 		// Create Tick agents

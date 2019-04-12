@@ -12,15 +12,17 @@ import repast.simphony.util.ContextUtils;
 
 public class Tick {
 	
-	private String name;
-	private boolean attached;
-	private GeometryFactory geoFac = new GeometryFactory();
-	private int attach_count = 0;
-	private final int ATTACH_LENGTH = 7;
-	private boolean delayed;
-	private int delay_count = 0;
-	private final int ATTACH_DELAY = 20;
-	private Vector host_vector;
+	protected String name;
+	protected Context context;
+	protected Geography geography;
+	protected boolean attached;
+	protected GeometryFactory geoFac = new GeometryFactory();
+	protected int attach_count = 0;
+	protected final int ATTACH_LENGTH = 7;
+	protected boolean delayed;
+	protected int delay_count = 0;
+	protected final int ATTACH_DELAY = 20;
+	protected Vector host_vector;
 	
 	public Tick(String name) {
 		this.name = name;
@@ -31,6 +33,8 @@ public class Tick {
 		attached = false;
 		host_vector = null;
 		delayed = false;
+		context = ContextUtils.getContext(this);
+		geography = (Geography)context.getProjection("Kenai");
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
@@ -42,13 +46,13 @@ public class Tick {
 			}
 			Coordinate newPosition = host_vector.getCoord();
 			Point newPoint = geoFac.createPoint(newPosition);
-			Geography geography = getGeo();
 			geography.move(this, newPoint);
 			attach_count++;
 		}
 		else if(delayed) {
 			if (delay_count >= ATTACH_DELAY) {
 				delayed = false;
+				return;
 			}
 			delay_count++;
 		}
@@ -56,8 +60,6 @@ public class Tick {
 	}
 	
 	public Geography getGeo() {
-		Context context = ContextUtils.getContext(this);
-		Geography geography = (Geography)context.getProjection("Kenai");
 		return geography;
 	}
 	
