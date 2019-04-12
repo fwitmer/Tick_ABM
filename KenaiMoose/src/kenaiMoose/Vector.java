@@ -32,6 +32,8 @@ public abstract class Vector {
 	 * 		geography - gets the Geography projection object for the Vector agent
 	 */
 	protected String name;
+	protected Context context;
+	protected Geography geography;
 	protected boolean is_infected;
 	protected static Geometry boundary;
 	protected GeometryFactory geoFac = new GeometryFactory();
@@ -47,13 +49,19 @@ public abstract class Vector {
 		this.is_infected = false;
 	}
 	
-	// Overloaded constructor for passing in name, boundary Geometry, and landuse_coverage GridCoverage2D
+	// Overloaded constructor for passing in name, boundary Geometry
 	// TODO: Add setBoundary() method to pass in boundary once to all Vector agents
 	public Vector(String name, Geometry boundary) {
 		this.name = name;
 		this.boundary = boundary;
 		this.num_infecting_ticks = 0;
 		this.is_infected = false;
+	}
+	
+	@ScheduledMethod(start = 0)
+	public void init() {
+		context = ContextUtils.getContext(this);
+		geography = (Geography)context.getProjection("Kenai");
 	}
 	
 	public String getName() {
@@ -90,29 +98,30 @@ public abstract class Vector {
 	//		 without having to pass in through constructor
 	// *** CURRENTLY DOES NOTHING! ***
 	private Geometry getBoundary() {
-		Context context = ContextUtils.getContext(this);
-		Geography geography = (Geography)context.getProjection("Kenai");
+		//Context context = ContextUtils.getContext(this);
+		//Geography geography = (Geography)context.getProjection("Kenai");
 		IndexedIterable objects = context.getObjects(Geometry.class);
 		return null;
 	}
 	
 	// Return Coordinate of Vector agent used for attaching other agents
 	public Coordinate getCoord() {
-		Context context = ContextUtils.getContext(this);
-		Geography geography = (Geography)context.getProjection("Kenai");
+		//Context context = ContextUtils.getContext(this);
+		//Geography geography = (Geography)context.getProjection("Kenai");
 		return geography.getGeometry(this).getCoordinate();
 	}
 	
 	// Return Geography of Vector agent
 	public Geography getGeo() {
-		Context context = ContextUtils.getContext(this);
-		return (Geography)context.getProjection("Kenai");
+		//Context context = ContextUtils.getContext(this);
+		//return (Geography)context.getProjection("Kenai");
+		return geography;
 	}
 	
 	// Generate InfectionZone agent around Vector
 	protected void addBuffer(double infection_radius) {
-		Context context = ContextUtils.getContext(this);
-		Geography geography = (Geography)context.getProjection("Kenai");
+		//Context context = ContextUtils.getContext(this);
+		//Geography geography = (Geography)context.getProjection("Kenai");
 		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
 		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
 		infection_zone = new InfectionZone();
@@ -122,8 +131,8 @@ public abstract class Vector {
 	
 	// Return List of Ticks found within infection_area Envelope
 	protected List<Tick> getTicks() {
-		Context context = ContextUtils.getContext(this);
-		Geography geography = (Geography)context.getProjection("Kenai");
+		//Context context = ContextUtils.getContext(this);
+		//Geography geography = (Geography)context.getProjection("Kenai");
 		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
 		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
 		Envelope infection_envelope = infection_geom.getEnvelopeInternal();
@@ -141,8 +150,8 @@ public abstract class Vector {
 	
 	// Check to see if area at coordinate is water in NLCD landuse raster
 	public boolean isWater(Coordinate coord) {
-		Context context = ContextUtils.getContext(this);
-		Geography geography = (Geography)context.getProjection("Kenai");
+		//Context context = ContextUtils.getContext(this);
+		//Geography geography = (Geography)context.getProjection("Kenai");
 		GridCoverage2D landuse_coverage = geography.getCoverage("NLCD Landuse");
 		// Create DirectPosition used to evaluate GridCoverage2D
 		DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
@@ -155,8 +164,8 @@ public abstract class Vector {
 	
 	// Move the associated InfectionZone to new Vector agent location after moving
 	protected void updateInfectionZone() {
-		Context context = ContextUtils.getContext(this);
-		Geography geography = (Geography)context.getProjection("Kenai");
+		//Context context = ContextUtils.getContext(this);
+		//Geography geography = (Geography)context.getProjection("Kenai");
 		
 		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
 		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
@@ -185,7 +194,7 @@ public abstract class Vector {
 	}
 	
 	// Method to control actions performed in each step
-	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.FIRST_PRIORITY)
+	@ScheduledMethod(start = 1, interval = 1)
 	public abstract void step();
 	
 	// Method to be defined on how the vector will walk at each step
