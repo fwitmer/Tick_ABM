@@ -12,46 +12,58 @@ import repast.simphony.util.ContextUtils;
 
 public class Tick {
 	
-	protected String name;
 	protected Context context;
 	protected Geography geography;
-	protected boolean attached;
 	protected GeometryFactory geoFac = new GeometryFactory();
-	protected int attach_count = 0;
-	protected final int ATTACH_LENGTH = 7;
+	
+	protected String name;
+	protected boolean attached;
+	protected int attach_count;
+	protected int ATTACH_LENGTH; // must be defined by derived class
 	protected boolean delayed;
-	protected int delay_count = 0;
-	protected final int ATTACH_DELAY = 20;
-	protected Host host_vector;
+	protected int delay_count;
+	protected int ATTACH_DELAY; // must be defined by derived class
+	protected Host host;
 	
 	public Tick(String name) {
 		this.name = name;
+		attach_count = 0;
+		delay_count = 0;
+		attached = false;
+		host = null;
+		delayed = false;
+		
+		/* For testing Tick base class
+		ATTACH_LENGTH = 7;
+		ATTACH_DELAY = 20;
+		*/
 	}
 	
 	@ScheduledMethod(start = 0)
 	public void init() {
-		attached = false;
-		host_vector = null;
-		delayed = false;
 		context = ContextUtils.getContext(this);
 		geography = (Geography)context.getProjection("Kenai");
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
+		// if Tick is attached, update position to Host's new position
 		if(attached) {
+			// Tick has been riding Host for specified amount of time
 			if (attach_count >= ATTACH_LENGTH) {
 				detach();
 				return;
 			}
-			Coordinate newPosition = host_vector.getCoord();
+			Coordinate newPosition = host.getCoord();
 			Point newPoint = geoFac.createPoint(newPosition);
 			geography.move(this, newPoint);
 			attach_count++;
 		}
+		// check if Tick has attachment delay after detaching
 		else if(delayed) {
 			if (delay_count >= ATTACH_DELAY) {
 				delayed = false;
+				delay_count = 0;
 				return;
 			}
 			delay_count++;
@@ -76,8 +88,8 @@ public class Tick {
 	public void attach(Host host) {
 		if (!delayed) {
 			attached = true;
-			host_vector = host;
-			System.out.println(name + " attached to " + host_vector.getName());
+			this.host = host;
+			System.out.println(name + " attached to " + host.getName());
 		}
 	}
 	
@@ -85,11 +97,10 @@ public class Tick {
 	public void detach() {
 		attached = false;
 		delayed = true;
-		delay_count = 0;
 		attach_count = 0;
-		host_vector.decreaseNumTicks();
-		System.out.println(name + " detached from " + host_vector.getName());
-		host_vector = null;
+		host.decreaseNumTicks();
+		System.out.println(name + " detached from " + host.getName());
+		host = null;
 	}
 
 }
