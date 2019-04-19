@@ -1,27 +1,20 @@
 package kenaiMoose;
 
 import java.util.List;
-
-import org.geotools.coverage.grid.GridCoverage2D;
+import java.util.Random;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
-import repast.simphony.context.Context;
-import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
-import repast.simphony.space.gis.Geography;
-import repast.simphony.util.ContextUtils;
 
-public class Moose extends Vector {
-	
+public class Moose extends Host {
+	double direction;
 
 	public Moose(String name) {
 		super(name);
-		infection_radius = 500;
-		
+		infection_radius = 500;	
 	}
 	
 	// init() called before first tick of model - add things that may require
@@ -31,6 +24,9 @@ public class Moose extends Vector {
 	public void init() {
 		super.init();		
 		addBuffer(infection_radius);
+		
+		Random random = new Random();
+		direction = Math.toRadians(random.nextInt(360)); // Assign random direction for travel
 	}
 
 	// Establishing random moves for Moose agents
@@ -68,5 +64,21 @@ public class Moose extends Vector {
 		// Updating InfectionZone
 		updateInfectionZone();
 	}
+	/*
+	protected void directional_walk() {
+		Coordinate prev_coord = geography.getGeometry(this).getCoordinate();
+		Coordinate test_coord = prev_coord;
+		Point test_point = geoFac.createPoint(prev_loc);
+		geography.moveByVector(test_point, 50, direction);
+		
+		Random random = new Random();
+		int x = random.nextInt(2); // Pick a direction
+		while (!test_point.within(boundary) || isWater(prev_loc)) {
+			
+		}
+		
+		geography.moveByVector(this, 50, direction);
+		updateInfectionZone();
+	} */
 	
 }

@@ -22,7 +22,7 @@ public class Tick {
 	protected boolean delayed;
 	protected int delay_count = 0;
 	protected final int ATTACH_DELAY = 20;
-	protected Vector host_vector;
+	protected Host host_vector;
 	
 	public Tick(String name) {
 		this.name = name;
@@ -72,16 +72,16 @@ public class Tick {
 	}
 	
 	
-	// Logic for attaching to Vector
-	public void attach(Vector vector) {
+	// Logic for attaching to Host
+	public void attach(Host host) {
 		if (!delayed) {
 			attached = true;
-			host_vector = vector;
+			host_vector = host;
 			System.out.println(name + " attached to " + host_vector.getName());
 		}
 	}
 	
-	// Logic for detaching from Vector
+	// Logic for detaching from Host
 	public void detach() {
 		attached = false;
 		delayed = true;

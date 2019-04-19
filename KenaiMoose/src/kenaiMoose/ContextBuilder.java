@@ -109,7 +109,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			geography.move(moose, pnt); // Moving Moose agent to Point
 			cnt++;
 		}
-		Vector.setBoundary(boundary);
+		Host.setBoundary(boundary);
 		System.out.println(cnt + " Moose agents created.");
 		
 		// Create Tick agents

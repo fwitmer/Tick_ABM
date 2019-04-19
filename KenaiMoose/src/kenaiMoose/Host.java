@@ -21,15 +21,15 @@ import repast.simphony.space.gis.Geography;
 import repast.simphony.util.ContextUtils;
 import repast.simphony.util.collections.IndexedIterable;
 
-public abstract class Vector {
+public abstract class Host {
 	
 	/* Private Variables
-	 * 		name - String for simple names of Vector agents
+	 * 		name - String for simple names of Host agents
 	 * 		boundary - Geometry containing boundary file for agents to move within (STATIC)
 	 * 		landuse_coverage - GridCoverage2D representing landuse raster data (STATIC)
-	 * 		geofac - GeometryFactory for generating Geometry objects for use by Vector agents
-	 * 		context - storage variable for obtaining the Context the Vector agent was added to
-	 * 		geography - gets the Geography projection object for the Vector agent
+	 * 		geofac - GeometryFactory for generating Geometry objects for use by Host agents
+	 * 		context - storage variable for obtaining the Context the Host agent was added to
+	 * 		geography - gets the Geography projection object for the Host agent
 	 */
 	protected String name;
 	protected Context context;
@@ -42,16 +42,14 @@ public abstract class Vector {
 	protected InfectionZone infection_zone;
 	protected int num_infecting_ticks;
 	
-	public Vector() {
-		this.name = "No name";
-		this.boundary = null;	
+	public Host() {
+		this.name = "No name";	
 		this.num_infecting_ticks = 0;
 		this.is_infected = false;
 	}
 	
-	// Overloaded constructor for passing in name, boundary Geometry
-	// TODO: Add setBoundary() method to pass in boundary once to all Vector agents
-	public Vector(String name) {
+	// Giving each Host a unique name for identification/tracking purposes
+	public Host(String name) {
 		this.name = name;
 		this.num_infecting_ticks = 0;
 		this.is_infected = false;
@@ -64,7 +62,7 @@ public abstract class Vector {
 	}
 	
 	public static void setBoundary(Geometry boundary) {
-		Vector.boundary = boundary;
+		Host.boundary = boundary;
 	}
 	
 	public String getName() {
@@ -105,17 +103,17 @@ public abstract class Vector {
 		return null;
 	}
 	
-	// Return Coordinate of Vector agent used for attaching other agents
+	// Return Coordinate of Host agent used for attaching other agents
 	public Coordinate getCoord() {
 		return geography.getGeometry(this).getCoordinate();
 	}
 	
-	// Return Geography of Vector agent
+	// Return Geography of Host agent
 	public Geography getGeo() {
 		return geography;
 	}
 	
-	// Generate InfectionZone agent around Vector
+	// Generate InfectionZone agent around Host
 	protected void addBuffer(double infection_radius) {
 		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
 		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
@@ -153,7 +151,7 @@ public abstract class Vector {
 			return false;
 	}
 	
-	// Move the associated InfectionZone to new Vector agent location after moving
+	// Move the associated InfectionZone to new Host agent location after moving
 	protected void updateInfectionZone() {
 		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
 		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
@@ -185,7 +183,7 @@ public abstract class Vector {
 	@ScheduledMethod(start = 1, interval = 1)
 	public abstract void step();
 	
-	// Method to be defined on how the vector will walk at each step
+	// Method to be defined on how the Host will walk at each step
 	protected abstract void walk();
 	
 
