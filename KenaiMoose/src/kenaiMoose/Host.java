@@ -23,20 +23,21 @@ import repast.simphony.util.collections.IndexedIterable;
 
 public abstract class Host {
 	
-	/* Private Variables
+	/* Protected Variables
 	 * 		name - String for simple names of Host agents
-	 * 		boundary - Geometry containing boundary file for agents to move within (STATIC)
 	 * 		landuse_coverage - GridCoverage2D representing landuse raster data (STATIC)
 	 * 		geofac - GeometryFactory for generating Geometry objects for use by Host agents
 	 * 		context - storage variable for obtaining the Context the Host agent was added to
 	 * 		geography - gets the Geography projection object for the Host agent
 	 */
-	protected String name;
+	
 	protected Context context;
 	protected Geography geography;
+	protected GeometryFactory geoFac = new GeometryFactory();
+	
+	protected String name;
 	protected boolean is_infected;
 	protected static Geometry boundary;
-	protected GeometryFactory geoFac = new GeometryFactory();
 	protected double infection_radius;
 	protected Envelope infection_area;
 	protected InfectionZone infection_zone;
@@ -128,7 +129,7 @@ public abstract class Host {
 		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
 		Envelope infection_envelope = infection_geom.getEnvelopeInternal();
 		
-		Iterable<Tick> infectingTicks = geography.getObjectsWithin(infection_envelope, Tick.class);
+		Iterable<Tick> infectingTicks = geography.getObjectsWithin(infection_envelope, IxPacificus.class);
 		List<Tick> tickList = new ArrayList();
 		
 		for (Tick tick : infectingTicks) {

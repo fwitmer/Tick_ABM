@@ -3,10 +3,6 @@
   <type>GIS 3D</type>
   <styles>
     <entry>
-      <string>kenaiMoose.Tick</string>
-      <string>kenaiMoose.TickStyle</string>
-    </entry>
-    <entry>
       <string>kenaiMoose.Moose</string>
       <string>kenaiMoose.MooseStyle</string>
     </entry>
@@ -18,12 +14,12 @@
       <string>kenaiMoose.BoundaryZone</string>
       <string>kenaiMoose.BoundaryZoneStyle</string>
     </entry>
+    <entry>
+      <string>kenaiMoose.IxPacificus</string>
+      <string>kenaiMoose.TickStyle</string>
+    </entry>
   </styles>
   <editedStyles>
-    <entry>
-      <string>kenaiMoose.Tick</string>
-      <null/>
-    </entry>
     <entry>
       <string>kenaiMoose.Moose</string>
       <null/>
@@ -34,6 +30,10 @@
     </entry>
     <entry>
       <string>kenaiMoose.BoundaryZone</string>
+      <null/>
+    </entry>
+    <entry>
+      <string>kenaiMoose.IxPacificus</string>
       <null/>
     </entry>
   </editedStyles>
@@ -47,45 +47,25 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>329456574</hashCode>
+    <hashCode>-1056096253</hashCode>
   </schedParams>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>Blue Marble May 2004</string>
-      <int>4</int>
-    </entry>
-    <entry>
-      <string>kenaiMoose.Tick</string>
-      <int>8</int>
-    </entry>
-    <entry>
       <string>kenaiMoose.Moose</string>
-      <int>7</int>
-    </entry>
-    <entry>
-      <string>Scale bar</string>
-      <int>3</int>
-    </entry>
-    <entry>
-      <string>kenaiMoose.InfectionZone</string>
-      <int>6</int>
-    </entry>
-    <entry>
-      <string>kenaiMoose.BoundaryZone</string>
-      <int>5</int>
-    </entry>
-    <entry>
-      <string>Compass</string>
       <int>2</int>
     </entry>
     <entry>
-      <string>i-cubed Landsat</string>
+      <string>kenaiMoose.InfectionZone</string>
       <int>1</int>
     </entry>
     <entry>
-      <string>USGS Topo Base Map</string>
+      <string>kenaiMoose.BoundaryZone</string>
       <int>0</int>
+    </entry>
+    <entry>
+      <string>kenaiMoose.IxPacificus</string>
+      <int>3</int>
     </entry>
   </layerOrder>
   <projections>

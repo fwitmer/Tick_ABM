@@ -38,7 +38,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	int numTicks = 1000;
 	
 	public Context build(Context context) {
-		System.setProperty("org.geotools.referencing.forceXY", "true");
+		System.setProperty("org.geotools.referencing.forceXY", "true"); // suppress warnings caused by the visualized environment
 		// Creating Geography projection for Moose vectors
 		GeographyParameters geoParams = new GeographyParameters();
 		geoParams.setCrs("EPSG:4269"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)
@@ -119,7 +119,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		System.out.println();
 		System.out.println("Creating " + numTicks + " Tick agents...");
 		for (Coordinate coord : tickCoords) {
-			Tick tick = new Tick("Tick " + cnt);
+			IxPacificus tick = new IxPacificus("Tick " + cnt);
 			context.add(tick);
 			
 			// Preparing to check for creation in water

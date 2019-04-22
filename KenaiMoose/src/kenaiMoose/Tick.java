@@ -10,13 +10,15 @@ import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.util.ContextUtils;
 
-public class Tick {
+public abstract class Tick {
 	
 	protected Context context;
 	protected Geography geography;
 	protected GeometryFactory geoFac = new GeometryFactory();
 	
 	protected String name;
+	protected boolean female; 
+	protected String life_stage;
 	protected boolean attached;
 	protected int attach_count;
 	protected int ATTACH_LENGTH; // must be defined by derived class
@@ -32,7 +34,7 @@ public class Tick {
 		attached = false;
 		host = null;
 		delayed = false;
-		
+	
 		/* For testing Tick base class
 		ATTACH_LENGTH = 7;
 		ATTACH_DELAY = 20;
@@ -71,6 +73,10 @@ public class Tick {
 		
 	}
 	
+	// Abstract methods to force setting ATTACH_LENGTH and ATTACH_DELAY - protected
+	protected abstract void setATTACH_LENGTH(int length);
+	protected abstract void setATTACH_DELAY(int delay);
+	
 	public Geography getGeo() {
 		return geography;
 	}
@@ -83,8 +89,12 @@ public class Tick {
 		return delayed;
 	}
 	
+	public boolean isFemale() {
+		return female;
+	}
 	
-	// Logic for attaching to Host
+	
+	// Logic for attaching to Host, expected to be called by the Host to be infected
 	public void attach(Host host) {
 		if (!delayed) {
 			attached = true;
