@@ -51,14 +51,15 @@ public abstract class Tick {
 	public void step() {
 		// if Tick is attached, update position to Host's new position
 		if(attached) {
+			
+			Coordinate newPosition = host.getCoord();
+			Point newPoint = geoFac.createPoint(newPosition);
+			geography.move(this, newPoint);
 			// Tick has been riding Host for specified amount of time
 			if (attach_count >= ATTACH_LENGTH) {
 				detach();
 				return;
 			}
-			Coordinate newPosition = host.getCoord();
-			Point newPoint = geoFac.createPoint(newPosition);
-			geography.move(this, newPoint);
 			attach_count++;
 		}
 		// check if Tick has attachment delay after detaching
