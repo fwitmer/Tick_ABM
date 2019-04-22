@@ -12,19 +12,22 @@ import repast.simphony.util.ContextUtils;
 
 public abstract class Tick {
 	
+	// variables for holding the framework objects
 	protected Context context;
 	protected Geography geography;
 	protected GeometryFactory geoFac = new GeometryFactory();
 	
+	
+	// variables for behavioral functions
 	protected String name;
 	protected boolean female; 
 	protected String life_stage;
 	protected boolean attached;
 	protected int attach_count;
-	protected int ATTACH_LENGTH; // must be defined by derived class
+	protected int attach_length; // must be defined by derived class
 	protected boolean delayed;
 	protected int delay_count;
-	protected int ATTACH_DELAY; // must be defined by derived class
+	protected int attach_delay; // must be defined by derived class
 	protected Host host;
 	
 	public Tick(String name) {
@@ -56,7 +59,7 @@ public abstract class Tick {
 			Point newPoint = geoFac.createPoint(newPosition);
 			geography.move(this, newPoint);
 			// Tick has been riding Host for specified amount of time
-			if (attach_count >= ATTACH_LENGTH) {
+			if (attach_count >= attach_length) {
 				detach();
 				return;
 			}
@@ -64,7 +67,7 @@ public abstract class Tick {
 		}
 		// check if Tick has attachment delay after detaching
 		else if(delayed) {
-			if (delay_count >= ATTACH_DELAY) {
+			if (delay_count >= attach_delay) {
 				delayed = false;
 				delay_count = 0;
 				return;
@@ -75,8 +78,8 @@ public abstract class Tick {
 	}
 	
 	// Abstract methods to force setting ATTACH_LENGTH and ATTACH_DELAY - protected
-	protected abstract void setATTACH_LENGTH(int length);
-	protected abstract void setATTACH_DELAY(int delay);
+	protected abstract void set_attach_length(int length);
+	protected abstract void set_attach_delay(int delay);
 	
 	public Geography getGeo() {
 		return geography;
