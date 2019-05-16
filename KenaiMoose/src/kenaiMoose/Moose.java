@@ -10,7 +10,7 @@ import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.random.RandomHelper;
 
 public class Moose extends Host {
-	private double direction; // The mean direction for drawing Gaussian randoms
+	double direction;
 
 	public Moose(String name) {
 		super(name);
@@ -32,7 +32,7 @@ public class Moose extends Host {
 	// Establishing random moves for Moose agents
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
-		directional_walk();
+		walk();
 		List<Tick> tickList = getTicks();
 		processInfections(tickList);
 	}
@@ -64,81 +64,21 @@ public class Moose extends Host {
 		// Updating InfectionZone
 		updateInfectionZone();
 	}
-	
+	/*
 	protected void directional_walk() {
+		Coordinate prev_coord = geography.getGeometry(this).getCoordinate();
+		Coordinate test_coord = prev_coord;
+		Point test_point = geoFac.createPoint(prev_loc);
+		geography.moveByVector(test_point, 50, direction);
 		
-		// Saving previous Coordinate and Point for reference in case of invalid move
-		Coordinate prev_coord = getCoord();
-		Point prev_point = getPoint();
-		
-		// Adding random wiggle
-		Random random = new Random(); 
-		direction = random.nextGaussian() * (Math.PI / 12) + direction; // Std. dev. of PI/12 and mean of current direction
-		// Controlling for direction > 360º and < 0º
-		if (direction > 2 * Math.PI) {
-			direction = direction - (2 * Math.PI);
-		}
-		if (direction < 0) {
-			direction = direction + (2 * Math.PI);
+		Random random = new Random();
+		int x = random.nextInt(2); // Pick a direction
+		while (!test_point.within(boundary) || isWater(prev_loc)) {
+			
 		}
 		
-		// Moving Moose and getting test_coord and test_point for checking validity of move
 		geography.moveByVector(this, 50, direction);
-		Coordinate test_coord = getCoord();
-		Point test_point = getPoint();
-		
-		int x = 0; // Counter for processing behavioral attempts
-		// Checking if we went out of bounds and adjusting
-		if (!test_point.within(boundary)) {
-			System.out.println("Boundary adjustment: " + this.name);
-			geography.move(this, prev_point); // moving back to start
-			System.out.println("\tCurrent Point: " + getPoint().toString());
-			if (direction < Math.PI) {
-				direction = direction + Math.PI;
-			}
-			else {
-				direction = direction - Math.PI;
-			}
-			// TODO: determine distance between prev_coord and boundary to get more accurate bounce behavior
-			//		 currently arbitrarily half of previous attempt to move that placed us out of bounds
-			geography.moveByVector(this, 100, direction); 
-			test_coord = getCoord();
-			test_point = getPoint();
-			System.out.println("\tDirection: " + direction);
-			System.out.println("\tCoords: " + test_coord.toString());
-			System.out.println("\tPoint: " + test_point.toString());
-			System.out.println("\tOrigin: " + prev_coord.toString());
-			
-		}
-		
-		if (isWater(test_coord)) {
-			System.out.println("Water adjustment: " + this.name);
-			geography.move(this, prev_point); // moving back to start
-			int left_or_right = random.nextInt(2); // Pick a direction
-			while (isWater(test_coord)) {
-				switch (left_or_right) {
-					case 0: // left
-						direction = direction + (Math.PI/24); // 7.5º
-					case 1: // right
-						direction = direction - (Math.PI/24);
-						
-				}
-				if (direction > 2 * Math.PI) {
-					direction = direction - 2 * Math.PI;
-				}
-				if (direction < 0) {
-					direction = direction + 2 * Math.PI;
-				}
-				
-				geography.moveByVector(this, 50, direction);
-				test_coord = getCoord();
-				test_point = getPoint();
-			}
-			
-		}
-		
-		geography.move(this, test_point);
 		updateInfectionZone();
-	} 
+	} */
 	
 }
