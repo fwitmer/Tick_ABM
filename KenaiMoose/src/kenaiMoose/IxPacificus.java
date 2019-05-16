@@ -12,6 +12,11 @@ public class IxPacificus extends Tick {
 		super(name);
 		set_attach_length(7);
 		set_attach_delay(20);
+		EGG_LENGTH = 14;
+		LARVA_LENGTH = 10;
+		NYMPH_LENGTH = 24;
+		ADULT_LENGTH = 14;
+		
 		
 		// Randomly decide sex upon creation, currently set to 50/50 until data found
 		Random rnd = new Random();

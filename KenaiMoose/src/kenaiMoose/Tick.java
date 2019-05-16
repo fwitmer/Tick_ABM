@@ -20,8 +20,6 @@ public abstract class Tick {
 	
 	// variables for behavioral functions
 	protected String name;
-	protected boolean female; 
-	protected String life_stage;
 	protected boolean attached;
 	protected int attach_count;
 	protected int attach_length; // must be defined by derived class
@@ -30,13 +28,24 @@ public abstract class Tick {
 	protected int attach_delay; // must be defined by derived class
 	protected Host host;
 	
+	// life cycle variables
+	protected boolean female; 
+	protected String life_stage;
+	protected int EGG_LENGTH;
+	protected int LARVA_LENGTH;
+	protected int NYMPH_LENGTH;
+	protected int ADULT_LENGTH;
+	protected int lifecycle_counter;
+	
 	public Tick(String name) {
 		this.name = name;
+		lifecycle_counter = 0;
 		attach_count = 0;
 		delay_count = 0;
 		attached = false;
 		host = null;
 		delayed = false;
+		life_stage = "egg";
 	
 		/* For testing Tick base class
 		ATTACH_LENGTH = 7;
@@ -52,6 +61,7 @@ public abstract class Tick {
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
+		lifecycle();
 		// if Tick is attached, update position to Host's new position
 		if(attached) {
 			
@@ -103,6 +113,7 @@ public abstract class Tick {
 		if (!delayed) {
 			attached = true;
 			this.host = host;
+			host.add_tick(this);
 			//System.out.println(name + " attached to " + host.getName());
 		}
 	}
@@ -112,9 +123,68 @@ public abstract class Tick {
 		attached = false;
 		delayed = true;
 		attach_count = 0;
-		host.decreaseNumTicks();
+		host.remove_tick(this);
 		//System.out.println(name + " detached from " + host.getName());
 		host = null;
+	}
+	// determine what to do and update lifecycle counter
+	private void lifecycle() {
+		lifecycle_counter++;
+		switch (life_stage) {
+			case "egg":
+				if (lifecycle_counter > EGG_LENGTH) {
+					hatch();
+				}
+				break;
+			case "larva":
+				if (lifecycle_counter > LARVA_LENGTH) {
+					molt();
+				}
+				break;
+			case "nymph":
+				if (lifecycle_counter > NYMPH_LENGTH) {
+					molt();
+				}
+				break;
+			case "adult":
+				if (lifecycle_counter > ADULT_LENGTH) {
+					mate();
+				}
+				break;
+			default:
+				System.out.println("\tLife cycle error: " + name + " has invalid life stage. Removing agent.");
+				die();
+		}
+	}
+	
+	// TODO: utilize habitat suitability to determine hatching behavior
+	private void hatch() {
+		lifecycle_counter = 0;
+		life_stage = "larva";
+		return;
+	}
+	
+	// TODO: utilize habitat suitability to determine molting behavior
+	private void molt() {
+		lifecycle_counter = 0;
+		switch(life_stage) {
+			case "larva":
+				life_stage = "nymph";
+				break;
+			case "nymph":
+				life_stage = "adult";
+		}
+	}
+	
+	// TODO: implement this
+	private void mate() {
+		die();
+		return;
+	}
+	
+	public void die() {
+		context.remove(this);
+		return;
 	}
 
 }
