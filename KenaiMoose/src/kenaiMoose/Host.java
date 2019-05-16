@@ -109,6 +109,11 @@ public abstract class Host {
 		return geography.getGeometry(this).getCoordinate();
 	}
 	
+	public Point getPoint() {
+		Point point = geoFac.createPoint(getCoord());
+		return point;
+	}
+	
 	// Return Geography of Host agent
 	public Geography getGeo() {
 		return geography;
