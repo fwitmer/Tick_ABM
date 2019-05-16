@@ -103,7 +103,7 @@ public abstract class Tick {
 		if (!delayed) {
 			attached = true;
 			this.host = host;
-			System.out.println(name + " attached to " + host.getName());
+			//System.out.println(name + " attached to " + host.getName());
 		}
 	}
 	
@@ -113,7 +113,7 @@ public abstract class Tick {
 		delayed = true;
 		attach_count = 0;
 		host.decreaseNumTicks();
-		System.out.println(name + " detached from " + host.getName());
+		//System.out.println(name + " detached from " + host.getName());
 		host = null;
 	}
 

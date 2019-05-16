@@ -38,12 +38,16 @@ public class TickStyle implements MarkStyle<Tick> {
 			 * agent states and re-used when needed.
 			 */
 			textureMap = new HashMap<String, WWTexture>();
-			
-			String filename = "icons/tick.png";
+			String filename = "icons/tick_pink.png";
 			URL localURL = WorldWind.getDataFileStore().requestFile(filename);
-			
 			if (localURL != null) {
-				textureMap.put("tick", new BasicWWTexture(localURL, false));
+				textureMap.put("female", new BasicWWTexture(localURL, false));
+			}
+			
+			filename = "icons/tick_blue.png";
+			localURL = WorldWind.getDataFileStore().requestFile(filename);
+			if (localURL != null) {
+				textureMap.put("male", new BasicWWTexture(localURL, false));
 			}
 	}
 	
@@ -98,7 +102,11 @@ public class TickStyle implements MarkStyle<Tick> {
 	// getTexture() is the only way to define the image used on the GIS 3D display
 	@Override
 	public WWTexture getTexture(Tick agent, WWTexture texture) {
-			return textureMap.get("tick");
+		if (agent.isFemale()) {
+			return textureMap.get("female");
+		}
+		else
+			return textureMap.get("male");
 	}
 	
 	// Specify the size of designated image on GIS 3D display

@@ -16,10 +16,12 @@ public class IxPacificus extends Tick {
 		// Randomly decide sex upon creation, currently set to 50/50 until data found
 		Random rnd = new Random();
 		switch(rnd.nextInt(2)) {
-			case 0:
+			case 0: // female
 				female = true;
-			case 1:
+				break;
+			case 1: // male
 				female = false;
+				break;
 		}
 	}
 
