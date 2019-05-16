@@ -42,6 +42,7 @@ public abstract class Host {
 	protected Envelope infection_area;
 	protected InfectionZone infection_zone;
 	protected int num_infecting_ticks;
+	protected ArrayList<Tick> tick_list;
 	
 	public Host() {
 		this.name = "No name";	
@@ -54,6 +55,7 @@ public abstract class Host {
 		this.name = name;
 		this.num_infecting_ticks = 0;
 		this.is_infected = false;
+		tick_list = new ArrayList<Tick>();
 	}
 	
 	@ScheduledMethod(start = 0)
@@ -83,18 +85,20 @@ public abstract class Host {
 	}
 	
 	public int getNumTicks() {
-		return num_infecting_ticks;
+		return tick_list.size();
 	}
 	
-	public void decreaseNumTicks () {
-		if (num_infecting_ticks > 0) {
-			num_infecting_ticks--;
-			return;
-		}
-		else {
-			System.out.println(name + ": Tried to decrement number of ticks below 0!");
-		}
+	public ArrayList<Tick> get_ticks() {
+		return tick_list;
 	}
+	
+	public void add_tick(Tick tick) {
+		tick_list.add(tick);
+	}
+	public void remove_tick(Tick tick) {
+		tick_list.remove(tick);
+	}
+	
 	
 	// TODO: See if possible to access individual elements added to Context to find boundary
 	//		 without having to pass in through constructor
