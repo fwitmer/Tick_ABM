@@ -110,7 +110,8 @@ public abstract class Host {
 	
 	// Return Coordinate of Host agent used for attaching other agents
 	public Coordinate getCoord() {
-		return geography.getGeometry(this).getCoordinate();
+		Coordinate coord = new Coordinate(geography.getGeometry(this).getCoordinate());
+		return coord;
 	}
 	
 	public Point getPoint() {
