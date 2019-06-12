@@ -36,6 +36,7 @@ public abstract class Tick {
 	protected int NYMPH_LENGTH;
 	protected int ADULT_LENGTH;
 	protected int lifecycle_counter;
+	protected boolean has_fed;
 	
 	public Tick(String name) {
 		this.name = name;
@@ -133,22 +134,39 @@ public abstract class Tick {
 		switch (life_stage) {
 			case "egg":
 				if (lifecycle_counter > EGG_LENGTH) {
-					hatch();
+					if (has_fed) {
+						hatch();
+						return;
+					}
+					else
+						die();
 				}
 				break;
 			case "larva":
 				if (lifecycle_counter > LARVA_LENGTH) {
-					molt();
+					if (has_fed) {
+						molt();
+					}
+					else
+						die();
 				}
 				break;
 			case "nymph":
 				if (lifecycle_counter > NYMPH_LENGTH) {
-					molt();
+					if (has_fed) {
+						molt();
+					}
+					else
+						die();
 				}
 				break;
 			case "adult":
 				if (lifecycle_counter > ADULT_LENGTH) {
-					mate();
+					if (has_fed) {
+						mate();
+					}
+					else
+						die();
 				}
 				break;
 			default:
