@@ -12,9 +12,9 @@ public class IxPacificus extends Tick {
 		super(name);
 		set_attach_length(7);
 		set_attach_delay(20);
-		EGG_LENGTH = 90;
-		LARVA_LENGTH = 270;
-		NYMPH_LENGTH = 360;
+		EGG_LENGTH = 365;
+		LARVA_LENGTH = 365;
+		NYMPH_LENGTH = 270;
 		ADULT_LENGTH = 90;
 		
 		
