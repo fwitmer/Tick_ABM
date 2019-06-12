@@ -134,39 +134,43 @@ public abstract class Tick {
 		switch (life_stage) {
 			case "egg":
 				if (lifecycle_counter > EGG_LENGTH) {
-					if (has_fed) {
-						hatch();
-						return;
-					}
-					else
-						die();
+					hatch();
+					break;
 				}
 				break;
 			case "larva":
 				if (lifecycle_counter > LARVA_LENGTH) {
 					if (has_fed) {
 						molt();
+						break;
 					}
 					else
 						die();
+						break;
 				}
 				break;
 			case "nymph":
 				if (lifecycle_counter > NYMPH_LENGTH) {
 					if (has_fed) {
 						molt();
+						break;
 					}
-					else
+					else {
 						die();
+						break;
+					}
 				}
 				break;
 			case "adult":
 				if (lifecycle_counter > ADULT_LENGTH) {
 					if (has_fed) {
 						mate();
+						break;
 					}
-					else
+					else {
 						die();
+						break;
+					}
 				}
 				break;
 			default:
