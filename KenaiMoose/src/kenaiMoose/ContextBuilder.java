@@ -36,6 +36,7 @@ import repast.simphony.space.graph.Network;
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
 	int numMoose = 100;
 	int numTicks = 1000;
+	int numVoles = 100;
 	
 	public Context build(Context context) {
 		System.setProperty("org.geotools.referencing.forceXY", "true"); // suppress warnings caused by the visualized environment
@@ -60,6 +61,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
 		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numTicks);
+		List<Coordinate> voleCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numVoles);
 		
 		GridCoverage2D elev_coverage = null;
 		GridCoverage2D landuse_coverage = null;
@@ -141,6 +143,19 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			cnt++;
 		}
 		System.out.println(cnt + " Tick agents created.");
+		
+		//creating Vole agents 
+		cnt = 0;
+		for (Coordinate coord : voleCoords) {
+			Vole vole = new Vole("Vole" + cnt);
+			context.add(vole);
+			
+			Point pnt = geoFac.createPoint(coord); //making point geometry for Vole agent
+			geography.move(vole, pnt);
+			cnt++;
+		}
+		
+
 		
 		// Loading shapefile features for visualization
 		loadFeatures("data/KenaiWatershed3D_projected.shp", context, geography);
