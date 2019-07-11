@@ -128,6 +128,8 @@ public class Moose extends Host {
 					break;
 			}
 			x = 0;
+			
+			// TODO: Look into teleporting water behavior and reflect 180º if proper solution can't be found.
 			while (isWater(test_coord)) {
 				geography.move(this, prev_point); // moving back to start
 				switch (left_or_right) {
