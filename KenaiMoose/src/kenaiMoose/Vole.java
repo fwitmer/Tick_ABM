@@ -27,13 +27,13 @@ public class Vole extends Host {
 	@Override
 	@ScheduledMethod(start=1, interval=1)
 	public void step() {
-		vole_walk();
+		walk();
 		List<Tick> tickList = getTicks();
 		processInfections(tickList);
 		
 	}
 
-	protected void vole_walk() {
+	protected void walk() {
 		//do I need prev Coordinate AND prev Point? 
 		//TODO change boundary behavior
 		
@@ -48,7 +48,7 @@ public class Vole extends Host {
 		
 		//check if we are in boundary and not in water 
 		if(!newPoint.within(boundary) || isWater(new_coord)) {
-			System.out.println("Invalid move");
+			System.out.println("Movement adjustment: " + this.name);
 		}
 		
 		// Create a new point to move to figure out appropriate value for nextDouble
@@ -63,10 +63,5 @@ public class Vole extends Host {
 		
 	}
 	
-	@Override
-	protected void walk() {
-		// don't need this in Vole? Should it be removed from Host eventually?
-		
-	}
 
 }
