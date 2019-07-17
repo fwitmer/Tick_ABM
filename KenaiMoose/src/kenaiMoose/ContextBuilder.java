@@ -28,6 +28,8 @@ import com.vividsolutions.jts.geom.Polygon;
 import repast.simphony.context.Context;
 import repast.simphony.context.space.gis.GeographyFactoryFinder;
 import repast.simphony.context.space.graph.NetworkBuilder;
+import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.essentials.RepastEssentials;
 import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
@@ -40,6 +42,9 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	
 	public Context build(Context context) {
 		System.setProperty("org.geotools.referencing.forceXY", "true"); // suppress warnings caused by the visualized environment
+		RunEnvironment.getInstance().endAt(1825); // scheduling runs to end after 5 years worth of ticks
+		RunEnvironment.getInstance().getCurrentSchedule().getTickCount(); // use to get run's current tick count
+		RepastEssentials.GetTickCount(); // another method of getting tick count
 		// Creating Geography projection for Moose vectors
 		GeographyParameters geoParams = new GeographyParameters();
 		geoParams.setCrs("EPSG:4269"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)
