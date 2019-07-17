@@ -2,5 +2,28 @@
 <parameters>
 
 	<parameter name="randomSeed" displayName="Default Random Seed" type="int" defaultValue="__NULL__" />
+	
+	<parameter name="tick_count" displayName="Tick Count" type="int" 
+		isReadOnly="false"
+		defaultValue="10" 
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" 
+	/>
+	
+	<parameter name="large_host_count" displayName="Large Host Count" type="int"
+		isReadOnly="false"
+		defaultValue="200"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+	/>
+	
+	<parameter name="small_host_count" displayName="Small Host Count" type="int"
+		isReadOnly="false"
+		defaultValue="200"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+	/>
+	
+	<parameter name="tick_lifestage" displayName="Tick Life Stage" type="string"
+		isReadOnly="false"
+		defaultValue="egg"
+	/>
 
 </parameters>
