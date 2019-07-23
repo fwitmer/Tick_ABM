@@ -169,7 +169,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		return context;
 	}
 	
-	// Load GeoTiff rasters and conver to a 2DGridCoverage to be returned
+	// Load GeoTiff rasters and convert to a 2DGridCoverage to be returned
 	// NOTE: May work with other filetypes with varying effect
 	//       Rasters must contain appropriate worldfile for proper positioning in geography projection
 	private GridCoverage2D loadRaster(String filename, Context context) throws IOException {
