@@ -107,7 +107,7 @@ public class VoleStyle implements MarkStyle<Vole> {
 	// Specify the size of designated image on GIS 3D display
 	@Override
 	public double getScale(Vole agent) {
-			return 0.08;
+			return 0.04;
 	}
 
 	@Override
