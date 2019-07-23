@@ -9,13 +9,13 @@
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" 
 	/>
 	
-	<parameter name="large_host_count" displayName="Large Host Count" type="int"
+	<parameter name="large_host_density" displayName="Large Host Density" type="int"
 		isReadOnly="false"
 		defaultValue="200"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 	/>
 	
-	<parameter name="small_host_count" displayName="Small Host Count" type="int"
+	<parameter name="small_host_density" displayName="Small Host Density" type="int"
 		isReadOnly="false"
 		defaultValue="200"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
@@ -24,6 +24,11 @@
 	<parameter name="tick_lifestage" displayName="Tick Life Stage" type="string"
 		isReadOnly="false"
 		defaultValue="egg"
+	/>
+	
+	<parameter name="habitat_suitability_layer" displayName="Tick Habitat Suitability Raster" type="string"
+		isReadOnly="false"
+		defaultValue=""
 	/>
 
 </parameters>
