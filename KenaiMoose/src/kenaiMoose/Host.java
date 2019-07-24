@@ -125,12 +125,14 @@ public abstract class Host {
 	}
 	
 	// Generate InfectionZone agent around Host
-	protected void addBuffer(double infection_radius) {
+	protected Geometry addBuffer(double infection_radius) {
 		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
 		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
 		infection_zone = new InfectionZone();
 		context.add(infection_zone);
 		geography.move(infection_zone, infection_geom);
+		
+		return infection_geom;
 	}
 	
 	// Return List of Ticks found within infection_area Envelope
