@@ -125,6 +125,7 @@ public abstract class Host {
 	}
 	
 	// Generate InfectionZone agent around Host
+	// returns the Geometry used to create the InfectionZone for use in other methods
 	protected Geometry addBuffer(double infection_radius) {
 		Geometry infection_buffer = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), infection_radius);
 		Geometry infection_geom = geoFac.createGeometry(infection_buffer);
