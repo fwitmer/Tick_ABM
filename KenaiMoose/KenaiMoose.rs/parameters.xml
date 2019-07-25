@@ -9,13 +9,13 @@
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" 
 	/>
 	
-	<parameter name="large_host_density" displayName="Large Host Density" type="int"
+	<parameter name="large_host_density" displayName="Large Host Density (per sq. kilometer)" type="int"
 		isReadOnly="false"
 		defaultValue="200"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 	/>
 	
-	<parameter name="small_host_density" displayName="Small Host Density" type="int"
+	<parameter name="small_host_density" displayName="Small Host Density (100 per sq. kilometer)" type="int"
 		isReadOnly="false"
 		defaultValue="200"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
