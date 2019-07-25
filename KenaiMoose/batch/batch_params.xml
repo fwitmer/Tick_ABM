@@ -1,3 +1,1 @@
-<?xml version="1.0"?>
-<sweep runs="1">
-</sweep>
+<?xml version="1.0" ?><sweep runs="1"><parameter name="tick_lifestage" type="list" value_type="java.lang.String" values="&quot;larva&quot; &quot;nymph&quot; &quot;adult&quot;"><parameter name="large_host_density" type="list" value_type="int" values="2 3 4"><parameter name="habitat_suitability_layer" type="list" value_type="java.lang.String" values="&quot;filenameofraster&quot;"><parameter name="tick_count" type="number" number_type="int" start="1" end="10" step="1"><parameter name="small_host_density" type="list" value_type="int" values="20 50 100"></parameter></parameter></parameter></parameter></parameter></sweep>

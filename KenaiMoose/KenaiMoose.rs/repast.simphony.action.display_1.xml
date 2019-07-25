@@ -1,30 +1,52 @@
-<repast.simphony.gis.visualization.engine.GISDisplayDescriptor simphonyVersion="2.5.0">
+<repast.simphony.gis.visualization.engine.GISDisplayDescriptor simphonyVersion="2.6.0">
   <name>GIS 3D</name>
   <type>GIS 3D</type>
   <styles>
     <entry>
+      <string>kenaiMoose.Vole</string>
+      <string>kenaiMoose.VoleStyle</string>
+    </entry>
+    <entry>
       <string>kenaiMoose.Moose</string>
-      <string>repast.simphony.visualization.gis3D.style.DefaultMarkStyle</string>
+      <string>kenaiMoose.MooseStyle</string>
+    </entry>
+    <entry>
+      <string>kenaiMoose.InfectionZone</string>
+      <string>kenaiMoose.InfectionZoneStyle</string>
+    </entry>
+    <entry>
+      <string>kenaiMoose.BoundaryZone</string>
+      <string>kenaiMoose.BoundaryZoneStyle</string>
+    </entry>
+    <entry>
+      <string>kenaiMoose.IxPacificus</string>
+      <string>kenaiMoose.TickStyle</string>
     </entry>
   </styles>
   <editedStyles>
     <entry>
+      <string>kenaiMoose.Vole</string>
+      <null/>
+    </entry>
+    <entry>
       <string>kenaiMoose.Moose</string>
       <null/>
     </entry>
-  </editedStyles>
-  <netStyles>
     <entry>
-      <string>infection network</string>
-      <string>repast.simphony.visualization.gis3D.style.DefaultNetworkStyleGIS</string>
-    </entry>
-  </netStyles>
-  <editedNetStyles>
-    <entry>
-      <string>infection network</string>
+      <string>kenaiMoose.InfectionZone</string>
       <null/>
     </entry>
-  </editedNetStyles>
+    <entry>
+      <string>kenaiMoose.BoundaryZone</string>
+      <null/>
+    </entry>
+    <entry>
+      <string>kenaiMoose.IxPacificus</string>
+      <null/>
+    </entry>
+  </editedStyles>
+  <netStyles/>
+  <editedNetStyles/>
   <frequency>ON_NEW</frequency>
   <schedParams>
     <start>1.0</start>
@@ -33,21 +55,29 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-1353253111</hashCode>
+    <hashCode>1333169990</hashCode>
   </schedParams>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>infection network</string>
-      <int>1</int>
+      <string>kenaiMoose.Vole</string>
+      <int>0</int>
     </entry>
     <entry>
       <string>kenaiMoose.Moose</string>
+      <int>3</int>
+    </entry>
+    <entry>
+      <string>kenaiMoose.InfectionZone</string>
       <int>2</int>
     </entry>
     <entry>
-      <string>i-cubed Landsat</string>
-      <int>0</int>
+      <string>kenaiMoose.BoundaryZone</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>kenaiMoose.IxPacificus</string>
+      <int>4</int>
     </entry>
   </layerOrder>
   <projections>
@@ -56,20 +86,8 @@
       <attributes/>
       <type>geography</type>
     </repast.simphony.scenario.data.ProjectionData>
-    <repast.simphony.scenario.data.ProjectionData>
-      <id>infection network</id>
-      <attributes/>
-      <type>network</type>
-    </repast.simphony.scenario.data.ProjectionData>
   </projections>
   <projectionDescriptors>
-    <entry>
-      <string>infection network</string>
-      <repast.simphony.visualization.engine.DefaultProjectionDescriptor>
-        <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData[2]"/>
-        <props/>
-      </repast.simphony.visualization.engine.DefaultProjectionDescriptor>
-    </entry>
     <entry>
       <string>Kenai</string>
       <repast.simphony.visualization.gis.GisProjectionDescriptor>
@@ -85,12 +103,28 @@
     <blue>255</blue>
     <alpha>255</alpha>
   </backgroundColor>
-  <renderQuality>MEDIUM</renderQuality>
+  <renderQuality>HIGH</renderQuality>
   <viewType>FLAT</viewType>
   <trackAgents>false</trackAgents>
   <globeLayers>
     <entry>
+      <string>Blue Marble May 2004</string>
+      <boolean>false</boolean>
+    </entry>
+    <entry>
+      <string>Scale bar</string>
+      <boolean>false</boolean>
+    </entry>
+    <entry>
+      <string>Compass</string>
+      <boolean>false</boolean>
+    </entry>
+    <entry>
       <string>i-cubed Landsat</string>
+      <boolean>true</boolean>
+    </entry>
+    <entry>
+      <string>USGS Topo Base Map</string>
       <boolean>false</boolean>
     </entry>
   </globeLayers>

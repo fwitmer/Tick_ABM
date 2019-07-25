@@ -1,4 +1,6 @@
 <context id="KenaiMoose" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://repast.org/scenario/context">
   	<projection type="geography" id="Kenai" />
-  	<projection type="network" id="infection network" />
+  	
+  	<projection type="network" id="Infection Network" />
+  	
 </context>
