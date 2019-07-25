@@ -153,11 +153,27 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		cnt = 0;
 		for (Coordinate coord : voleCoords) {
 			Vole vole = new Vole("Vole" + cnt);
-			context.add(vole);
+			context.add(vole); //add each new agent to the context
 			
-			Point pnt = geoFac.createPoint(coord); //making point geometry for Vole agent
+			// Preparing to check for creation in water
+			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+	        int[] sample = (int[]) landuse_coverage.evaluate(position);
+	        sample = landuse_coverage.evaluate(position, sample);
+			
+	        // Checking for creation in water - if in water, keep creating new Coordinates until one is found not in water
+	        while (sample[0] == 11 || sample[0] == 12) {
+	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
+	        	coord = new_coord.get(0);
+        		position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+        		sample = landuse_coverage.evaluate(position, sample);
+	        }	
+			
+	      //making point geometry for agent and moving it there
+			Point pnt = geoFac.createPoint(coord); 
 			geography.move(vole, pnt);
 			cnt++;
+			
+			//TODO set boundary here? Same as moose boundary, what about buffer as a boundary?
 		}
 		
 
