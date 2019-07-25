@@ -32,11 +32,11 @@ public class Moose extends Host {
 	// Establishing random moves for Moose agents
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
-		directional_walk();
+		walk();
 		List<Tick> tickList = getTicks();
 		processInfections(tickList);
 	}
-		
+/*	Random walk	
 	// Logic for checking for proper bounds and raster data for each step
 	protected void walk() {		
 		Coordinate prevLocation = geography.getGeometry(this).getCoordinate(); // Saving previous location to revert back to if out of bounds
@@ -64,8 +64,10 @@ public class Moose extends Host {
 		// Updating InfectionZone
 		updateInfectionZone();
 	}
+*/	
 	
-	protected void directional_walk() {
+	// Directional walk, Moose will move along a loose vector trajectory
+	protected void walk() {
 		
 		// Saving previous Coordinate and Point for reference in case of invalid move
 		Coordinate prev_coord = getCoord();
@@ -113,7 +115,23 @@ public class Moose extends Host {
 		
 		if (isWater(test_coord)) {
 			System.out.println("Water adjustment: " + this.name);
+			geography.move(this,  prev_point);
+			System.out.println("\t Current Point: " + getPoint().toString());
+			if (direction < Math.PI) {
+				direction = direction + Math.PI;
+			}
+			else {
+				direction = direction - Math.PI;
+			}
+			geography.moveByVector(this, 100, direction);
+			test_coord = getCoord();
+			test_point = getPoint();
+			System.out.println("\tDirection: " + direction);
+			System.out.println("\tCoords: " + test_coord.toString());
+			System.out.println("\tPoint: " + test_point.toString());
+			System.out.println("\tOrigin: " + prev_coord.toString());
 			
+			/* commented due to unsolved "teleportation" issue occurring for Moose encountering water barriers
 			int left_or_right = random.nextInt(2); // Pick a direction
 			
 			System.out.println("\tOrigin coords: " + prev_coord.toString());
@@ -128,6 +146,8 @@ public class Moose extends Host {
 					break;
 			}
 			x = 0;
+			
+			// TODO: Look into teleporting water behavior and reflect 180º if proper solution can't be found.
 			while (isWater(test_coord)) {
 				geography.move(this, prev_point); // moving back to start
 				switch (left_or_right) {
@@ -154,7 +174,7 @@ public class Moose extends Host {
 			System.out.println(x + " times.");
 			System.out.println("\tEnding direction: " + Math.toDegrees(direction));
 			System.out.println("\tEnding coord: " + getCoord());
-			
+			*/
 		}
 		
 		geography.move(this, test_point);

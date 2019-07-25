@@ -1,6 +1,7 @@
-/bin/
-/velocity.log.1
-/velocity.log
-/debug.log
-/debug.log.1
-/Repast.settings
+bin/
+velocity.log.1
+velocity.log
+debug.log
+debug.log.1
+Repast.settings
+.DS_Store

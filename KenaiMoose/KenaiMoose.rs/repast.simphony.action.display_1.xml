@@ -3,6 +3,10 @@
   <type>GIS 3D</type>
   <styles>
     <entry>
+      <string>kenaiMoose.Vole</string>
+      <string>kenaiMoose.VoleStyle</string>
+    </entry>
+    <entry>
       <string>kenaiMoose.Moose</string>
       <string>kenaiMoose.MooseStyle</string>
     </entry>
@@ -20,6 +24,10 @@
     </entry>
   </styles>
   <editedStyles>
+    <entry>
+      <string>kenaiMoose.Vole</string>
+      <null/>
+    </entry>
     <entry>
       <string>kenaiMoose.Moose</string>
       <null/>
@@ -47,25 +55,29 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-1056096253</hashCode>
+    <hashCode>1333169990</hashCode>
   </schedParams>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>kenaiMoose.Moose</string>
-      <int>2</int>
-    </entry>
-    <entry>
-      <string>kenaiMoose.InfectionZone</string>
-      <int>1</int>
-    </entry>
-    <entry>
-      <string>kenaiMoose.BoundaryZone</string>
+      <string>kenaiMoose.Vole</string>
       <int>0</int>
     </entry>
     <entry>
-      <string>kenaiMoose.IxPacificus</string>
+      <string>kenaiMoose.Moose</string>
       <int>3</int>
+    </entry>
+    <entry>
+      <string>kenaiMoose.InfectionZone</string>
+      <int>2</int>
+    </entry>
+    <entry>
+      <string>kenaiMoose.BoundaryZone</string>
+      <int>1</int>
+    </entry>
+    <entry>
+      <string>kenaiMoose.IxPacificus</string>
+      <int>4</int>
     </entry>
   </layerOrder>
   <projections>
