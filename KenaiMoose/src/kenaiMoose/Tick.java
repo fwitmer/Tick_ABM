@@ -58,6 +58,18 @@ public abstract class Tick {
 		*/
 	}
 	
+	//additional constructor for defining initial life stage
+	public Tick(String name, String life_stage) {
+		this.name = name;
+		this.life_stage = life_stage;
+		lifecycle_counter = 0;
+		attach_count = 0;
+		delay_count = 0;
+		attached = false;
+		host = null;
+		delayed = false;
+	}
+	
 	@ScheduledMethod(start = 0)
 	public void init() {
 		context = ContextUtils.getContext(this);
