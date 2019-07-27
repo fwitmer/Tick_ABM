@@ -149,11 +149,11 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		}
 		System.out.println(cnt + " Tick agents created.");
 		
-		//creating Vole agents 
+		//creating SmHost agents 
 		cnt = 0;
 		for (Coordinate coord : voleCoords) {
-			Vole vole = new Vole("Vole" + cnt);
-			context.add(vole); //add each new agent to the context
+			SmHost smHost = new SmHost("SmHost" + cnt);
+			context.add(smHost); //add each new agent to the context
 			
 			// Preparing to check for creation in water
 			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
@@ -170,7 +170,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			
 	      //making point geometry for agent and moving it there
 			Point pnt = geoFac.createPoint(coord); 
-			geography.move(vole, pnt);
+			geography.move(smHost, pnt);
 			cnt++;
 			
 			//TODO set boundary here? Same as moose boundary, what about buffer as a boundary?

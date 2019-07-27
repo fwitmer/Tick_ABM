@@ -43,7 +43,7 @@ public class Moose extends Host {
 		
 		// Attempting to create new random Coordinate and Point from previous location
 		Coordinate coord = new Coordinate(prevLocation.x += RandomHelper.nextDoubleFromTo(-0.0050, 0.0050), 
-				prevLocation.y += RandomHelper.nextDoubleFromTo(-0.0005, 0.0005)); //change these values for Vole
+				prevLocation.y += RandomHelper.nextDoubleFromTo(-0.0005, 0.0005)); //change these values for SmHost
 		Point newPoint = geoFac.createPoint(coord);
 		int stuck_in_water = 0;
 		// Ensuring within bounds and not in water
