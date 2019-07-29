@@ -307,11 +307,20 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		}
 	}
 	
+	// Get moose density from runtime parameters and translate according to boundary area into numbers of moose
 	private int getNumMoose(Parameters params, Geometry boundary) {
 		int moose_density = (Integer) params.getValue("large_host_density");
 		double boundary_area = boundary.getEnvelopeInternal().getArea();
 		// double boundary_area = boundary.getArea(); // produces a different value than above, why?
 		System.out.println("Area of target boundary: " + boundary_area); // what unit is this in?
+		
+		return (int) boundary_area;
+	}
+	
+	// Get small host density from runtime parameters and translate according to boundary area into numbers of small hosts
+	private int getNumSmHost(Parameters params, Geometry boundary) {
+		int small_host_density = (Integer) params.getValue("small_host_density");
+		double boundary_area = boundary.getEnvelopeInternal().getArea();
 		
 		return (int) boundary_area;
 	}
