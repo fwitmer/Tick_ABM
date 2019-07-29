@@ -177,9 +177,10 @@ public abstract class Tick {
 						molt();
 						break;
 					}
-					else
+					else {
 						die();
 						break;
+					}
 				}
 				break;
 			case "nymph":
