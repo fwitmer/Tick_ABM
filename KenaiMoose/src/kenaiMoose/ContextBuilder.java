@@ -31,13 +31,14 @@ import repast.simphony.context.space.graph.NetworkBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.essentials.RepastEssentials;
 import repast.simphony.gis.util.GeometryUtil;
+import repast.simphony.parameter.Parameters;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
 import repast.simphony.space.graph.Network;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
 	int numMoose = 100;
-	int numTicks = 1000;
+	int numTicks = 10;
 	int numVoles = 100;
 	
 	public Context build(Context context) {
@@ -81,7 +82,9 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	catch (IOException e) {
 		System.out.println("Error loading raster.");
 	}
-	
+		
+		Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
+		getNumMoose(params, boundary);
 		/* // example of how RasterLayer would work if supported by context
 		File file = new File(".data/nlcd_GCS_NAD83.tif");
 		RasterLayer landuse_raster = new RasterLayer("NLCD Landuse", file);
@@ -91,8 +94,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		*/
 		
 		// Create Moose agents
-			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
-			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
+		
 		System.out.println("Creating " + numMoose + " Moose agents...");
 		int cnt = 0;
 		for (Coordinate coord : mooseCoords) {
@@ -305,5 +307,12 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		}
 	}
 	
-	
+	private int getNumMoose(Parameters params, Geometry boundary) {
+		int moose_density = (Integer) params.getValue("large_host_density");
+		double boundary_area = boundary.getEnvelopeInternal().getArea();
+		// double boundary_area = boundary.getArea(); // produces a different value than above, why?
+		System.out.println("Area of target boundary: " + boundary_area); // what unit is this in?
+		
+		return (int) boundary_area;
+	}
 }
