@@ -1,5 +1,7 @@
 package kenaiMoose;
 
+import java.util.Random;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -43,6 +45,7 @@ public abstract class Tick {
 	
 	public Tick(String name) {
 		this.name = name;
+		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
 		delay_count = 0;
@@ -61,6 +64,7 @@ public abstract class Tick {
 	public Tick(String name, String life_stage) {
 		this.name = name;
 		this.life_stage = life_stage;
+		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
 		delay_count = 0;
@@ -143,6 +147,20 @@ public abstract class Tick {
 		//System.out.println(name + " detached from " + host.getName());
 		host = null;
 	}
+	
+	// set male or female
+	private void determine_sex() {
+		Random rnd = new Random();
+		switch(rnd.nextInt(2)) {
+			case 0: // female
+				female = true;
+				break;
+			case 1: // male
+				female = false;
+				break;
+		}
+	}
+	
 	// determine what to do and update lifecycle counter
 	private void lifecycle() {
 		lifecycle_counter++;
