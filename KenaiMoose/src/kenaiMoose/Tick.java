@@ -32,13 +32,10 @@ public abstract class Tick {
 	protected boolean female;  // true if tick is female
 	protected String life_stage; // holder state in life stage
 	protected int EGG_LENGTH; // average length of time before egg hatches
-	protected int EGG_STD_DEV; // standard deviation of egg hatching time
 	protected int LARVA_LENGTH; // average length of time before larval mortality
-	protected int LARVA_STD_DEV; //standard deviation for larval mortality
+	protected int LARVA_FEED_LENGTH;
 	protected int NYMPH_LENGTH; // average length of time before nympth mortality
-	protected int NYMPH_STD_DEV; // standard deviation for nymph mortality
 	protected int ADULT_LENGTH; // average length of time before adult mortality
-	protected int ADULT_STD_DEV; // standard deviation for adult mortality
 	protected int lifecycle_counter; // basic counter used to count steps in all stages of lifecycle behaviors
 	protected boolean has_fed; // marker for whether or not tick has successfully fed at current life stage
 	
