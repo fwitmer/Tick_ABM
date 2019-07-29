@@ -95,6 +95,8 @@ public class Moose extends Host {
 			System.out.println("Boundary adjustment: " + this.name);
 			geography.move(this, prev_point); // moving back to start
 			System.out.println("\tCurrent Point: " + getPoint().toString());
+			removeTicks();
+			System.out.println("\tTicks detached and deleted.");
 			if (direction < Math.PI) {
 				direction = direction + Math.PI;
 			}
@@ -180,5 +182,12 @@ public class Moose extends Host {
 		geography.move(this, test_point);
 		updateInfectionZone();
 	} 
+	
+	protected void removeTicks() {
+		for (Tick tick : this.tick_list) {
+			tick.detach();
+			tick.die();
+		}
+	}
 	
 }
