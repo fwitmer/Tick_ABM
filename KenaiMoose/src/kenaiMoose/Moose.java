@@ -118,7 +118,7 @@ public class Moose extends Host {
 		if (isWater(test_coord)) {
 			System.out.println("Water adjustment: " + this.name);
 			geography.move(this,  prev_point);
-			System.out.println("\t Current Point: " + getPoint().toString());
+			System.out.println("\tCurrent Point: " + getPoint().toString());
 			if (direction < Math.PI) {
 				direction = direction + Math.PI;
 			}
