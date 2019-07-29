@@ -176,10 +176,8 @@ public abstract class Host {
 	protected void processInfections(List<Tick> tickList) {
 		if (tickList.size() > 0) {
 			for (Tick tick : tickList) {
-				if (!tick.isDelayed()) {
-					tick.attach(this);
-					num_infecting_ticks++;
-				}
+				tick.attach(this);
+				num_infecting_ticks++;
 			}
 		}
 		// Update color of InfectionZone based on infections

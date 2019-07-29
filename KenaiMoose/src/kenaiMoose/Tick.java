@@ -25,8 +25,8 @@ public abstract class Tick {
 	protected boolean attached;
 	protected int attach_count;
 	protected int attach_length; // must be defined by derived class
-	protected boolean delayed;
-	protected int delay_count;
+	//protected boolean delayed;
+	//protected int delay_count;
 	protected int attach_delay; // must be defined by derived class
 	protected Host host;
 	
@@ -48,10 +48,11 @@ public abstract class Tick {
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
-		delay_count = 0;
+		//delay_count = 0;
+		//delayed = false;
 		attached = false;
 		host = null;
-		delayed = false;
+		has_fed = false;
 		life_stage = "egg";
 	
 		/* For testing Tick base class
@@ -67,10 +68,11 @@ public abstract class Tick {
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
-		delay_count = 0;
+		//delay_count = 0;
+		//delayed = false;
 		attached = false;
 		host = null;
-		delayed = false;
+		has_fed = false;
 	}
 	
 	@ScheduledMethod(start = 0)
@@ -95,7 +97,7 @@ public abstract class Tick {
 			}
 			attach_count++;
 		}
-		// check if Tick has attachment delay after detaching
+		/* check if Tick has attachment delay after detaching
 		else if(delayed) {
 			if (delay_count >= attach_delay) {
 				delayed = false;
@@ -103,7 +105,7 @@ public abstract class Tick {
 				return;
 			}
 			delay_count++;
-		}
+		} */
 		
 	}
 	
@@ -118,10 +120,10 @@ public abstract class Tick {
 	public boolean isAttached() {
 		return attached;
 	}
-	
+	/*
 	public boolean isDelayed() {
 		return delayed;
-	}
+	} */
 	
 	public boolean isFemale() {
 		return female;
@@ -130,7 +132,7 @@ public abstract class Tick {
 	
 	// Logic for attaching to Host, expected to be called by the Host to be infected
 	public void attach(Host host) {
-		if (!delayed) {
+		if (!has_fed) {
 			attached = true;
 			this.host = host;
 			host.add_tick(this);
@@ -141,7 +143,7 @@ public abstract class Tick {
 	// Logic for detaching from Host
 	public void detach() {
 		attached = false;
-		delayed = true;
+		//delayed = true;
 		attach_count = 0;
 		host.remove_tick(this);
 		//System.out.println(name + " detached from " + host.getName());
