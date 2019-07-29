@@ -33,9 +33,11 @@ public abstract class Tick {
 	protected String life_stage; // holder state in life stage
 	protected int EGG_LENGTH; // average length of time before egg hatches
 	protected int LARVA_LENGTH; // average length of time before larval mortality
-	protected int LARVA_FEED_LENGTH;
+	protected int LARVA_FEED_LENGTH; // larval length of attachment for feeding
 	protected int NYMPH_LENGTH; // average length of time before nympth mortality
+	protected int NYMPH_FEED_LENGTH; // nymphal length of attachment for feeding
 	protected int ADULT_LENGTH; // average length of time before adult mortality
+	protected int ADULT_FEED_LENGTH; // adult length of attachment for feeding (females only)
 	protected int lifecycle_counter; // basic counter used to count steps in all stages of lifecycle behaviors
 	protected boolean has_fed; // marker for whether or not tick has successfully fed at current life stage
 	
