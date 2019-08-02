@@ -1,5 +1,6 @@
 package kenaiMoose;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -7,7 +8,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
 
 import repast.simphony.engine.schedule.ScheduledMethod;
-import repast.simphony.random.RandomHelper;
 
 public class Moose extends Host {
 	private double direction; // The mean direction for drawing Gaussian randoms
@@ -95,7 +95,8 @@ public class Moose extends Host {
 			System.out.println("Boundary adjustment: " + this.name);
 			geography.move(this, prev_point); // moving back to start
 			System.out.println("\tCurrent Point: " + getPoint().toString());
-			removeTicks();
+			ArrayList<Tick> tick_list_copy = tick_list;
+			removeTicks(tick_list_copy);
 			System.out.println("\tTicks detached and deleted.");
 			if (direction < Math.PI) {
 				direction = direction + Math.PI;
@@ -183,8 +184,8 @@ public class Moose extends Host {
 		updateInfectionZone();
 	} 
 	
-	protected void removeTicks() {
-		for (Tick tick : this.tick_list) {
+	protected void removeTicks(ArrayList<Tick> ticks) {
+		for (Tick tick : ticks) {
 			tick.detach();
 			tick.die();
 		}
