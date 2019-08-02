@@ -1,6 +1,7 @@
 package kenaiMoose;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -185,10 +186,17 @@ public class Moose extends Host {
 	} 
 	
 	protected void removeTicks(ArrayList<Tick> ticks) {
-		for (Tick tick : ticks) {
-			tick.detach();
-			tick.die();
+		
+		//Using an iterator to remove ticks. iterator.remove() is the only safe way to modify collection while iterating
+		//This avoids the ConcurrentModification Exception
+		for (Iterator<Tick> iterator = ticks.iterator(); iterator.hasNext();) {
+		    Tick tick = iterator.next();
+		    if (tick.attached) {
+		    	System.out.println("Removing tick" + tick.name + "due to Moose leaving boundary");
+		        iterator.remove();
+		    }
 		}
+		
 	}
 	
 }
