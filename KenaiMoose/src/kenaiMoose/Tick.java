@@ -225,12 +225,14 @@ public abstract class Tick {
 	// TODO: utilize habitat suitability to determine molting behavior
 	private void molt() {
 		lifecycle_counter = 0;
+		has_fed = false;
 		switch(life_stage) {
 			case "larva":
 				life_stage = "nymph";
 				break;
 			case "nymph":
 				life_stage = "adult";
+				break;
 		}
 	}
 	
