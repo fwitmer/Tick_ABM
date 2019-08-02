@@ -192,8 +192,9 @@ public class Moose extends Host {
 		for (Iterator<Tick> iterator = ticks.iterator(); iterator.hasNext();) {
 		    Tick tick = iterator.next();
 		    if (tick.attached) {
-		    	System.out.println("Removing tick" + tick.name + "due to Moose leaving boundary");
+		    	System.out.println("Removing " + tick.name + " due to Moose leaving boundary");
 		        iterator.remove();
+		        tick.die();
 		    }
 		}
 		
