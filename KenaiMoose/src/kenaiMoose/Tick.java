@@ -75,6 +75,14 @@ public abstract class Tick {
 		has_fed = false;
 	}
 	
+	//---IN TESTING methods for gathering data sets
+	
+	public String getLifeStage() {
+		return life_stage;
+	}
+	
+	//---
+	
 	@ScheduledMethod(start = 0)
 	public void init() {
 		context = ContextUtils.getContext(this);

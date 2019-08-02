@@ -65,6 +65,15 @@ public abstract class Host {
 		geography = (Geography)context.getProjection("Kenai");
 	}
 	
+	//---IN TESTING, methods for gathering data sets
+	
+	public int getNumInfectingTicks() {
+		return num_infecting_ticks;
+	}
+	
+	
+	//---
+	
 	public static void setBoundary(Geometry boundary) {
 		Host.boundary = boundary;
 	}

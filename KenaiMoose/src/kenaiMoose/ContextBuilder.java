@@ -38,8 +38,8 @@ import repast.simphony.space.graph.Network;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
 	int numMoose = 100;
-	int numTicks = 10;
-	int numVoles = 100;
+	int numTicks = 1000;
+	int numSmHost = 100;
 	
 	public Context build(Context context) {
 		System.setProperty("org.geotools.referencing.forceXY", "true"); // suppress warnings caused by the visualized environment
@@ -67,7 +67,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
 		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numTicks);
-		List<Coordinate> voleCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numVoles);
+		List<Coordinate> smHostCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numSmHost);
 		
 		GridCoverage2D elev_coverage = null;
 		GridCoverage2D landuse_coverage = null;
@@ -153,7 +153,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		//creating SmHost agents 
 		cnt = 0;
-		for (Coordinate coord : voleCoords) {
+		for (Coordinate coord : smHostCoords) {
 			SmHost smHost = new SmHost("SmHost" + cnt);
 			context.add(smHost); //add each new agent to the context
 			
@@ -174,8 +174,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			Point pnt = geoFac.createPoint(coord); 
 			geography.move(smHost, pnt);
 			cnt++;
-			
-			//TODO set boundary here? Same as moose boundary, what about buffer as a boundary?
 		}
 		
 
