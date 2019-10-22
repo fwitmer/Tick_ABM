@@ -53,8 +53,6 @@ public abstract class Tick {
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
-		//delay_count = 0;
-		//delayed = false;
 		attached = false;
 		host = null;
 		has_fed = false;
@@ -73,8 +71,6 @@ public abstract class Tick {
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
-		//delay_count = 0;
-		//delayed = false;
 		attached = false;
 		host = null;
 		has_fed = false;
@@ -104,15 +100,6 @@ public abstract class Tick {
 			}
 			attach_count++;
 		}
-		/* check if Tick has attachment delay after detaching
-		else if(delayed) {
-			if (delay_count >= attach_delay) {
-				delayed = false;
-				delay_count = 0;
-				return;
-			}
-			delay_count++;
-		} */
 		
 	}
 	
@@ -154,7 +141,6 @@ public abstract class Tick {
 	// Logic for detaching from Host
 	public void detach() {
 		attached = false;
-		//delayed = true;
 		attach_count = 0;
 		host.remove_tick(this);
 		//System.out.println(name + " detached from " + host.getName());
@@ -179,46 +165,16 @@ public abstract class Tick {
 		lifecycle_counter++;
 		switch (life_stage) {
 			case "egg":
-				if (lifecycle_counter > EGG_LENGTH) {
-					hatch();
-					break;
-				}
+				
 				break;
 			case "larva":
-				if (lifecycle_counter > LARVA_LENGTH) {
-					if (has_fed) {
-						molt();
-						break;
-					}
-					else {
-						die();
-						break;
-					}
-				}
+			
 				break;
 			case "nymph":
-				if (lifecycle_counter > NYMPH_LENGTH) {
-					if (has_fed) {
-						molt();
-						break;
-					}
-					else {
-						die();
-						break;
-					}
-				}
+			
 				break;
 			case "adult":
-				if (lifecycle_counter > ADULT_LENGTH) {
-					if (has_fed) {
-						mate();
-						break;
-					}
-					else {
-						die();
-						break;
-					}
-				}
+				
 				break;
 			default:
 				System.out.println("\tLife cycle error: " + name + " has invalid life stage. Removing agent.");
