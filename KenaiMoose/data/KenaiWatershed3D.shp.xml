@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<metadata xml:lang="en"><Esri><CreaDate>20181023</CreaDate><CreaTime>11472100</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce><DataProperties><lineage><Process ToolSource="c:\program files (x86)\arcgis\desktop10.6\ArcToolbox\Toolboxes\3D Analyst Tools.tbx\InterpolateShape" Date="20181023" Time="114721">InterpolateShape Alaska_NationalElevationDataset_60m_AKALB.tif SCTC_watersheds C:\Users\witmer\Documents\ArcGIS\Watershed3D.shp # 1 BILINEAR DENSIFY 0</Process></lineage></DataProperties></Esri></metadata>
