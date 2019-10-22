@@ -2,6 +2,10 @@ package kenaiMoose;
 
 import java.util.Random;
 
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.geometry.DirectPosition2D;
+import org.opengis.geometry.DirectPosition;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -18,6 +22,7 @@ public abstract class Tick {
 	protected Context context;
 	protected Geography geography;
 	protected GeometryFactory geoFac = new GeometryFactory();
+	protected GridCoverage2D suitability_raster;
 	
 	
 	// variables for behavioral functions
@@ -79,6 +84,8 @@ public abstract class Tick {
 	public void init() {
 		context = ContextUtils.getContext(this);
 		geography = (Geography)context.getProjection("Kenai");
+		suitability_raster = geography.getCoverage("Habitat Suitability");
+		System.out.println(this.name + " habitat sample: " + habitat_sample());
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
@@ -250,5 +257,11 @@ public abstract class Tick {
 		context.remove(this);
 		return;
 	}
-
+	
+	private double habitat_sample() {
+		Coordinate coord = new Coordinate(geography.getGeometry(this).getCoordinate());
+		DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+		double[] sample = (double[]) suitability_raster.evaluate(position);
+		return sample[0];
+	}
 }
