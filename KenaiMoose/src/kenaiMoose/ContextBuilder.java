@@ -15,8 +15,16 @@ import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.geometry.DirectPosition;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -37,20 +45,18 @@ import repast.simphony.space.gis.GeographyParameters;
 import repast.simphony.space.graph.Network;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
-	int numMoose = 100;
-	int numTicks = 10;
-	int numVoles = 100;
 	
 	public Context build(Context context) {
 		System.setProperty("org.geotools.referencing.forceXY", "true"); // suppress warnings caused by the visualized environment
 		RunEnvironment.getInstance().endAt(1825); // scheduling runs to end after 5 years worth of ticks
 		RunEnvironment.getInstance().getCurrentSchedule().getTickCount(); // use to get run's current tick count
 		RepastEssentials.GetTickCount(); // another method of getting tick count
+		Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 		// Creating Geography projection for Moose vectors
 		GeographyParameters geoParams = new GeographyParameters();
 		geoParams.setCrs("EPSG:4269"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)
 		Geography geography = GeographyFactoryFinder.createGeographyFactory(null).createGeography("Kenai", context, geoParams);
-		//geography.setCRS("EPSG:4269"); // Alternate method of setting CRS of projection
+		//geography.setCRS("EPSG:3338"); // Alternate method of setting CRS of projection
 		
 		// Placeholder for infection Network
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("infection network", context, true);
@@ -60,31 +66,43 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		GeometryFactory geoFac = new GeometryFactory();
 		
 		// Establishing Kenai boundary area from shapefile
-		String boundaryFile = "./data/KenaiWatershed3D_projected.shp";
+		String boundaryFile = "./data/KenaiWatershed3D_NAD83.shp";
 		List<SimpleFeature> features = loadFeaturesFromShapefile(boundaryFile);
 		Geometry boundary = (MultiPolygon)features.iterator().next().getDefaultGeometry();
+		
+		int numMoose = getNumAgents(params, boundary, "large_host_density");
+		int numTicks = (Integer) params.getValue("tick_count");
+		int numVoles = getNumAgents(params, boundary, "small_host_density");
+		
 		
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
 		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numTicks);
 		List<Coordinate> voleCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numVoles);
 		
-		GridCoverage2D elev_coverage = null;
 		GridCoverage2D landuse_coverage = null;
+		GridCoverage2D habitat_suitability_coverage = null;
 		
-		// Try to load raster data and add as Coverage layer to geography projection
+		// Load NLCD Landcover Data and add to Geography as a coverage
 	try {
-		elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
 		landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
-		geography.addCoverage("AKALB Elevation", elev_coverage);
 		geography.addCoverage("NLCD Landuse", landuse_coverage);
 	} 
 	catch (IOException e) {
-		System.out.println("Error loading raster.");
+		System.out.println("Error loading NLCD landcover raster.");
 	}
+	
+		/* Where habitat suitability will be loaded 
+	try {
+		habitat_suitability_coverage = loadRaster("./data/habitat_raster.tif", context);
+		geography.addCoverage("Habitat Suitability", habitat_suitability_coverage);
+	}
+	catch (IOException e) {
+		System.out.println("Error loading habitat suitability raster.");
+	}
+	*/
 		
-		Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
-		getNumMoose(params, boundary);
+		
 		/* // example of how RasterLayer would work if supported by context
 		File file = new File(".data/nlcd_GCS_NAD83.tif");
 		RasterLayer landuse_raster = new RasterLayer("NLCD Landuse", file);
@@ -94,7 +112,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		*/
 		
 		// Create Moose agents
-		
 		System.out.println("Creating " + numMoose + " Moose agents...");
 		int cnt = 0;
 		for (Coordinate coord : mooseCoords) {
@@ -119,13 +136,12 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			cnt++;
 		}
 		Host.setBoundary(boundary);
-		System.out.println(cnt + " Moose agents created.");
+		System.out.println(cnt + " Moose agents created.\n");
 		
 		// Create Tick agents
 			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
 		cnt = 0;
-		System.out.println();
 		System.out.println("Creating " + numTicks + " Tick agents...");
 		for (Coordinate coord : tickCoords) {
 			IxPacificus tick = new IxPacificus("Tick " + cnt);
@@ -181,9 +197,9 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 
 		
 		// Loading shapefile features for visualization
-		loadFeatures("data/KenaiWatershed3D_projected.shp", context, geography);
+		loadFeatures("data/KenaiWatershed3D_NAD83.shp", context, geography);
 		
-		
+		//geography.setCRS("EPSG:4269"); // setting CRS to NAD83 GCS for 3D visualization on GUI
 		return context;
 	}
 	
@@ -291,13 +307,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 					context.add(boundary_zone);
 					geography.move(boundary_zone, geom);
 				}
-				//geom = (Polygon)mp.getGeometryN(0);
-				
-				//boundary_zone = new BoundaryZone();
-				
-				//Geometry buffer = GeometryUtil.generateBuffer(geography, geom, 100);
-				//context.add(boundary_zone);
-				//geography.move(boundary_zone, buffer);
 				
 			}
 			// Reporting feature class found if none of the above
@@ -306,22 +315,30 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			}
 		}
 	}
+	private Geometry reproject_geom(Geometry boundary) throws NoSuchAuthorityCodeException, FactoryException, MismatchedDimensionException, TransformException {
+		// Source: https://gis.stackexchange.com/q/134637
+		// Their source: Not sure but it works
+		CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4269"); // NAD 83 GCS
+		CoordinateReferenceSystem destCRS = CRS.decode("EPSG:3338"); // Alaska Albers PCS
+		MathTransform transform = CRS.findMathTransform(sourceCRS, destCRS);
+		return JTS.transform(boundary, transform);
+	}
 	
 	// Get moose density from runtime parameters and translate according to boundary area into numbers of moose
-	private int getNumMoose(Parameters params, Geometry boundary) {
-		int moose_density = (Integer) params.getValue("large_host_density");
-		double boundary_area = boundary.getEnvelopeInternal().getArea();
-		// double boundary_area = boundary.getArea(); // produces a different value than above, why?
-		System.out.println("Area of target boundary: " + boundary_area); // what unit is this in?
-		
-		return (int) boundary_area;
+	private int getNumAgents(Parameters params, Geometry boundary, String which_param) {
+		Geometry reproj_boundary = null;
+		try {
+			reproj_boundary = reproject_geom(boundary);
+		} catch (MismatchedDimensionException | FactoryException | TransformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		double agent_density = (Double) params.getValue(which_param);
+		double boundary_area = reproj_boundary.getArea();
+		System.out.println("Area of target boundary: " + boundary_area + " m^2"); 
+		int numAgents = (int) (agent_density * (boundary_area / 1000000) );
+		if (which_param.equals("small_host_density")) numAgents /= 100;
+		return numAgents;
 	}
 	
-	// Get small host density from runtime parameters and translate according to boundary area into numbers of small hosts
-	private int getNumSmHost(Parameters params, Geometry boundary) {
-		int small_host_density = (Integer) params.getValue("small_host_density");
-		double boundary_area = boundary.getEnvelopeInternal().getArea();
-		
-		return (int) boundary_area;
-	}
 }
