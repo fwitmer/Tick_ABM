@@ -92,15 +92,15 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		System.out.println("Error loading NLCD landcover raster.");
 	}
 	
-		/* Where habitat suitability will be loaded 
+		
 	try {
-		habitat_suitability_coverage = loadRaster("./data/habitat_raster.tif", context);
+		habitat_suitability_coverage = loadRaster("./data/brt_prob_map_NAD83.tif", context);
 		geography.addCoverage("Habitat Suitability", habitat_suitability_coverage);
 	}
 	catch (IOException e) {
 		System.out.println("Error loading habitat suitability raster.");
 	}
-	*/
+	
 		
 		
 		/* // example of how RasterLayer would work if supported by context
