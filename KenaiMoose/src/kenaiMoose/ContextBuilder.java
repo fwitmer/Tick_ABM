@@ -45,15 +45,13 @@ import repast.simphony.space.gis.GeographyParameters;
 import repast.simphony.space.graph.Network;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
-	int numMoose = 100;
-	int numTicks = 10;
-	int numVoles = 100;
 	
 	public Context build(Context context) {
 		System.setProperty("org.geotools.referencing.forceXY", "true"); // suppress warnings caused by the visualized environment
 		RunEnvironment.getInstance().endAt(1825); // scheduling runs to end after 5 years worth of ticks
 		RunEnvironment.getInstance().getCurrentSchedule().getTickCount(); // use to get run's current tick count
 		RepastEssentials.GetTickCount(); // another method of getting tick count
+		Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 		// Creating Geography projection for Moose vectors
 		GeographyParameters geoParams = new GeographyParameters();
 		geoParams.setCrs("EPSG:4269"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)
@@ -71,6 +69,11 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		String boundaryFile = "./data/KenaiWatershed3D_NAD83.shp";
 		List<SimpleFeature> features = loadFeaturesFromShapefile(boundaryFile);
 		Geometry boundary = (MultiPolygon)features.iterator().next().getDefaultGeometry();
+		
+		int numMoose = getNumAgents(params, boundary, "large_host_density");
+		int numTicks = (Integer) params.getValue("tick_count");
+		int numVoles = getNumAgents(params, boundary, "small_host_density");
+		
 		
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
@@ -99,8 +102,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	}
 	*/
 		
-		Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
-		getNumMoose(params, boundary);
 		
 		/* // example of how RasterLayer would work if supported by context
 		File file = new File(".data/nlcd_GCS_NAD83.tif");
@@ -111,7 +112,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		*/
 		
 		// Create Moose agents
-		
 		System.out.println("Creating " + numMoose + " Moose agents...");
 		int cnt = 0;
 		for (Coordinate coord : mooseCoords) {
@@ -136,13 +136,12 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			cnt++;
 		}
 		Host.setBoundary(boundary);
-		System.out.println(cnt + " Moose agents created.");
+		System.out.println(cnt + " Moose agents created.\n");
 		
 		// Create Tick agents
 			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
 		cnt = 0;
-		System.out.println();
 		System.out.println("Creating " + numTicks + " Tick agents...");
 		for (Coordinate coord : tickCoords) {
 			IxPacificus tick = new IxPacificus("Tick " + cnt);
@@ -308,13 +307,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 					context.add(boundary_zone);
 					geography.move(boundary_zone, geom);
 				}
-				//geom = (Polygon)mp.getGeometryN(0);
-				
-				//boundary_zone = new BoundaryZone();
-				
-				//Geometry buffer = GeometryUtil.generateBuffer(geography, geom, 100);
-				//context.add(boundary_zone);
-				//geography.move(boundary_zone, buffer);
 				
 			}
 			// Reporting feature class found if none of the above
@@ -324,14 +316,16 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		}
 	}
 	private Geometry reproject_geom(Geometry boundary) throws NoSuchAuthorityCodeException, FactoryException, MismatchedDimensionException, TransformException {
-		CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4269");
-		CoordinateReferenceSystem destCRS = CRS.decode("EPSG:3338");
+		// Source: https://gis.stackexchange.com/q/134637
+		// Their source: Not sure but it works
+		CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4269"); // NAD 83 GCS
+		CoordinateReferenceSystem destCRS = CRS.decode("EPSG:3338"); // Alaska Albers PCS
 		MathTransform transform = CRS.findMathTransform(sourceCRS, destCRS);
 		return JTS.transform(boundary, transform);
 	}
 	
 	// Get moose density from runtime parameters and translate according to boundary area into numbers of moose
-	private int getNumMoose(Parameters params, Geometry boundary) {
+	private int getNumAgents(Parameters params, Geometry boundary, String which_param) {
 		Geometry reproj_boundary = null;
 		try {
 			reproj_boundary = reproject_geom(boundary);
@@ -339,23 +333,12 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		int moose_density = (Integer) params.getValue("large_host_density");
+		double agent_density = (Double) params.getValue(which_param);
 		double boundary_area = reproj_boundary.getArea();
 		System.out.println("Area of target boundary: " + boundary_area + " m^2"); 
-		return (int) boundary_area;
+		int numAgents = (int) (agent_density * (boundary_area / 1000000) );
+		if (which_param.equals("small_host_density")) numAgents /= 100;
+		return numAgents;
 	}
 	
-	// Get small host density from runtime parameters and translate according to boundary area into numbers of small hosts
-	private int getNumSmHost(Parameters params, Geometry boundary) {
-		try {
-			Geometry reproj_boundary = reproject_geom(boundary);
-		} catch (MismatchedDimensionException | FactoryException | TransformException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		int small_host_density = (Integer) params.getValue("small_host_density");
-		double boundary_area = boundary.getEnvelopeInternal().getArea();
-		
-		return (int) boundary_area;
-	}
 }

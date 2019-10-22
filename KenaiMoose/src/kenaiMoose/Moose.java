@@ -185,9 +185,11 @@ public class Moose extends Host {
 	} 
 	
 	protected void removeTicks(ArrayList<Tick> ticks) {
-		for (Tick tick : ticks) {
-			tick.detach();
-			tick.die();
+		synchronized (ticks) {
+			for (Tick tick : ticks) {
+				tick.detach();
+				tick.die();
+			}
 		}
 	}
 	
