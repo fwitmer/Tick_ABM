@@ -129,6 +129,10 @@ public abstract class Tick {
 		return female;
 	}
 	
+	public Host getHost() {
+		return host;
+	}
+	
 	
 	// Logic for attaching to Host, expected to be called by the Host to be infected
 	public void attach(Host host) {

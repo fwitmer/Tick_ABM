@@ -3,6 +3,7 @@ package kenaiMoose;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Iterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
@@ -30,7 +31,6 @@ public class Moose extends Host {
 	}
 
 	// Establishing random moves for Moose agents
-	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
 		walk();
 		List<Tick> tickList = getTicks();
@@ -92,12 +92,12 @@ public class Moose extends Host {
 		int x = 0; // Counter for processing behavioral attempts
 		// Checking if we went out of bounds and adjusting
 		if (!test_point.within(boundary)) {
-			System.out.println("Boundary adjustment: " + this.name);
+			//System.out.println("Boundary adjustment: " + this.name);
 			geography.move(this, prev_point); // moving back to start
-			System.out.println("\tCurrent Point: " + getPoint().toString());
+			//System.out.println("\tCurrent Point: " + getPoint().toString());
 			ArrayList<Tick> tick_list_copy = tick_list;
 			removeTicks(tick_list_copy);
-			System.out.println("\tTicks detached and deleted.");
+			//System.out.println("\tTicks detached and deleted.");
 			if (direction < Math.PI) {
 				direction = direction + Math.PI;
 			}
@@ -109,17 +109,17 @@ public class Moose extends Host {
 			geography.moveByVector(this, 100, direction); 
 			test_coord = getCoord();
 			test_point = getPoint();
-			System.out.println("\tDirection: " + direction);
-			System.out.println("\tCoords: " + test_coord.toString());
-			System.out.println("\tPoint: " + test_point.toString());
-			System.out.println("\tOrigin: " + prev_coord.toString());
+			//System.out.println("\tDirection: " + direction);
+			//System.out.println("\tCoords: " + test_coord.toString());
+			//System.out.println("\tPoint: " + test_point.toString());
+			//System.out.println("\tOrigin: " + prev_coord.toString());
 			
 		}
 		
 		if (isWater(test_coord)) {
-			System.out.println("Water adjustment: " + this.name);
+			//System.out.println("Water adjustment: " + this.name);
 			geography.move(this,  prev_point);
-			System.out.println("\tCurrent Point: " + getPoint().toString());
+			//System.out.println("\tCurrent Point: " + getPoint().toString());
 			if (direction < Math.PI) {
 				direction = direction + Math.PI;
 			}
@@ -129,10 +129,10 @@ public class Moose extends Host {
 			geography.moveByVector(this, 100, direction);
 			test_coord = getCoord();
 			test_point = getPoint();
-			System.out.println("\tDirection: " + direction);
-			System.out.println("\tCoords: " + test_coord.toString());
-			System.out.println("\tPoint: " + test_point.toString());
-			System.out.println("\tOrigin: " + prev_coord.toString());
+			//System.out.println("\tDirection: " + direction);
+			//System.out.println("\tCoords: " + test_coord.toString());
+			//System.out.println("\tPoint: " + test_point.toString());
+			//System.out.println("\tOrigin: " + prev_coord.toString());
 			
 			/* commented due to unsolved "teleportation" issue occurring for Moose encountering water barriers
 			int left_or_right = random.nextInt(2); // Pick a direction
@@ -185,12 +185,14 @@ public class Moose extends Host {
 	} 
 	
 	protected void removeTicks(ArrayList<Tick> ticks) {
-		synchronized (ticks) {
-			for (Tick tick : ticks) {
-				tick.detach();
-				tick.die();
+			for (Iterator<Tick> iter = (Iterator)ticks.iterator(); iter.hasNext(); ) {
+				Tick tick = (Tick)iter.next();
+				if (tick.getHost() == this) {
+					iter.remove();
+					tick.detach();
+					tick.die();
+				}
 			}
-		}
 	}
 	
 }

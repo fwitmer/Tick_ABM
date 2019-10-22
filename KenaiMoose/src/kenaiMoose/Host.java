@@ -192,7 +192,7 @@ public abstract class Host {
 	}
 	
 	// Method to control actions performed in each step
-	@ScheduledMethod(start = 1, interval = 1)
+	@ScheduledMethod(start = 1, interval = 1, shuffle = true)
 	public abstract void step();
 	
 	// Method to be defined on how the Host will walk at each step
