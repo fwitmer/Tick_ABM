@@ -324,7 +324,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		return JTS.transform(boundary, transform);
 	}
 	
-	// Get moose density from runtime parameters and translate according to boundary area into numbers of moose
+	// Get agent density from runtime parameters and translate according to boundary area into numbers of discrete agents
 	private int getNumAgents(Parameters params, Geometry boundary, String which_param) {
 		Geometry reproj_boundary = null;
 		try {
@@ -335,7 +335,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		}
 		double agent_density = (Double) params.getValue(which_param);
 		double boundary_area = reproj_boundary.getArea();
-		System.out.println("Area of target boundary: " + boundary_area + " m^2"); 
+		//System.out.println("Area of target boundary: " + boundary_area + " m^2"); 
 		int numAgents = (int) (agent_density * (boundary_area / 1000000) );
 		if (which_param.equals("small_host_density")) numAgents /= 100;
 		return numAgents;

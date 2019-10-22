@@ -5,3 +5,4 @@ debug.log
 debug.log.1
 Repast.settings
 .DS_Store
+/ssh_remote_model.log
