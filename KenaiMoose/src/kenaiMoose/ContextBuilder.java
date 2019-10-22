@@ -15,8 +15,16 @@ import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.geometry.DirectPosition;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -93,6 +101,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 		getNumMoose(params, boundary);
+		
 		/* // example of how RasterLayer would work if supported by context
 		File file = new File(".data/nlcd_GCS_NAD83.tif");
 		RasterLayer landuse_raster = new RasterLayer("NLCD Landuse", file);
@@ -314,19 +323,36 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			}
 		}
 	}
+	private Geometry reproject_geom(Geometry boundary) throws NoSuchAuthorityCodeException, FactoryException, MismatchedDimensionException, TransformException {
+		CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4269");
+		CoordinateReferenceSystem destCRS = CRS.decode("EPSG:3338");
+		MathTransform transform = CRS.findMathTransform(sourceCRS, destCRS);
+		return JTS.transform(boundary, transform);
+	}
 	
 	// Get moose density from runtime parameters and translate according to boundary area into numbers of moose
 	private int getNumMoose(Parameters params, Geometry boundary) {
+		Geometry reproj_boundary = null;
+		try {
+			reproj_boundary = reproject_geom(boundary);
+		} catch (MismatchedDimensionException | FactoryException | TransformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		int moose_density = (Integer) params.getValue("large_host_density");
-		double boundary_area = boundary.getEnvelopeInternal().getArea();
-		// double boundary_area = boundary.getArea(); // produces a different value than above, why?
-		System.out.println("Area of target boundary: " + boundary_area); // what unit is this in?
-		
+		double boundary_area = reproj_boundary.getArea();
+		System.out.println("Area of target boundary: " + boundary_area + " m^2"); 
 		return (int) boundary_area;
 	}
 	
 	// Get small host density from runtime parameters and translate according to boundary area into numbers of small hosts
 	private int getNumSmHost(Parameters params, Geometry boundary) {
+		try {
+			Geometry reproj_boundary = reproject_geom(boundary);
+		} catch (MismatchedDimensionException | FactoryException | TransformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		int small_host_density = (Integer) params.getValue("small_host_density");
 		double boundary_area = boundary.getEnvelopeInternal().getArea();
 		
