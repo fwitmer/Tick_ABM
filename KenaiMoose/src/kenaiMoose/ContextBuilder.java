@@ -48,7 +48,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		RepastEssentials.GetTickCount(); // another method of getting tick count
 		// Creating Geography projection for Moose vectors
 		GeographyParameters geoParams = new GeographyParameters();
-		geoParams.setCrs("EPSG:4269"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)
+		geoParams.setCrs("EPSG:3338"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)
 		Geography geography = GeographyFactoryFinder.createGeographyFactory(null).createGeography("Kenai", context, geoParams);
 		//geography.setCRS("EPSG:4269"); // Alternate method of setting CRS of projection
 		
@@ -60,7 +60,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		GeometryFactory geoFac = new GeometryFactory();
 		
 		// Establishing Kenai boundary area from shapefile
-		String boundaryFile = "./data/KenaiWatershed3D_projected.shp";
+		String boundaryFile = "./data/KenaiWatershed3D.shp";
 		List<SimpleFeature> features = loadFeaturesFromShapefile(boundaryFile);
 		Geometry boundary = (MultiPolygon)features.iterator().next().getDefaultGeometry();
 		
@@ -69,19 +69,27 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numTicks);
 		List<Coordinate> voleCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numVoles);
 		
-		GridCoverage2D elev_coverage = null;
 		GridCoverage2D landuse_coverage = null;
+		GridCoverage2D habitat_suitability_coverage = null;
 		
-		// Try to load raster data and add as Coverage layer to geography projection
+		// Load NLCD Landcover Data and add to Geography as a coverage
 	try {
-		elev_coverage = loadRaster("./data/CLIP_Alaska_NationalElevationDataset_60m_AKALB.tif", context);
-		landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
-		geography.addCoverage("AKALB Elevation", elev_coverage);
+		landuse_coverage = loadRaster("./data/nlcd_AK_Albers.tif", context);
 		geography.addCoverage("NLCD Landuse", landuse_coverage);
 	} 
 	catch (IOException e) {
-		System.out.println("Error loading raster.");
+		System.out.println("Error loading NLCD landcover raster.");
 	}
+	
+		/* Where habitat suitability will be loaded 
+	try {
+		habitat_suitability_coverage = loadRaster("./data/habitat_raster.tif", context);
+		geography.addCoverage("Habitat Suitability", habitat_suitability_coverage);
+	}
+	catch (IOException e) {
+		System.out.println("Error loading habitat suitability raster.");
+	}
+	*/
 		
 		Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 		getNumMoose(params, boundary);
@@ -181,9 +189,9 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 
 		
 		// Loading shapefile features for visualization
-		loadFeatures("data/KenaiWatershed3D_projected.shp", context, geography);
+		loadFeatures("data/KenaiWatershed3D.shp", context, geography);
 		
-		
+		geography.setCRS("EPSG:4269"); // setting CRS to NAD83 GCS for 3D visualization on GUI
 		return context;
 	}
 	
