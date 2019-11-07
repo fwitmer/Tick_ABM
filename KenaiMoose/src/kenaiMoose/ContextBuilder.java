@@ -42,6 +42,7 @@ import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
+import repast.simphony.space.gis.RasterLayer;
 import repast.simphony.space.graph.Network;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
@@ -82,26 +83,31 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		GridCoverage2D landuse_coverage = null;
 		GridCoverage2D habitat_suitability_coverage = null;
+		GridCoverage2D boundary_coverage = null;
 		
 		// Load NLCD Landcover Data and add to Geography as a coverage
 	try {
 		landuse_coverage = loadRaster("./data/nlcd_GCS_NAD83.tif", context);
 		geography.addCoverage("NLCD Landuse", landuse_coverage);
-	} 
-	catch (IOException e) {
+	} catch (IOException e) {
 		System.out.println("Error loading NLCD landcover raster.");
 	}
 	
-		
+		// Loading habitat suitability raster - this will be parameterized in future implementations	
 	try {
 		habitat_suitability_coverage = loadRaster("./data/brt_prob_map_NAD83.tif", context);
 		geography.addCoverage("Habitat Suitability", habitat_suitability_coverage);
-	}
-	catch (IOException e) {
+	} catch (IOException e) {
 		System.out.println("Error loading habitat suitability raster.");
 	}
 	
-		
+		// Loading rasterized geospatial boundary for optimization purposes
+	try {
+		boundary_coverage = loadRaster("./data/KenaNAD83.tif", context);
+		geography.addCoverage("Boundary Raster", boundary_coverage);
+	} catch (IOException e) {
+		System.out.println("Error loading boundary raster.");
+	}
 		
 		/* // example of how RasterLayer would work if supported by context
 		File file = new File(".data/nlcd_GCS_NAD83.tif");
