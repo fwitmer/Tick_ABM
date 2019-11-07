@@ -110,7 +110,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		System.out.println("Error loading boundary raster.");
 	}
 		
-		
+		Tick.setSuitability(habitat_suitability_coverage);
 		
 		/* // example of how RasterLayer would work if supported by context
 		File file = new File(".data/nlcd_GCS_NAD83.tif");
