@@ -78,7 +78,6 @@ public abstract class Tick {
 	public void init() {
 		context = ContextUtils.getContext(this);
 		geography = (Geography)context.getProjection("Kenai");
-		suitability_raster = geography.getCoverage("Habitat Suitability");
 		System.out.println(this.name + " habitat sample: " + habitat_sample());
 	}
 	

@@ -111,6 +111,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	}
 		
 		Tick.setSuitability(habitat_suitability_coverage);
+		Host.setBoundary(boundary);
 		
 		/* // example of how RasterLayer would work if supported by context
 		File file = new File(".data/nlcd_GCS_NAD83.tif");
@@ -144,7 +145,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			geography.move(moose, pnt); // Moving Moose agent to Point
 			cnt++;
 		}
-		Host.setBoundary(boundary);
+		
 		System.out.println(cnt + " Moose agents created.\n");
 		
 		// Create Tick agents
