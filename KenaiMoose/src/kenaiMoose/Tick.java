@@ -22,7 +22,7 @@ public abstract class Tick {
 	protected Context context;
 	protected Geography geography;
 	protected GeometryFactory geoFac = new GeometryFactory();
-	protected GridCoverage2D suitability_raster;
+	protected static GridCoverage2D suitability_raster;
 	
 	
 	// variables for behavioral functions
@@ -30,8 +30,6 @@ public abstract class Tick {
 	protected boolean attached;
 	protected int attach_count;
 	protected int attach_length; // must be defined by derived class
-	//protected boolean delayed;
-	//protected int delay_count;
 	protected int attach_delay; // must be defined by derived class
 	protected Host host;
 	
@@ -64,7 +62,7 @@ public abstract class Tick {
 		*/
 	}
 	
-	//additional constructor for defining initial life stage
+	// additional constructor for defining initial life stage
 	public Tick(String name, String life_stage) {
 		this.name = name;
 		this.life_stage = life_stage;
@@ -82,6 +80,10 @@ public abstract class Tick {
 		geography = (Geography)context.getProjection("Kenai");
 		suitability_raster = geography.getCoverage("Habitat Suitability");
 		System.out.println(this.name + " habitat sample: " + habitat_sample());
+	}
+	
+	public static void setSuitability(GridCoverage2D raster) {
+		suitability_raster = raster;
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)

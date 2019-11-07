@@ -100,6 +100,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	} catch (IOException e) {
 		System.out.println("Error loading habitat suitability raster.");
 	}
+		
 	
 		// Loading rasterized geospatial boundary for optimization purposes
 	try {
@@ -108,6 +109,8 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	} catch (IOException e) {
 		System.out.println("Error loading boundary raster.");
 	}
+		
+		
 		
 		/* // example of how RasterLayer would work if supported by context
 		File file = new File(".data/nlcd_GCS_NAD83.tif");
