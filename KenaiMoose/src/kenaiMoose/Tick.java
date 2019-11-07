@@ -101,7 +101,6 @@ public abstract class Tick {
 	
 	// Abstract methods to force setting ATTACH_LENGTH and ATTACH_DELAY - protected
 	protected abstract void set_attach_length(int length);
-	protected abstract void set_attach_delay(int delay);
 	
 	public Geography getGeo() {
 		return geography;
