@@ -55,11 +55,6 @@ public abstract class Tick {
 		host = null;
 		has_fed = false;
 		life_stage = "egg";
-	
-		/* For testing Tick base class
-		ATTACH_LENGTH = 7;
-		ATTACH_DELAY = 20;
-		*/
 	}
 	
 	// additional constructor for defining initial life stage
@@ -115,10 +110,6 @@ public abstract class Tick {
 	public boolean isAttached() {
 		return attached;
 	}
-	/*
-	public boolean isDelayed() {
-		return delayed;
-	} */
 	
 	public boolean isFemale() {
 		return female;

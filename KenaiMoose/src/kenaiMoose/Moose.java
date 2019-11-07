@@ -18,7 +18,7 @@ public class Moose extends Host {
 		infection_radius = 500;	
 	}
 	
-	// init() called before first tick of model - add things that may require
+	// init() called before first step of model - add things that may require
 	// functionality before Moose object is added to Context and Geography
 	@Override
 	@ScheduledMethod(start = 0)
@@ -36,35 +36,6 @@ public class Moose extends Host {
 		List<Tick> tickList = getTicks();
 		processInfections(tickList);
 	}
-/*	Random walk	
-	// Logic for checking for proper bounds and raster data for each step
-	protected void walk() {		
-		Coordinate prevLocation = geography.getGeometry(this).getCoordinate(); // Saving previous location to revert back to if out of bounds
-		
-		// Attempting to create new random Coordinate and Point from previous location
-		Coordinate coord = new Coordinate(prevLocation.x += RandomHelper.nextDoubleFromTo(-0.0050, 0.0050), 
-				prevLocation.y += RandomHelper.nextDoubleFromTo(-0.0005, 0.0005)); //change these values for SmHost
-		Point newPoint = geoFac.createPoint(coord);
-		int stuck_in_water = 0;
-		// Ensuring within bounds and not in water
-		while (!newPoint.within(boundary) || isWater(coord)) {
-			if (stuck_in_water > 1000) {
-				System.out.println("Stuck in water! Moose created in 11 or 12.");
-				break;
-			}
-			coord.x = prevLocation.x + RandomHelper.nextDoubleFromTo(-0.0050, 0.0050);
-			coord.y = prevLocation.y + RandomHelper.nextDoubleFromTo(-0.0050, 0.0050);
-			newPoint = geoFac.createPoint(coord);
-			stuck_in_water++;
-		}
-		
-		
-		// Updating Moose location
-		geography.move(this, newPoint);
-		// Updating InfectionZone
-		updateInfectionZone();
-	}
-*/	
 	
 	// Directional walk, Moose will move along a loose vector trajectory
 	protected void walk() {

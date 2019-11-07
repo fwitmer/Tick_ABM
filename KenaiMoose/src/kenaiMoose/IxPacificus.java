@@ -18,7 +18,8 @@ public class IxPacificus extends Tick {
 		NYMPH_LENGTH = 270;
 		ADULT_LENGTH = 90;
 	}
-
+	
+	// explicit method for updating attach_length variable during lifecycle changes
 	protected void set_attach_length(int length) {
 		this.attach_length = length;
 	}
