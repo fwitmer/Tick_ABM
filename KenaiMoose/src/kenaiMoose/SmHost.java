@@ -12,24 +12,21 @@ import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.random.RandomHelper;
 
-public class Vole extends Host {
-	private double vole_range;
-	//protected InfectionZone smHost_buffer;
-	Geometry vole_home;
+public class SmHost extends Host {
+	private double smHost_range;
+	Geometry smHost_home;
 	
 	
-	
-	public Vole(String name) {
-		super(name); //calling parent constructor 
-		vole_range = 565; // circle with radius 565m = 1.003km^2
+	public SmHost(String name) {
+		super(name); 
+		smHost_range = 565; // circle with radius 565m = 1.003km^2
 	}
 
 	@Override
 	@ScheduledMethod(start=0) //need to call before first tick in model
 	public void init() {
 		super.init(); 
-		vole_home = addBuffer(vole_range); //create buffer (also adds to context)
-		//create_home(vole_range); //same as addBuffer method...
+		smHost_home = addBuffer(smHost_range); //create buffer for limiting agent movement
 	
 	}
 	
@@ -37,15 +34,15 @@ public class Vole extends Host {
 	@ScheduledMethod(start=1, interval=1)
 	public void step() {
 		walk();
-		List<Tick> tickList = getTicks();
-		processInfections(tickList); //TODO change this, will move buffer
+		List<Tick> tickList = getTicks(); //use overridden method below
+		processInfections(tickList); 
 		
 	}
 
 	@Override
-	//Vole needs it's own method here b/c the parent class method moves the geometry and we don't want it to move
+	//SmHost needs it's own method here b/c the parent class method moves the geometry and we don't want it to move
 	protected List<Tick> getTicks(){
-		Envelope infection_envelope = vole_home.getEnvelopeInternal();
+		Envelope infection_envelope = smHost_home.getEnvelopeInternal();
 		
 		Iterable<Tick> infectingTicks = geography.getObjectsWithin(infection_envelope, IxPacificus.class);
 		List<Tick> tickList = new ArrayList();
@@ -62,14 +59,9 @@ public class Vole extends Host {
 	protected void walk() {
 		Coordinate coord;
 		Point pt;
-		//save location in case we need to revert back from an invalid move 
-//		Coordinate prev_coord = getCoord();
-//		Point prev_point = getPoint();
-		
-		
-		
+		//Generate a point within the agents home range and check if it's a valid move
 		do {
-			List<Coordinate> test_coords = GeometryUtil.generateRandomPointsInPolygon(vole_home, 1);
+			List<Coordinate> test_coords = GeometryUtil.generateRandomPointsInPolygon(smHost_home, 1);
 			coord = test_coords.get(0);
 			pt = geoFac.createPoint(coord); //Create a point based off the coordinate so we can check boundary 
 		} while (isWater(coord) || !pt.within(boundary));

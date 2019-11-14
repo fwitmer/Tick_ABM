@@ -176,10 +176,8 @@ public abstract class Host {
 	protected void processInfections(List<Tick> tickList) {
 		if (tickList.size() > 0) {
 			for (Tick tick : tickList) {
-				if (!tick.isDelayed()) {
-					tick.attach(this);
-					num_infecting_ticks++;
-				}
+				tick.attach(this);
+				num_infecting_ticks++;
 			}
 		}
 		// Update color of InfectionZone based on infections
@@ -194,7 +192,7 @@ public abstract class Host {
 	}
 	
 	// Method to control actions performed in each step
-	@ScheduledMethod(start = 1, interval = 1)
+	@ScheduledMethod(start = 1, interval = 1, shuffle = true)
 	public abstract void step();
 	
 	// Method to be defined on how the Host will walk at each step

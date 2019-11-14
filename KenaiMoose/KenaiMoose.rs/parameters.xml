@@ -9,16 +9,16 @@
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" 
 	/>
 	
-	<parameter name="large_host_density" displayName="Large Host Density (per sq. kilometer)" type="int"
+	<parameter name="large_host_density" displayName="Large Host Density (per sq. kilometer)" type="double"
 		isReadOnly="false"
-		defaultValue="200"
-		converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+		defaultValue="0.1"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 	/>
 	
-	<parameter name="small_host_density" displayName="Small Host Density (100 per sq. kilometer)" type="int"
+	<parameter name="small_host_density" displayName="Small Host Density (100 per sq. kilometer)" type="double"
 		isReadOnly="false"
-		defaultValue="200"
-		converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+		defaultValue="1.0"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 	/>
 	
 	<parameter name="tick_lifestage" displayName="Tick Life Stage" type="string"

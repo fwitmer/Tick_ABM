@@ -1,5 +1,11 @@
 package kenaiMoose;
 
+import java.util.Random;
+
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.geometry.DirectPosition2D;
+import org.opengis.geometry.DirectPosition;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
@@ -16,6 +22,7 @@ public abstract class Tick {
 	protected Context context;
 	protected Geography geography;
 	protected GeometryFactory geoFac = new GeometryFactory();
+	protected GridCoverage2D suitability_raster;
 	
 	
 	// variables for behavioral functions
@@ -23,8 +30,8 @@ public abstract class Tick {
 	protected boolean attached;
 	protected int attach_count;
 	protected int attach_length; // must be defined by derived class
-	protected boolean delayed;
-	protected int delay_count;
+	//protected boolean delayed;
+	//protected int delay_count;
 	protected int attach_delay; // must be defined by derived class
 	protected Host host;
 	
@@ -32,24 +39,25 @@ public abstract class Tick {
 	protected boolean female;  // true if tick is female
 	protected String life_stage; // holder state in life stage
 	protected int EGG_LENGTH; // average length of time before egg hatches
-	protected int EGG_STD_DEV; // standard deviation of egg hatching time
 	protected int LARVA_LENGTH; // average length of time before larval mortality
-	protected int LARVA_STD_DEV; //standard deviation for larval mortality
+	protected int LARVA_FEED_LENGTH; // larval length of attachment for feeding
 	protected int NYMPH_LENGTH; // average length of time before nympth mortality
-	protected int NYMPH_STD_DEV; // standard deviation for nymph mortality
+	protected int NYMPH_FEED_LENGTH; // nymphal length of attachment for feeding
 	protected int ADULT_LENGTH; // average length of time before adult mortality
-	protected int ADULT_STD_DEV; // standard deviation for adult mortality
+	protected int ADULT_FEED_LENGTH; // adult length of attachment for feeding (females only)
 	protected int lifecycle_counter; // basic counter used to count steps in all stages of lifecycle behaviors
 	protected boolean has_fed; // marker for whether or not tick has successfully fed at current life stage
 	
 	public Tick(String name) {
 		this.name = name;
+		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
-		delay_count = 0;
+		//delay_count = 0;
+		//delayed = false;
 		attached = false;
 		host = null;
-		delayed = false;
+		has_fed = false;
 		life_stage = "egg";
 	
 		/* For testing Tick base class
@@ -58,10 +66,26 @@ public abstract class Tick {
 		*/
 	}
 	
+	//additional constructor for defining initial life stage
+	public Tick(String name, String life_stage) {
+		this.name = name;
+		this.life_stage = life_stage;
+		determine_sex();
+		lifecycle_counter = 0;
+		attach_count = 0;
+		//delay_count = 0;
+		//delayed = false;
+		attached = false;
+		host = null;
+		has_fed = false;
+	}
+	
 	@ScheduledMethod(start = 0)
 	public void init() {
 		context = ContextUtils.getContext(this);
 		geography = (Geography)context.getProjection("Kenai");
+		suitability_raster = geography.getCoverage("Habitat Suitability");
+		System.out.println(this.name + " habitat sample: " + habitat_sample());
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
@@ -80,7 +104,7 @@ public abstract class Tick {
 			}
 			attach_count++;
 		}
-		// check if Tick has attachment delay after detaching
+		/* check if Tick has attachment delay after detaching
 		else if(delayed) {
 			if (delay_count >= attach_delay) {
 				delayed = false;
@@ -88,7 +112,7 @@ public abstract class Tick {
 				return;
 			}
 			delay_count++;
-		}
+		} */
 		
 	}
 	
@@ -103,19 +127,23 @@ public abstract class Tick {
 	public boolean isAttached() {
 		return attached;
 	}
-	
+	/*
 	public boolean isDelayed() {
 		return delayed;
-	}
+	} */
 	
 	public boolean isFemale() {
 		return female;
 	}
 	
+	public Host getHost() {
+		return host;
+	}
+	
 	
 	// Logic for attaching to Host, expected to be called by the Host to be infected
 	public void attach(Host host) {
-		if (!delayed) {
+		if (!has_fed) {
 			attached = true;
 			this.host = host;
 			host.add_tick(this);
@@ -126,12 +154,26 @@ public abstract class Tick {
 	// Logic for detaching from Host
 	public void detach() {
 		attached = false;
-		delayed = true;
+		//delayed = true;
 		attach_count = 0;
 		host.remove_tick(this);
 		//System.out.println(name + " detached from " + host.getName());
 		host = null;
 	}
+	
+	// set male or female
+	private void determine_sex() {
+		Random rnd = new Random();
+		switch(rnd.nextInt(2)) {
+			case 0: // female
+				female = true;
+				break;
+			case 1: // male
+				female = false;
+				break;
+		}
+	}
+	
 	// determine what to do and update lifecycle counter
 	private void lifecycle() {
 		lifecycle_counter++;
@@ -148,9 +190,10 @@ public abstract class Tick {
 						molt();
 						break;
 					}
-					else
+					else {
 						die();
 						break;
+					}
 				}
 				break;
 			case "nymph":
@@ -193,12 +236,14 @@ public abstract class Tick {
 	// TODO: utilize habitat suitability to determine molting behavior
 	private void molt() {
 		lifecycle_counter = 0;
+		has_fed = false;
 		switch(life_stage) {
 			case "larva":
 				life_stage = "nymph";
 				break;
 			case "nymph":
 				life_stage = "adult";
+				break;
 		}
 	}
 	
@@ -212,5 +257,11 @@ public abstract class Tick {
 		context.remove(this);
 		return;
 	}
-
+	
+	private double habitat_sample() {
+		Coordinate coord = new Coordinate(geography.getGeometry(this).getCoordinate());
+		DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+		double[] sample = (double[]) suitability_raster.evaluate(position);
+		return sample[0];
+	}
 }

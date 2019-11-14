@@ -3,10 +3,6 @@
   <type>GIS 3D</type>
   <styles>
     <entry>
-      <string>kenaiMoose.Vole</string>
-      <string>kenaiMoose.VoleStyle</string>
-    </entry>
-    <entry>
       <string>kenaiMoose.Moose</string>
       <string>kenaiMoose.MooseStyle</string>
     </entry>
@@ -19,15 +15,15 @@
       <string>kenaiMoose.BoundaryZoneStyle</string>
     </entry>
     <entry>
+      <string>kenaiMoose.SmHost</string>
+      <string>kenaiMoose.SmHostStyle</string>
+    </entry>
+    <entry>
       <string>kenaiMoose.IxPacificus</string>
       <string>kenaiMoose.TickStyle</string>
     </entry>
   </styles>
   <editedStyles>
-    <entry>
-      <string>kenaiMoose.Vole</string>
-      <null/>
-    </entry>
     <entry>
       <string>kenaiMoose.Moose</string>
       <null/>
@@ -38,6 +34,10 @@
     </entry>
     <entry>
       <string>kenaiMoose.BoundaryZone</string>
+      <null/>
+    </entry>
+    <entry>
+      <string>kenaiMoose.SmHost</string>
       <null/>
     </entry>
     <entry>
@@ -55,14 +55,10 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1333169990</hashCode>
+    <hashCode>1133931797</hashCode>
   </schedParams>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
-    <entry>
-      <string>kenaiMoose.Vole</string>
-      <int>0</int>
-    </entry>
     <entry>
       <string>kenaiMoose.Moose</string>
       <int>3</int>
@@ -74,6 +70,10 @@
     <entry>
       <string>kenaiMoose.BoundaryZone</string>
       <int>1</int>
+    </entry>
+    <entry>
+      <string>kenaiMoose.SmHost</string>
+      <int>0</int>
     </entry>
     <entry>
       <string>kenaiMoose.IxPacificus</string>

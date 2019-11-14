@@ -18,12 +18,12 @@ import gov.nasa.worldwind.render.WWTexture;
 import repast.simphony.visualization.gis3D.PlaceMark;
 import repast.simphony.visualization.gis3D.style.MarkStyle;
 
-public class VoleStyle implements MarkStyle<Vole> {
+public class SmHostStyle implements MarkStyle<SmHost> {
 	private Offset labelOffset;
 	
 	private Map<String, WWTexture> textureMap;
 	
-	public VoleStyle(){
+	public SmHostStyle(){
 		
 		/**
 		 * The gov.nasa.worldwind.render.Offset is used to position the label from 
@@ -59,7 +59,7 @@ public class VoleStyle implements MarkStyle<Vole> {
 	 *   @see gov.nasa.worldwind.render.PointPlacemark for more info.
 	 */
 	@Override
-	public PlaceMark getPlaceMark(Vole agent, PlaceMark mark) {
+	public PlaceMark getPlaceMark(SmHost agent, PlaceMark mark) {
 		
 		// PlaceMark is null on first call.
 		if (mark == null)
@@ -83,7 +83,7 @@ public class VoleStyle implements MarkStyle<Vole> {
 	 *   location in the geography.
 	 */
 	@Override
-	public double getElevation(Vole agent) {
+	public double getElevation(SmHost agent) {
 			return 0;
 	}
 	
@@ -100,18 +100,18 @@ public class VoleStyle implements MarkStyle<Vole> {
 	
 	// getTexture() is the only way to define the image used on the GIS 3D display
 	@Override
-	public WWTexture getTexture(Vole agent, WWTexture texture) {
+	public WWTexture getTexture(SmHost agent, WWTexture texture) {
 			return textureMap.get("vole");
 	}
 	
 	// Specify the size of designated image on GIS 3D display
 	@Override
-	public double getScale(Vole agent) {
+	public double getScale(SmHost agent) {
 			return 0.04;
 	}
 
 	@Override
-	public double getHeading(Vole agent) {
+	public double getHeading(SmHost agent) {
 		return 0;
 	}
 	
@@ -120,12 +120,12 @@ public class VoleStyle implements MarkStyle<Vole> {
 	 *   performance.
 	 */
 	@Override
-	public String getLabel(Vole agent) {
+	public String getLabel(SmHost agent) {
 		return null;
 	}
 
 	@Override
-	public Color getLabelColor(Vole agent) {
+	public Color getLabelColor(SmHost agent) {
 			return Color.YELLOW;
 	}
 	
@@ -135,12 +135,12 @@ public class VoleStyle implements MarkStyle<Vole> {
 	 * 
 	 */
 	@Override
-	public Offset getLabelOffset(Vole agent) {
+	public Offset getLabelOffset(SmHost agent) {
 		return labelOffset;
 	}
 
 	@Override
-	public Font getLabelFont(Vole obj) {
+	public Font getLabelFont(SmHost obj) {
 		return null;
 	}
 
@@ -149,12 +149,12 @@ public class VoleStyle implements MarkStyle<Vole> {
 	 *   
 	 */
 	@Override
-	public double getLineWidth(Vole agent) {
+	public double getLineWidth(SmHost agent) {
 			return 0;
 	}
 
 	@Override
-	public Material getLineMaterial(Vole obj, Material lineMaterial) {
+	public Material getLineMaterial(SmHost obj, Material lineMaterial) {
 		if (lineMaterial == null){
 			lineMaterial = new Material(Color.RED);
 		}
@@ -163,7 +163,7 @@ public class VoleStyle implements MarkStyle<Vole> {
 	}
 
 	@Override
-	public Offset getIconOffset(Vole obj) {
+	public Offset getIconOffset(SmHost obj) {
 		return Offset.CENTER;
 	}
 }
