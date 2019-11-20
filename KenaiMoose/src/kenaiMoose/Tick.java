@@ -34,6 +34,7 @@ public abstract class Tick {
 	protected Host host;
 	
 	// life cycle variables
+	protected static String START_LIFE_CYCLE; // static variable for defining what stage Ticks should start at during init
 	protected boolean female;  // true if tick is female
 	protected String life_stage; // holder state in life stage
 	protected int EGG_LENGTH; // average length of time before egg hatches
@@ -54,7 +55,7 @@ public abstract class Tick {
 		attached = false;
 		host = null;
 		has_fed = false;
-		life_stage = "egg";
+		life_stage = START_LIFE_CYCLE;
 	}
 	
 	// additional constructor for defining initial life stage
@@ -78,6 +79,7 @@ public abstract class Tick {
 	
 	public static void setSuitability(GridCoverage2D raster) {
 		suitability_raster = raster;
+		return;
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
@@ -116,6 +118,11 @@ public abstract class Tick {
 	
 	public Host getHost() {
 		return host;
+	}
+	
+	public static void setStartStage(String stage) {
+		START_LIFE_CYCLE = stage;
+		return;
 	}
 	
 	

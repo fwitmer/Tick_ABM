@@ -74,6 +74,9 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		int numMoose = getNumAgents(params, boundary, "large_host_density");
 		int numTicks = (Integer) params.getValue("tick_count");
 		int numVoles = getNumAgents(params, boundary, "small_host_density");
+		String start_lifestage = params.getValueAsString("tick_lifestage");
+		
+		Tick.setStartStage(start_lifestage);
 		
 		
 		// Creating random coords in Kenai boundary
