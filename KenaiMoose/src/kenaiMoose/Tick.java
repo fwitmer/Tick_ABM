@@ -84,7 +84,6 @@ public abstract class Tick {
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
-		lifecycle();
 		// if Tick is attached, update position to Host's new position
 		if(attached) {
 			
@@ -98,6 +97,7 @@ public abstract class Tick {
 			}
 			attach_count++;
 		}
+		lifecycle();
 		
 	}
 	
@@ -112,7 +112,7 @@ public abstract class Tick {
 	}
 	
 	// Abstract methods to force setting ATTACH_LENGTH and ATTACH_DELAY - protected
-	protected abstract void set_attach_length(int length);
+	protected abstract void set_attach_length(String lifecycle);
 	
 	public Geography getGeo() {
 		return geography;
@@ -150,7 +150,7 @@ public abstract class Tick {
 					break;
 				case "adult": // will attach to both
 					break;
-				default: // egg
+				default: // egg doesn't attach
 					return false;
 			}
 			// if we got here, tick is hungry and found an appropriate host
@@ -198,13 +198,43 @@ public abstract class Tick {
 					hatch();
 				break;
 			case "larva":
-			
+				// didn't feed in time, die
+				if (!has_fed && lifecycle_counter > LARVA_LENGTH) {
+					die();
+					return;
+				}
+				// still feeding, do nothing this step
+				if(attached) 
+					break;
+				// fed and ready to molt
+				molt();
 				break;
 			case "nymph":
-			
+				if (!has_fed && lifecycle_counter > NYMPH_LENGTH) {
+					die();
+					return;
+				}
+				
+				if(attached)
+					break;
+				
+				molt();
 				break;
 			case "adult":
-				
+				if(female) {
+					// TODO: female behaviors happen here
+					if (!has_fed && lifecycle_counter > ADULT_LENGTH) {
+						die();
+						return;
+					}
+				}
+				else {
+					// TODO: male behaviors happen here (does not feed)
+					if (lifecycle_counter > ADULT_LENGTH) {
+						die();
+						return;
+					}
+				}
 				break;
 			default:
 				System.out.println("\tLife cycle error: " + name + " has invalid life stage. Removing agent.");
@@ -215,6 +245,7 @@ public abstract class Tick {
 	private void hatch() {
 		lifecycle_counter = 0;
 		life_stage = "larva";
+		set_attach_length(life_stage);
 		return;
 	}
 	
@@ -224,9 +255,11 @@ public abstract class Tick {
 		switch(life_stage) {
 			case "larva":
 				life_stage = "nymph";
+				set_attach_length(life_stage);
 				break;
 			case "nymph":
 				life_stage = "adult";
+				set_attach_length(life_stage);
 				break;
 		}
 	}
