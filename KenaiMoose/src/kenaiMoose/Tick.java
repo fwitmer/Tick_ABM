@@ -22,7 +22,7 @@ public abstract class Tick {
 	protected Context context;
 	protected Geography geography;
 	protected GeometryFactory geoFac = new GeometryFactory();
-	protected GridCoverage2D suitability_raster;
+	protected static GridCoverage2D suitability_raster;
 	
 	
 	// variables for behavioral functions
@@ -30,12 +30,11 @@ public abstract class Tick {
 	protected boolean attached;
 	protected int attach_count;
 	protected int attach_length; // must be defined by derived class
-	//protected boolean delayed;
-	//protected int delay_count;
 	protected int attach_delay; // must be defined by derived class
 	protected Host host;
 	
 	// life cycle variables
+	protected static String START_LIFE_CYCLE; // static variable for defining what stage Ticks should start at during init
 	protected boolean female;  // true if tick is female
 	protected String life_stage; // holder state in life stage
 	protected int EGG_LENGTH; // average length of time before egg hatches
@@ -53,28 +52,19 @@ public abstract class Tick {
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
-		//delay_count = 0;
-		//delayed = false;
 		attached = false;
 		host = null;
 		has_fed = false;
-		life_stage = "egg";
-	
-		/* For testing Tick base class
-		ATTACH_LENGTH = 7;
-		ATTACH_DELAY = 20;
-		*/
+		life_stage = START_LIFE_CYCLE;
 	}
 	
-	//additional constructor for defining initial life stage
+	// additional constructor for defining initial life stage
 	public Tick(String name, String life_stage) {
 		this.name = name;
 		this.life_stage = life_stage;
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
-		//delay_count = 0;
-		//delayed = false;
 		attached = false;
 		host = null;
 		has_fed = false;
@@ -84,8 +74,12 @@ public abstract class Tick {
 	public void init() {
 		context = ContextUtils.getContext(this);
 		geography = (Geography)context.getProjection("Kenai");
-		suitability_raster = geography.getCoverage("Habitat Suitability");
 		System.out.println(this.name + " habitat sample: " + habitat_sample());
+	}
+	
+	public static void setSuitability(GridCoverage2D raster) {
+		suitability_raster = raster;
+		return;
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
@@ -104,21 +98,11 @@ public abstract class Tick {
 			}
 			attach_count++;
 		}
-		/* check if Tick has attachment delay after detaching
-		else if(delayed) {
-			if (delay_count >= attach_delay) {
-				delayed = false;
-				delay_count = 0;
-				return;
-			}
-			delay_count++;
-		} */
 		
 	}
 	
 	// Abstract methods to force setting ATTACH_LENGTH and ATTACH_DELAY - protected
 	protected abstract void set_attach_length(int length);
-	protected abstract void set_attach_delay(int delay);
 	
 	public Geography getGeo() {
 		return geography;
@@ -127,10 +111,6 @@ public abstract class Tick {
 	public boolean isAttached() {
 		return attached;
 	}
-	/*
-	public boolean isDelayed() {
-		return delayed;
-	} */
 	
 	public boolean isFemale() {
 		return female;
@@ -138,6 +118,11 @@ public abstract class Tick {
 	
 	public Host getHost() {
 		return host;
+	}
+	
+	public static void setStartStage(String stage) {
+		START_LIFE_CYCLE = stage;
+		return;
 	}
 	
 	
@@ -154,7 +139,6 @@ public abstract class Tick {
 	// Logic for detaching from Host
 	public void detach() {
 		attached = false;
-		//delayed = true;
 		attach_count = 0;
 		host.remove_tick(this);
 		//System.out.println(name + " detached from " + host.getName());
@@ -179,46 +163,16 @@ public abstract class Tick {
 		lifecycle_counter++;
 		switch (life_stage) {
 			case "egg":
-				if (lifecycle_counter > EGG_LENGTH) {
-					hatch();
-					break;
-				}
+				
 				break;
 			case "larva":
-				if (lifecycle_counter > LARVA_LENGTH) {
-					if (has_fed) {
-						molt();
-						break;
-					}
-					else {
-						die();
-						break;
-					}
-				}
+			
 				break;
 			case "nymph":
-				if (lifecycle_counter > NYMPH_LENGTH) {
-					if (has_fed) {
-						molt();
-						break;
-					}
-					else {
-						die();
-						break;
-					}
-				}
+			
 				break;
 			case "adult":
-				if (lifecycle_counter > ADULT_LENGTH) {
-					if (has_fed) {
-						mate();
-						break;
-					}
-					else {
-						die();
-						break;
-					}
-				}
+				
 				break;
 			default:
 				System.out.println("\tLife cycle error: " + name + " has invalid life stage. Removing agent.");

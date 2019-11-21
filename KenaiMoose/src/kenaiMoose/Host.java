@@ -96,6 +96,7 @@ public abstract class Host {
 	public void add_tick(Tick tick) {
 		tick_list.add(tick);
 	}
+	
 	public void remove_tick(Tick tick) {
 		tick_list.remove(tick);
 	}
