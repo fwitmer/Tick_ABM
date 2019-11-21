@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
+import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.random.RandomHelper;
@@ -30,8 +31,7 @@ public class SmHost extends Host {
 	
 	}
 	
-	@Override
-	@ScheduledMethod(start=1, interval=1)
+	@ScheduledMethod(start=1, interval=1, priority = ScheduleParameters.LAST_PRIORITY)
 	public void step() {
 		walk();
 		List<Tick> tickList = getTicks(); //use overridden method below
@@ -55,7 +55,6 @@ public class SmHost extends Host {
 		return tickList;
 	}
 	
-	@Override
 	protected void walk() {
 		Coordinate coord;
 		Point pt;
