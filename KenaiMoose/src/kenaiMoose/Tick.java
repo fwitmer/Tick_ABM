@@ -177,7 +177,8 @@ public abstract class Tick {
 		
 		switch (life_stage) {
 			case "egg":
-				
+				if (lifecycle_counter > EGG_LENGTH)
+					hatch();
 				break;
 			case "larva":
 			
