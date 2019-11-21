@@ -84,7 +84,6 @@ public abstract class Tick {
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
-		lifecycle();
 		// if Tick is attached, update position to Host's new position
 		if(attached) {
 			
@@ -92,17 +91,29 @@ public abstract class Tick {
 			Point newPoint = geoFac.createPoint(newPosition);
 			geography.move(this, newPoint);
 			// Tick has been riding Host for specified amount of time
-			if (attach_count >= attach_length) {
+			// 	 (been attached long enough)  &&    (not an adult) - adult detachment behavior handled in lifecycle()
+			if (attach_count >= attach_length && !life_stage.equals("adult") ) {
 				detach();
-				return;
 			}
-			attach_count++;
+			else
+				attach_count++;
 		}
+		lifecycle();
 		
 	}
 	
+	@ScheduledMethod(start = 90, interval = 90)
+	public void skip_inactive_period() {
+		double prob_death = 1 - habitat_sample(); 
+		double prob_death_per_day = prob_death / 365;
+		
+		if (Math.random() < (prob_death_per_day * 275) )
+			die();
+		return;
+	}
+	
 	// Abstract methods to force setting ATTACH_LENGTH and ATTACH_DELAY - protected
-	protected abstract void set_attach_length(int length);
+	protected abstract void set_attach_length(String lifecycle);
 	
 	public Geography getGeo() {
 		return geography;
@@ -127,13 +138,37 @@ public abstract class Tick {
 	
 	
 	// Logic for attaching to Host, expected to be called by the Host to be infected
-	public void attach(Host host) {
+	public boolean attach(Host host) {
 		if (!has_fed) {
+			switch(life_stage) {
+				case "larva": // don't attach to Moose
+					if (!(host instanceof SmHost))
+						return false;
+					break;
+				case "nymph": // don't attach to Moose
+					if (!(host instanceof SmHost))
+						return false;
+					break;
+				case "adult": // will attach to both
+					break;
+				default: // egg doesn't attach
+					return false;
+			}
+			// if we got here, tick is hungry and found an appropriate host
 			attached = true;
 			this.host = host;
 			host.add_tick(this);
+			return true;
 			//System.out.println(name + " attached to " + host.getName());
 		}
+		// adult males will attach regardless
+		else if (life_stage.equals("adult") && !female) {
+			attached = true;
+			this.host = host;
+			host.add_tick(this);
+			return true;
+		}
+		return false;
 	}
 	
 	// Logic for detaching from Host
@@ -161,18 +196,58 @@ public abstract class Tick {
 	// determine what to do and update lifecycle counter
 	private void lifecycle() {
 		lifecycle_counter++;
+		double prob_death = 1 - habitat_sample(); 
+		double prob_death_per_day = prob_death / 365;
+		if (Math.random() < prob_death_per_day) 
+			die();
+		
 		switch (life_stage) {
 			case "egg":
-				
+				if (lifecycle_counter > EGG_LENGTH)
+					hatch();
 				break;
 			case "larva":
-			
+				// didn't feed in time, die
+				if (!has_fed && lifecycle_counter > LARVA_LENGTH) {
+					die();
+					return;
+				}
+				// still feeding, do nothing this step
+				if(attached) 
+					break;
+				// fed and ready to molt
+				molt();
 				break;
 			case "nymph":
-			
-				break;
-			case "adult":
+				if (!has_fed && lifecycle_counter > NYMPH_LENGTH) {
+					die();
+					return;
+				}
 				
+				if(attached)
+					break;
+				
+				molt();
+				break;
+			case "adult": // TODO: need to handle adult detachment behaviors here
+				if(female) {
+					// TODO: female behaviors happen here
+					if (!has_fed && lifecycle_counter > ADULT_LENGTH) {
+						die();
+						return;
+					}
+				}
+				else {
+					// TODO: male behaviors happen here (does not feed)
+					if (lifecycle_counter > ADULT_LENGTH) {
+						die();
+						return;
+					}
+					if (attached) {
+						// TODO: need to look for a mate here, continue until dying
+						break;
+					}
+				}
 				break;
 			default:
 				System.out.println("\tLife cycle error: " + name + " has invalid life stage. Removing agent.");
@@ -180,23 +255,24 @@ public abstract class Tick {
 		}
 	}
 	
-	// TODO: utilize habitat suitability to determine hatching behavior
 	private void hatch() {
 		lifecycle_counter = 0;
 		life_stage = "larva";
+		set_attach_length(life_stage);
 		return;
 	}
 	
-	// TODO: utilize habitat suitability to determine molting behavior
 	private void molt() {
 		lifecycle_counter = 0;
 		has_fed = false;
 		switch(life_stage) {
 			case "larva":
 				life_stage = "nymph";
+				set_attach_length(life_stage);
 				break;
 			case "nymph":
 				life_stage = "adult";
+				set_attach_length(life_stage);
 				break;
 		}
 	}
