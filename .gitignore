@@ -1,2 +1,4 @@
-/.metadata/
-/.DS_Store
+**/.metadata/
+**/.DS_Store
+**/*.log*
+**/output/
