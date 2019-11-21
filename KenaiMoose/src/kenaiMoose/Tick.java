@@ -102,7 +102,7 @@ public abstract class Tick {
 		
 	}
 	
-	@ScheduledMethod(start = 1, interval = 90)
+	@ScheduledMethod(start = 90, interval = 90)
 	public void skip_inactive_period() {
 		double prob_death = 1 - habitat_sample(); 
 		double prob_death_per_day = prob_death / 365;
@@ -284,7 +284,6 @@ public abstract class Tick {
 	}
 	
 	public void die() {
-		detach();
 		context.remove(this);
 		return;
 	}
