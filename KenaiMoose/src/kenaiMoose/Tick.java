@@ -137,13 +137,29 @@ public abstract class Tick {
 	
 	
 	// Logic for attaching to Host, expected to be called by the Host to be infected
-	public void attach(Host host) {
+	public boolean attach(Host host) {
 		if (!has_fed) {
+			switch(life_stage) {
+				case "larva": // don't attach to Moose
+					if (!(host instanceof SmHost))
+						return false;
+					break;
+				case "nymph": // don't attach to Moose
+					if (!(host instanceof SmHost))
+						return false;
+					break;
+				case "adult": // will attach to both
+					break;
+				default: // egg
+					return false;
+			}
+			// if we got here, tick is hungry and found an appropriate host
 			attached = true;
 			this.host = host;
 			host.add_tick(this);
 			//System.out.println(name + " attached to " + host.getName());
 		}
+		return false;
 	}
 	
 	// Logic for detaching from Host
@@ -173,7 +189,8 @@ public abstract class Tick {
 		lifecycle_counter++;
 		double prob_death = 1 - habitat_sample(); 
 		double prob_death_per_day = prob_death / 365;
-		if (Math.random() < prob_death_per_day) die();
+		if (Math.random() < prob_death_per_day) 
+			die();
 		
 		switch (life_stage) {
 			case "egg":
@@ -195,14 +212,12 @@ public abstract class Tick {
 		}
 	}
 	
-	// TODO: utilize habitat suitability to determine hatching behavior
 	private void hatch() {
 		lifecycle_counter = 0;
 		life_stage = "larva";
 		return;
 	}
 	
-	// TODO: utilize habitat suitability to determine molting behavior
 	private void molt() {
 		lifecycle_counter = 0;
 		has_fed = false;

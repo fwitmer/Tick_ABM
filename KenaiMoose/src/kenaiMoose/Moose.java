@@ -1,6 +1,7 @@
 package kenaiMoose;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -9,11 +10,10 @@ import org.geotools.geometry.DirectPosition2D;
 import org.opengis.coverage.PointOutsideCoverageException;
 import org.opengis.geometry.DirectPosition;
 
-import java.util.Iterator;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
 
+import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
 
 public class Moose extends Host {
@@ -36,7 +36,8 @@ public class Moose extends Host {
 		direction = Math.toRadians(random.nextInt(360)); // Assign random direction for travel
 	}
 
-	// Establishing random moves for Moose agents
+	// Moose actions every tick should be prioritized for adult Tick attachment behavior
+	@ScheduledMethod(start = 1, interval = 1, priority = ScheduleParameters.FIRST_PRIORITY)
 	public void step() {
 		walk();
 		List<Tick> tickList = getTicks();
@@ -68,7 +69,7 @@ public class Moose extends Host {
 		
 		int x = 0; // Counter for processing behavioral attempts
 		// Checking if we went out of bounds and adjusting
-/*
+/* Geometry checking method for boundary correction, very expensive!
 		if (!test_point.within(boundary)) {
 			//System.out.println("Boundary adjustment: " + this.name);
 			geography.move(this, prev_point); // moving back to start
