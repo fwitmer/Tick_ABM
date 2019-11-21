@@ -101,6 +101,16 @@ public abstract class Tick {
 		
 	}
 	
+	@ScheduledMethod(start = 1, interval = 90)
+	public void skip_inactive_period() {
+		double prob_death = 1 - habitat_sample(); 
+		double prob_death_per_day = prob_death / 365;
+		
+		if (Math.random() < (prob_death_per_day * 275) )
+			die();
+		return;
+	}
+	
 	// Abstract methods to force setting ATTACH_LENGTH and ATTACH_DELAY - protected
 	protected abstract void set_attach_length(int length);
 	
