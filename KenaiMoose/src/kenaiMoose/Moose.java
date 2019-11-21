@@ -3,6 +3,12 @@ package kenaiMoose;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.geometry.DirectPosition2D;
+import org.opengis.coverage.PointOutsideCoverageException;
+import org.opengis.geometry.DirectPosition;
+
 import java.util.Iterator;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -62,6 +68,7 @@ public class Moose extends Host {
 		
 		int x = 0; // Counter for processing behavioral attempts
 		// Checking if we went out of bounds and adjusting
+/*
 		if (!test_point.within(boundary)) {
 			//System.out.println("Boundary adjustment: " + this.name);
 			geography.move(this, prev_point); // moving back to start
@@ -85,6 +92,25 @@ public class Moose extends Host {
 			//System.out.println("\tPoint: " + test_point.toString());
 			//System.out.println("\tOrigin: " + prev_coord.toString());
 			
+		}
+*/
+		
+		if (!within_bound(test_coord)) {
+			geography.move(this, prev_point); // moving back to start
+			ArrayList<Tick> tick_list_copy = tick_list;
+			removeTicks(tick_list_copy);
+			//System.out.println("\tTicks detached and deleted.");
+			if (direction < Math.PI) {
+				direction = direction + Math.PI;
+			}
+			else {
+				direction = direction - Math.PI;
+			}
+			// TODO: determine distance between prev_coord and boundary to get more accurate bounce behavior
+			//		 currently arbitrarily half of previous attempt to move that placed us out of bounds
+			geography.moveByVector(this, 100, direction); 
+			test_coord = getCoord();
+			test_point = getPoint();
 		}
 		
 		if (isWater(test_coord)) {
@@ -153,7 +179,20 @@ public class Moose extends Host {
 		
 		geography.move(this, test_point);
 		updateInfectionZone();
-	} 
+	}
+	
+	private boolean within_bound(Coordinate coord) {
+		GridCoverage2D boundary_coverage = geography.getCoverage("Boundary Raster");
+		DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+	try {
+		byte[] sample = (byte[]) boundary_coverage.evaluate(position);
+		if (sample[0] == (byte) 1) return true;
+		return false;
+	} catch (PointOutsideCoverageException e) {
+		e.printStackTrace();
+		return false;
+	}
+	}
 	
 	protected void removeTicks(ArrayList<Tick> ticks) {
 			for (Iterator<Tick> iter = (Iterator)ticks.iterator(); iter.hasNext(); ) {
