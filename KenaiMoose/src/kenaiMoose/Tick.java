@@ -91,11 +91,12 @@ public abstract class Tick {
 			Point newPoint = geoFac.createPoint(newPosition);
 			geography.move(this, newPoint);
 			// Tick has been riding Host for specified amount of time
-			if (attach_count >= attach_length) {
+			// 	 (been attached long enough)  &&    (not an adult) - adult detachment behavior handled in lifecycle()
+			if (attach_count >= attach_length && !life_stage.equals("adult") ) {
 				detach();
-				return;
 			}
-			attach_count++;
+			else
+				attach_count++;
 		}
 		lifecycle();
 		
@@ -157,7 +158,15 @@ public abstract class Tick {
 			attached = true;
 			this.host = host;
 			host.add_tick(this);
+			return true;
 			//System.out.println(name + " attached to " + host.getName());
+		}
+		// adult males will attach regardless
+		else if (life_stage.equals("adult") && !female) {
+			attached = true;
+			this.host = host;
+			host.add_tick(this);
+			return true;
 		}
 		return false;
 	}
@@ -220,7 +229,7 @@ public abstract class Tick {
 				
 				molt();
 				break;
-			case "adult":
+			case "adult": // TODO: need to handle adult detachment behaviors here
 				if(female) {
 					// TODO: female behaviors happen here
 					if (!has_fed && lifecycle_counter > ADULT_LENGTH) {
@@ -233,6 +242,10 @@ public abstract class Tick {
 					if (lifecycle_counter > ADULT_LENGTH) {
 						die();
 						return;
+					}
+					if (attached) {
+						// TODO: need to look for a mate here, continue until dying
+						break;
 					}
 				}
 				break;
@@ -271,6 +284,7 @@ public abstract class Tick {
 	}
 	
 	public void die() {
+		detach();
 		context.remove(this);
 		return;
 	}
