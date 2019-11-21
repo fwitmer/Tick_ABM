@@ -161,17 +161,21 @@ public abstract class Tick {
 	// determine what to do and update lifecycle counter
 	private void lifecycle() {
 		lifecycle_counter++;
+		double sample = habitat_sample();
 		switch (life_stage) {
 			case "egg":
-				
+				if (Math.random() > sample) die();
 				break;
 			case "larva":
+				if (Math.random() > sample) die();
 			
 				break;
 			case "nymph":
+				if (Math.random() > sample) die();
 			
 				break;
 			case "adult":
+				if (Math.random() > sample) die();
 				
 				break;
 			default:
