@@ -1,0 +1,55 @@
+<repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.6.0">
+  <name>TickNonAgg</name>
+  <type>NON_AGGREGATE</type>
+  <sourceType>kenaiMoose.Tick</sourceType>
+  <inclTick>true</inclTick>
+  <inclBatchRun>false</inclBatchRun>
+  <inclRandomSeed>false</inclRandomSeed>
+  <scheduleParams>
+    <start>1.0</start>
+    <interval>1.0</interval>
+    <priority>-Infinity</priority>
+    <pType>LAST</pType>
+    <duration>-1.0</duration>
+    <frequency>REPEAT</frequency>
+    <hashCode>-1627630044</hashCode>
+  </scheduleParams>
+  <atEnd>true</atEnd>
+  <methodDataSources class="linked-hash-map">
+    <entry>
+      <string>Lifestate</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Lifestate</id>
+        <className>kenaiMoose.Tick</className>
+        <methodName>getLifestate</methodName>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Lat</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Lat</id>
+        <className>kenaiMoose.Tick</className>
+        <methodName>getLat</methodName>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>Long</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>Long</id>
+        <className>kenaiMoose.Tick</className>
+        <methodName>getLong</methodName>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>habitat_sample</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>habitat_sample</id>
+        <className>kenaiMoose.Tick</className>
+        <methodName>habitat_sample</methodName>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+  </methodDataSources>
+  <countSources class="linked-hash-map"/>
+  <customNADataSources class="linked-hash-map"/>
+  <customAggDataSources class="linked-hash-map"/>
+</repast.simphony.data2.engine.DataSetDescriptor>

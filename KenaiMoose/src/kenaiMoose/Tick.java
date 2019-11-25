@@ -82,6 +82,28 @@ public abstract class Tick {
 		return;
 	}
 	
+	
+	public Coordinate getCoord() {
+		return new Coordinate(geography.getGeometry(this).getCoordinate());
+	}
+	
+	//Get lat and long for data sets
+	
+	public double getLong() {
+		Coordinate coord = getCoord();
+		return coord.x;
+	}
+
+	public double getLat() {
+		Coordinate coord = getCoord();
+		return coord.y;
+	}
+	
+	public String getLifestate() {
+		return this.life_stage;
+	}
+	
+	
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
 		// if Tick is attached, update position to Host's new position
@@ -288,7 +310,7 @@ public abstract class Tick {
 		return;
 	}
 	
-	private double habitat_sample() {
+	public double habitat_sample() {
 		Coordinate coord = new Coordinate(geography.getGeometry(this).getCoordinate());
 		DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
 		double[] sample = (double[]) suitability_raster.evaluate(position);
