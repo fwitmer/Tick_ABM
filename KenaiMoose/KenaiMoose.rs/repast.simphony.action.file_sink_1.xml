@@ -10,6 +10,6 @@
     <string>Long</string>
     <string>habitat_sample</string>
   </sourceIds>
-  <fileName>C:\Users\me\Documents\0Tick_ABM\TickNonAgg.txt</fileName>
+  <fileName>TickNonAgg</fileName>
   <addTimeStamp>true</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>

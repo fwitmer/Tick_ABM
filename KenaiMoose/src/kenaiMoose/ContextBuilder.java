@@ -42,14 +42,13 @@ import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
-import repast.simphony.space.gis.RasterLayer;
 import repast.simphony.space.graph.Network;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
 	
 	public Context build(Context context) {
 		System.setProperty("org.geotools.referencing.forceXY", "true"); // suppress warnings caused by the visualized environment
-		RunEnvironment.getInstance().endAt(80); // scheduling runs to end after 5 years worth of ticks
+		RunEnvironment.getInstance().endAt(365); // scheduling runs to end after 5 years worth of ticks
 		RunEnvironment.getInstance().getCurrentSchedule().getTickCount(); // use to get run's current tick count
 		RepastEssentials.GetTickCount(); // another method of getting tick count
 		Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
@@ -76,7 +75,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		int numVoles = getNumAgents(params, boundary, "small_host_density");
 		String start_lifestage = params.getValueAsString("tick_lifestage");
 		
-		Tick.setStartStage(start_lifestage);
+//		Tick.setStartStage(start_lifestage);
 		
 		
 		// Creating random coords in Kenai boundary
@@ -157,7 +156,8 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		cnt = 0;
 		System.out.println("Creating " + numTicks + " Tick agents...");
 		for (Coordinate coord : tickCoords) {
-			IxPacificus tick = new IxPacificus("Tick " + cnt);
+			IxPacificus tick = new IxPacificus("Tick " + cnt, start_lifestage);
+			System.out.println("\t Lifestage:" + tick.getLifestate());
 			context.add(tick);
 			
 			// Preparing to check for creation in water
