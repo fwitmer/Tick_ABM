@@ -69,7 +69,7 @@ public class Moose extends Host {
 		
 		int x = 0; // Counter for processing behavioral attempts
 		// Checking if we went out of bounds and adjusting
-/* Geometry checking method for boundary correction, very expensive!
+ /* Geometry checking method for boundary correction, very expensive!
 		if (!test_point.within(boundary)) {
 			//System.out.println("Boundary adjustment: " + this.name);
 			geography.move(this, prev_point); // moving back to start
@@ -94,7 +94,8 @@ public class Moose extends Host {
 			//System.out.println("\tOrigin: " + prev_coord.toString());
 			
 		}
-*/
+		*/
+
 		
 		if (!within_bound(test_coord)) {
 			geography.move(this, prev_point); // moving back to start
@@ -113,6 +114,7 @@ public class Moose extends Host {
 			test_coord = getCoord();
 			test_point = getPoint();
 		}
+		
 		
 		if (isWater(test_coord)) {
 			//System.out.println("Water adjustment: " + this.name);
@@ -193,6 +195,7 @@ public class Moose extends Host {
 		e.printStackTrace();
 		return false;
 	}
+	
 	}
 	
 	protected void removeTicks(ArrayList<Tick> ticks) {
