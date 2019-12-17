@@ -1,0 +1,15 @@
+<repast.simphony.data2.engine.FileSinkDescriptor simphonyVersion="2.6.0">
+  <name>TickNonAgg</name>
+  <dataSet>TickNonAgg</dataSet>
+  <delimiter>,</delimiter>
+  <format>TABULAR</format>
+  <sourceIds class="linked-hash-set">
+    <string>tick</string>
+    <string>Lifestate</string>
+    <string>Lat</string>
+    <string>Long</string>
+    <string>habitat_sample</string>
+  </sourceIds>
+  <fileName>TickNonAgg</fileName>
+  <addTimeStamp>true</addTimeStamp>
+</repast.simphony.data2.engine.FileSinkDescriptor>
