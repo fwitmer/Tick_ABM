@@ -216,7 +216,11 @@ public abstract class Tick {
 				if(attached) 
 					break;
 				// fed and ready to molt
-				molt();
+				if (has_fed) {
+					molt();
+					break;
+				}
+				
 				break;
 			case "nymph":
 				if (!has_fed && lifecycle_counter > NYMPH_LENGTH) {
@@ -227,8 +231,11 @@ public abstract class Tick {
 				if(attached)
 					break;
 				
-				molt();
-				break;
+				
+				if (has_fed) {
+					molt();
+					break;
+				}
 			case "adult": // TODO: need to handle adult detachment behaviors here
 				if(female) {
 					// TODO: female behaviors happen here
