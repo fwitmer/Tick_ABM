@@ -178,6 +178,7 @@ public abstract class Tick {
 			}
 			// if we got here, tick is hungry and found an appropriate host
 			attached = true;
+			has_fed = true;
 			this.host = host;
 			host.add_tick(this);
 			return true;
@@ -254,7 +255,7 @@ public abstract class Tick {
 					break;
 				
 				
-				if (has_fed) {
+				if(has_fed) {
 					molt();
 					break;
 				}
