@@ -131,6 +131,7 @@ public abstract class Tick {
 		
 		if (Math.random() < (prob_death_per_day * 275) )
 			die();
+		lifecycle_counter += 275;
 		return;
 	}
 	
