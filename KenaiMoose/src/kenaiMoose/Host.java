@@ -95,10 +95,15 @@ public abstract class Host {
 	
 	public void add_tick(Tick tick) {
 		tick_list.add(tick);
+		num_infecting_ticks++;
 	}
 	
 	public void remove_tick(Tick tick) {
 		tick_list.remove(tick);
+		num_infecting_ticks--;
+		if (num_infecting_ticks <= 0) {
+			infection_zone.setInfected(false);
+		}
 	}
 	
 	
