@@ -316,6 +316,9 @@ public abstract class Tick {
 	}
 	
 	public void die() {
+		if (attached) {
+			detach();
+		}
 		context.remove(this);
 		return;
 	}
