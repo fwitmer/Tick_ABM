@@ -287,6 +287,7 @@ public abstract class Tick {
 	
 	private void hatch() {
 		lifecycle_counter = 0;
+		has_fed = false;
 		life_stage = "larva";
 		set_attach_length(life_stage);
 		return;
