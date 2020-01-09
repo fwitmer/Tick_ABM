@@ -264,13 +264,14 @@ public abstract class Tick {
 					break;
 				}
 			case "adult": 
+				// female behaviors are fairly simple - just need to check for mortality
 				if(female) {
-					// TODO: female behaviors happen here
-					if (!has_fed && lifecycle_counter > ADULT_LENGTH) {
+					if (lifecycle_counter > ADULT_LENGTH) {
 						die();
 						return;
 					}
 				}
+				// male behaviors - if attached, search for a viable mate
 				else {
 					if (lifecycle_counter > ADULT_LENGTH) {
 						die();
