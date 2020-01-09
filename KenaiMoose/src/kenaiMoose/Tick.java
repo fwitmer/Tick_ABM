@@ -44,6 +44,7 @@ public abstract class Tick {
 	protected static int NYMPH_FEED_LENGTH; // nymphal length of attachment for feeding
 	protected static int ADULT_LENGTH; // average length of time before adult mortality
 	protected static int ADULT_FEED_LENGTH; // adult length of attachment for feeding (females only)
+	protected static int EGG_COUNT;
 	protected int lifecycle_counter; // basic counter used to count steps in all stages of lifecycle behaviors
 	protected boolean has_fed; // marker for whether or not tick has successfully fed at current life stage
 	
@@ -262,7 +263,7 @@ public abstract class Tick {
 					molt();
 					break;
 				}
-			case "adult": // TODO: need to handle adult detachment behaviors here
+			case "adult": 
 				if(female) {
 					// TODO: female behaviors happen here
 					if (!has_fed && lifecycle_counter > ADULT_LENGTH) {
@@ -312,10 +313,7 @@ public abstract class Tick {
 	}
 	
 	// TODO: implement this
-	private void mate() {
-		die();
-		return;
-	}
+	protected abstract void mate();
 	
 	public void die() {
 		if (attached) {
