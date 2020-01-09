@@ -2,6 +2,9 @@ package kenaiMoose;
 
 import java.util.Random;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Point;
+
 public class IxPacificus extends Tick {
 	
 	/*
@@ -29,6 +32,7 @@ public class IxPacificus extends Tick {
 		NYMPH_LENGTH = 450;
 		NYMPH_FEED_LENGTH = 7;
 		ADULT_LENGTH = 365;
+		EGG_COUNT = 3000;
 	}
 	
 	
@@ -46,6 +50,26 @@ public class IxPacificus extends Tick {
 				break;
 			default:
 				break;
+		}
+	}
+	
+	protected void mate() {
+		// males die after mating
+		if (!female) {
+			detach();
+			die();
+		}
+		// female behavior
+		else {
+			detach(); // start by dropping off host
+			Coordinate coord = getCoord();
+			Point curr_loc = geoFac.createPoint(coord);
+			for (int i = 0; i < EGG_COUNT; i++) {
+				IxPacificus new_tick = new IxPacificus("Child " + i + " of " + name, "egg");
+				context.add(new_tick);
+				geography.move(new_tick, curr_loc);
+			}
+			die(); // die after laying eggs
 		}
 	}
 
