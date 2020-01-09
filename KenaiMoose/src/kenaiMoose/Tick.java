@@ -272,13 +272,18 @@ public abstract class Tick {
 					}
 				}
 				else {
-					// TODO: male behaviors happen here (does not feed)
 					if (lifecycle_counter > ADULT_LENGTH) {
 						die();
 						return;
 					}
 					if (attached) {
-						// TODO: need to look for a mate here, continue until dying
+						for(Tick tick : host.tick_list) {
+							  if (tick.female && tick.has_fed) {
+							    mate();
+							    tick.mate();
+							    break;
+							  }
+						}
 						break;
 					}
 				}
