@@ -19,8 +19,8 @@ import repast.simphony.util.ContextUtils;
 public abstract class Tick {
 	
 	// variables for holding the framework objects
-	protected Context context;
-	protected Geography geography;
+	protected static Context context;
+	protected static Geography geography;
 	protected GeometryFactory geoFac = new GeometryFactory();
 	protected static GridCoverage2D suitability_raster;
 	
@@ -85,6 +85,8 @@ public abstract class Tick {
 	
 	
 	public Coordinate getCoord() {
+		System.out.println("Getting coord for: " + name);
+		System.out.println(geography.getGeometry(this).toString());
 		return new Coordinate(geography.getGeometry(this).getCoordinate());
 	}
 	
