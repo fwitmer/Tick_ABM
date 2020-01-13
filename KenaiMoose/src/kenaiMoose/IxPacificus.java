@@ -63,9 +63,10 @@ public class IxPacificus extends Tick {
 		else {
 			detach(); // start by dropping off host
 			Coordinate coord = getCoord();
-			Point curr_loc = geoFac.createPoint(coord);
+			
 			for (int i = 0; i < EGG_COUNT; i++) {
 				IxPacificus new_tick = new IxPacificus("Child " + i + " of " + name, "egg");
+				Point curr_loc = geoFac.createPoint(coord);
 				context.add(new_tick);
 				geography.move(new_tick, curr_loc);
 			}
