@@ -85,8 +85,6 @@ public abstract class Tick {
 	
 	
 	public Coordinate getCoord() {
-		System.out.println("Getting coord for: " + name);
-		System.out.println(geography.getGeometry(this).toString());
 		return new Coordinate(geography.getGeometry(this).getCoordinate());
 	}
 	
@@ -211,12 +209,10 @@ public abstract class Tick {
 					hatch();
 				break;
 			case "larva":
-				// didn't feed in time, die
 				if (lifecycle_counter > LARVA_LENGTH) {
 					molt();
 					break;
 				}
-				
 				break;
 			case "nymph":
 				if (lifecycle_counter > NYMPH_LENGTH) {
