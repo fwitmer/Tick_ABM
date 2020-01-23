@@ -165,34 +165,9 @@ public abstract class Tick {
 	
 	// Logic for attaching to Host, expected to be called by the Host to be infected
 	public boolean attach(Host host) {
-		if (!has_fed) {
-			switch(life_stage) {
-				case "larva": // don't attach to Moose
-					if (!(host instanceof SmHost))
-						return false;
-					break;
-				case "nymph": // don't attach to Moose
-					if (!(host instanceof SmHost))
-						return false;
-					break;
-				case "adult": // preference for large mammals
-					if (!(host instanceof Moose))
-						return false;
-					break;
-				default: // egg doesn't attach
-					return false;
-			}
-			// if we got here, tick is hungry and found an appropriate host
-			attached = true;
-			has_fed = true;
-			this.host = host;
-			host.add_tick(this);
-			return true;
-			//System.out.println(name + " attached to " + host.getName());
-		}
-		// adult males will attach regardless
-		else if (life_stage.equals("adult") && !female) {
-			attached = true;
+		int num_ticks = host.tick_list.size();
+		double prob = 1 / (num_ticks + 2);
+		if (Math.random() < prob) {
 			this.host = host;
 			host.add_tick(this);
 			return true;
