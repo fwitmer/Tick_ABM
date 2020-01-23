@@ -180,6 +180,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		}
 		System.out.println(cnt + " Tick agents created.");
 		
+		/*
 		//creating SmHost agents 
 		cnt = 0;
 		for (Coordinate coord : voleCoords) {
@@ -206,6 +207,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			
 			//TODO set boundary here? Same as moose boundary, what about buffer as a boundary?
 		}
+		*/
 		
 
 		
