@@ -42,19 +42,16 @@ public abstract class Host {
 	protected double infection_radius;
 	protected Envelope infection_area;
 	protected InfectionZone infection_zone;
-	protected int num_infecting_ticks;
 	protected ArrayList<Tick> tick_list;
 	
 	public Host() {
 		this.name = "No name";	
-		this.num_infecting_ticks = 0;
 		this.is_infected = false;
 	}
 	
 	// Giving each Host a unique name for identification/tracking purposes
 	public Host(String name) {
 		this.name = name;
-		this.num_infecting_ticks = 0;
 		this.is_infected = false;
 		tick_list = new ArrayList<Tick>();
 	}
@@ -95,13 +92,11 @@ public abstract class Host {
 	
 	public void add_tick(Tick tick) {
 		tick_list.add(tick);
-		num_infecting_ticks++;
 	}
 	
 	public void remove_tick(Tick tick) {
 		tick_list.remove(tick);
-		num_infecting_ticks--;
-		if (num_infecting_ticks <= 0) {
+		if (tick_list.size() <= 0) {
 			infection_zone.setInfected(false);
 		}
 	}
@@ -182,16 +177,16 @@ public abstract class Host {
 	protected void processInfections(List<Tick> tickList) {
 		if (tickList.size() > 0) {
 			for (Tick tick : tickList) {
-				if(tick.attach(this))
-					num_infecting_ticks++;
+				tick.attach(this);
 			}
 		}
 		// Update color of InfectionZone based on infections
-		if (num_infecting_ticks > 0) {
+		if (tick_list.size() > 0) {
 			is_infected = true;
 			infection_zone.setInfected(true);
 		}
-		else if (num_infecting_ticks == 0) {
+		
+		else if (tick_list.size() == 0) {
 			is_infected = false;
 			infection_zone.setInfected(false);
 		}
