@@ -212,34 +212,18 @@ public abstract class Tick {
 				break;
 			case "larva":
 				// didn't feed in time, die
-				if (!has_fed && lifecycle_counter > LARVA_LENGTH) {
-					die();
-					return;
-				}
-				// still feeding, do nothing this step
-				if(attached) 
-					break;
-				// fed and ready to molt
-				if (has_fed) {
+				if (lifecycle_counter > LARVA_LENGTH) {
 					molt();
 					break;
 				}
 				
 				break;
 			case "nymph":
-				if (!has_fed && lifecycle_counter > NYMPH_LENGTH) {
-					die();
-					return;
-				}
-				
-				if(attached)
-					break;
-				
-				
-				if(has_fed) {
+				if (lifecycle_counter > NYMPH_LENGTH) {
 					molt();
 					break;
 				}
+				break;
 			case "adult": 
 				// female behaviors are fairly simple - just need to check for mortality
 				if(female) {
