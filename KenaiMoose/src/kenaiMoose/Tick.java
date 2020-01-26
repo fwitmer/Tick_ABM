@@ -163,12 +163,16 @@ public abstract class Tick {
 	
 	// Logic for attaching to Host, expected to be called by the Host to be infected
 	public boolean attach(Host host) {
-		int num_ticks = host.tick_list.size();
-		double prob = 1 / (num_ticks + 2);
-		if (Math.random() < prob) {
-			this.host = host;
-			host.add_tick(this);
-			return true;
+		// only adults and nymphs should attach
+		if (this.life_stage.equals("adult")) {
+			int num_ticks = host.tick_list.size();
+			double prob = 1.0 / (num_ticks + 2);
+			if (Math.random() < prob) {
+				attached = true;
+				this.host = host;
+				host.add_tick(this);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -236,7 +240,7 @@ public abstract class Tick {
 					}
 					if (attached) {
 						for(Tick tick : host.tick_list) {
-							  if (tick.female && tick.has_fed) {
+							  if (tick.female) {
 							    mate();
 							    tick.mate();
 							    break;

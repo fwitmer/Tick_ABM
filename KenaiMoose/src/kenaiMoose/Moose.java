@@ -67,7 +67,6 @@ public class Moose extends Host {
 		Coordinate test_coord = getCoord();
 		Point test_point = getPoint();
 		
-		int x = 0; // Counter for processing behavioral attempts
 		// Checking if we went out of bounds and adjusting
  /* Geometry checking method for boundary correction, very expensive!
 		if (!test_point.within(boundary)) {
