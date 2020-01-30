@@ -62,16 +62,13 @@ public class IxPacificus extends Tick {
 		// female behavior
 		else {
 			detach(); // start by dropping off host
-			Coordinate coord = getCoord();
-			
-			for (int i = 0; i < EGG_COUNT; i++) {
-				IxPacificus new_tick = new IxPacificus("Child " + i + " of " + name, "egg");
-				Point curr_loc = geoFac.createPoint(coord);
-				context.add(new_tick);
-				geography.move(new_tick, curr_loc);
-			}
-			die(); // die after laying eggs
+			laying_eggs = true;
+			eggs_remaining = EGG_COUNT;
+			child_count = 0;
+			lay_eggs(); // need to do the first call of laying eggs
+			return;
 		}
 	}
+	
 
 }

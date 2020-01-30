@@ -36,6 +36,9 @@ public abstract class Tick {
 	// life cycle variables
 	protected static String START_LIFE_CYCLE; // static variable for defining what stage Ticks should start at during init
 	protected boolean female;  // true if tick is female
+	protected boolean laying_eggs;
+	protected int eggs_remaining;
+	protected int child_count;
 	protected String life_stage; // holder state in life stage
 	protected static int EGG_LENGTH; // average length of time before egg hatches
 	protected static int LARVA_LENGTH; // average length of time before larval mortality
@@ -53,9 +56,11 @@ public abstract class Tick {
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
+		child_count = 0;
 		attached = false;
 		host = null;
 		has_fed = false;
+		laying_eggs = false;
 		life_stage = START_LIFE_CYCLE;
 	}
 	
@@ -66,9 +71,11 @@ public abstract class Tick {
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
+		child_count = 0;
 		attached = false;
 		host = null;
 		has_fed = false;
+		laying_eggs = false;
 	}
 	
 	@ScheduledMethod(start = 0)
@@ -231,6 +238,9 @@ public abstract class Tick {
 						die();
 						return;
 					}
+					if (laying_eggs) {
+						lay_eggs();
+					}
 				}
 				// male behaviors - if attached, search for a viable mate
 				else {
@@ -281,6 +291,22 @@ public abstract class Tick {
 	
 	// TODO: implement this
 	protected abstract void mate();
+	protected void lay_eggs() {
+		
+		if (eggs_remaining > 0) {
+			Coordinate coord = getCoord();
+			for (int i = 0; i < 100 && eggs_remaining > 0; i++) {
+				IxPacificus new_tick = new IxPacificus("Child " + child_count + " of " + name, "egg");
+				child_count++;
+				eggs_remaining--;
+				Point curr_loc = geoFac.createPoint(coord);
+				context.add(new_tick);
+				geography.move(new_tick, curr_loc);
+			}
+		}
+		else
+			die();
+	}
 	
 	public void die() {
 		if (attached) {
