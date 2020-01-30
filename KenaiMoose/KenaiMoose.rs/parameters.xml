@@ -15,11 +15,6 @@
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 	/>
 	
-	<parameter name="small_host_density" displayName="Small Host Density (100 per sq. kilometer)" type="double"
-		isReadOnly="false"
-		defaultValue="1.0"
-		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
-	/>
 	
 	<parameter name="tick_lifestage" displayName="Tick Life Stage" type="string"
 		isReadOnly="false"

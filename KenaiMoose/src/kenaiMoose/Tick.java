@@ -19,8 +19,8 @@ import repast.simphony.util.ContextUtils;
 public abstract class Tick {
 	
 	// variables for holding the framework objects
-	protected Context context;
-	protected Geography geography;
+	protected static Context context;
+	protected static Geography geography;
 	protected GeometryFactory geoFac = new GeometryFactory();
 	protected static GridCoverage2D suitability_raster;
 	
@@ -36,14 +36,18 @@ public abstract class Tick {
 	// life cycle variables
 	protected static String START_LIFE_CYCLE; // static variable for defining what stage Ticks should start at during init
 	protected boolean female;  // true if tick is female
+	protected boolean laying_eggs;
+	protected int eggs_remaining;
+	protected int child_count;
 	protected String life_stage; // holder state in life stage
-	protected int EGG_LENGTH; // average length of time before egg hatches
-	protected int LARVA_LENGTH; // average length of time before larval mortality
-	protected int LARVA_FEED_LENGTH; // larval length of attachment for feeding
-	protected int NYMPH_LENGTH; // average length of time before nympth mortality
-	protected int NYMPH_FEED_LENGTH; // nymphal length of attachment for feeding
-	protected int ADULT_LENGTH; // average length of time before adult mortality
-	protected int ADULT_FEED_LENGTH; // adult length of attachment for feeding (females only)
+	protected static int EGG_LENGTH; // average length of time before egg hatches
+	protected static int LARVA_LENGTH; // average length of time before larval mortality
+	protected static int LARVA_FEED_LENGTH; // larval length of attachment for feeding
+	protected static int NYMPH_LENGTH; // average length of time before nympth mortality
+	protected static int NYMPH_FEED_LENGTH; // nymphal length of attachment for feeding
+	protected static int ADULT_LENGTH; // average length of time before adult mortality
+	protected static int ADULT_FEED_LENGTH; // adult length of attachment for feeding (females only)
+	protected static int EGG_COUNT;
 	protected int lifecycle_counter; // basic counter used to count steps in all stages of lifecycle behaviors
 	protected boolean has_fed; // marker for whether or not tick has successfully fed at current life stage
 	
@@ -52,22 +56,26 @@ public abstract class Tick {
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
+		child_count = 0;
 		attached = false;
 		host = null;
 		has_fed = false;
+		laying_eggs = false;
 		life_stage = START_LIFE_CYCLE;
 	}
 	
-	// additional constructor for defining initial life stage
+	// additional constructor for defining life stage
 	public Tick(String name, String life_stage) {
 		this.name = name;
 		this.life_stage = life_stage;
 		determine_sex();
 		lifecycle_counter = 0;
 		attach_count = 0;
+		child_count = 0;
 		attached = false;
 		host = null;
 		has_fed = false;
+		laying_eggs = false;
 	}
 	
 	@ScheduledMethod(start = 0)
@@ -80,6 +88,10 @@ public abstract class Tick {
 	public static void setSuitability(GridCoverage2D raster) {
 		suitability_raster = raster;
 		return;
+	}
+	
+	public boolean is_laying_eggs() {
+		return laying_eggs;
 	}
 	
 	
@@ -131,6 +143,7 @@ public abstract class Tick {
 		
 		if (Math.random() < (prob_death_per_day * 275) )
 			die();
+		lifecycle_counter += 275;
 		return;
 	}
 	
@@ -161,35 +174,16 @@ public abstract class Tick {
 	
 	// Logic for attaching to Host, expected to be called by the Host to be infected
 	public boolean attach(Host host) {
-		if (!has_fed) {
-			switch(life_stage) {
-				case "larva": // don't attach to Moose
-					if (!(host instanceof SmHost))
-						return false;
-					break;
-				case "nymph": // don't attach to Moose
-					if (!(host instanceof SmHost))
-						return false;
-					break;
-				case "adult": // will attach to both
-					break;
-				default: // egg doesn't attach
-					return false;
+		// only adults and nymphs should attach
+		if (this.life_stage.equals("adult")) {
+			int num_ticks = host.tick_list.size();
+			double prob = 1.0 / (num_ticks + 2);
+			if (Math.random() < prob) {
+				attached = true;
+				this.host = host;
+				host.add_tick(this);
+				return true;
 			}
-			// if we got here, tick is hungry and found an appropriate host
-			attached = true;
-			has_fed = true;
-			this.host = host;
-			host.add_tick(this);
-			return true;
-			//System.out.println(name + " attached to " + host.getName());
-		}
-		// adult males will attach regardless
-		else if (life_stage.equals("adult") && !female) {
-			attached = true;
-			this.host = host;
-			host.add_tick(this);
-			return true;
 		}
 		return false;
 	}
@@ -230,51 +224,42 @@ public abstract class Tick {
 					hatch();
 				break;
 			case "larva":
-				// didn't feed in time, die
-				if (!has_fed && lifecycle_counter > LARVA_LENGTH) {
-					die();
-					return;
-				}
-				// still feeding, do nothing this step
-				if(attached) 
-					break;
-				// fed and ready to molt
-				if (has_fed) {
+				if (lifecycle_counter > LARVA_LENGTH) {
 					molt();
 					break;
 				}
-				
 				break;
 			case "nymph":
-				if (!has_fed && lifecycle_counter > NYMPH_LENGTH) {
-					die();
-					return;
-				}
-				
-				if(attached)
-					break;
-				
-				
-				if(has_fed) {
+				if (lifecycle_counter > NYMPH_LENGTH) {
 					molt();
 					break;
 				}
-			case "adult": // TODO: need to handle adult detachment behaviors here
+				break;
+			case "adult": 
+				// female behaviors are fairly simple - just need to check for mortality
 				if(female) {
-					// TODO: female behaviors happen here
-					if (!has_fed && lifecycle_counter > ADULT_LENGTH) {
+					if (lifecycle_counter > ADULT_LENGTH) {
 						die();
 						return;
 					}
+					if (laying_eggs) {
+						lay_eggs();
+					}
 				}
+				// male behaviors - if attached, search for a viable mate
 				else {
-					// TODO: male behaviors happen here (does not feed)
 					if (lifecycle_counter > ADULT_LENGTH) {
 						die();
 						return;
 					}
 					if (attached) {
-						// TODO: need to look for a mate here, continue until dying
+						for(Tick tick : host.tick_list) {
+							  if (tick.female) {
+							    mate();
+							    tick.mate();
+							    break;
+							  }
+						}
 						break;
 					}
 				}
@@ -309,12 +294,31 @@ public abstract class Tick {
 	}
 	
 	// TODO: implement this
-	private void mate() {
-		die();
-		return;
+	protected abstract void mate();
+	protected void lay_eggs() {
+		
+		if (eggs_remaining > 0) {
+			Coordinate coord = getCoord();
+			for (int i = 0; i < 100 && eggs_remaining > 0; i++) {
+				IxPacificus new_tick = new IxPacificus("Child " + child_count + " of " + name, "egg");
+				child_count++;
+				eggs_remaining--;
+				Point curr_loc = geoFac.createPoint(coord);
+				context.add(new_tick);
+				geography.move(new_tick, curr_loc);
+			}
+			//System.out.println(name + " has " + eggs_remaining + " eggs left.");
+		}
+		else {
+			//System.out.println(name + " has layed all their eggs.");
+			die();
+		}
 	}
 	
 	public void die() {
+		if (attached) {
+			detach();
+		}
 		context.remove(this);
 		return;
 	}

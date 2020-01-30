@@ -72,7 +72,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		int numMoose = getNumAgents(params, boundary, "large_host_density");
 		int numTicks = (Integer) params.getValue("tick_count");
-		int numVoles = getNumAgents(params, boundary, "small_host_density");
+		//int numVoles = getNumAgents(params, boundary, "small_host_density");
 		String start_lifestage = params.getValueAsString("tick_lifestage");
 		
 //		Tick.setStartStage(start_lifestage);
@@ -81,7 +81,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
 		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numTicks);
-		List<Coordinate> voleCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numVoles);
+		//List<Coordinate> voleCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numVoles);
 		
 		GridCoverage2D landuse_coverage = null;
 		GridCoverage2D habitat_suitability_coverage = null;
@@ -180,6 +180,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		}
 		System.out.println(cnt + " Tick agents created.");
 		
+		/*
 		//creating SmHost agents 
 		cnt = 0;
 		for (Coordinate coord : voleCoords) {
@@ -206,6 +207,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			
 			//TODO set boundary here? Same as moose boundary, what about buffer as a boundary?
 		}
+		*/
 		
 
 		
