@@ -303,9 +303,12 @@ public abstract class Tick {
 				context.add(new_tick);
 				geography.move(new_tick, curr_loc);
 			}
+			//System.out.println(name + " has " + eggs_remaining + " eggs left.");
 		}
-		else
+		else {
+			//System.out.println(name + " has layed all their eggs.");
 			die();
+		}
 	}
 	
 	public void die() {
