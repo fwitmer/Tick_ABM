@@ -177,7 +177,8 @@ public abstract class Host {
 	protected void processInfections(List<Tick> tickList) {
 		if (tickList.size() > 0) {
 			for (Tick tick : tickList) {
-				tick.attach(this);
+				if (!tick.is_laying_eggs())
+					tick.attach(this);
 			}
 		}
 		// Update color of InfectionZone based on infections

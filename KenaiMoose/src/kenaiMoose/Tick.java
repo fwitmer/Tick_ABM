@@ -90,6 +90,10 @@ public abstract class Tick {
 		return;
 	}
 	
+	public boolean is_laying_eggs() {
+		return laying_eggs;
+	}
+	
 	
 	public Coordinate getCoord() {
 		return new Coordinate(geography.getGeometry(this).getCoordinate());
