@@ -80,7 +80,10 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
-		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numTicks);
+		List<Coordinate> tickSpawn = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
+		Point spawn_point = geoFac.createPoint(tickSpawn.get(0));
+		Geometry spawn_zone = GeometryUtil.generateBuffer(geography, spawn_point, 500); // localize tick spawn into tighter area
+		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(spawn_zone, numTicks);
 		//List<Coordinate> voleCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numVoles);
 		
 		GridCoverage2D landuse_coverage = null;
