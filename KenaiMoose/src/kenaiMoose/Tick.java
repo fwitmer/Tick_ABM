@@ -324,7 +324,7 @@ public abstract class Tick {
 		return;
 	}
 	
-	public void set_habitat_sample(double value) {
+	public static void set_habitat_sample(double value) {
 		habitat_sample = value;
 	}
 	
