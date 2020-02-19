@@ -329,9 +329,15 @@ public abstract class Tick {
 	}
 	
 	public double habitat_sample() {
-		Coordinate coord = new Coordinate(geography.getGeometry(this).getCoordinate());
-		DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
-		double[] sample = (double[]) suitability_raster.evaluate(position);
-		return sample[0];
+		// if habitat_sample > 0, we're using a constant parameterized habitat sample value
+		if (habitat_sample > 0)
+			return habitat_sample;
+		// using habitat suitability raster
+		else {
+			Coordinate coord = new Coordinate(geography.getGeometry(this).getCoordinate());
+			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+			double[] sample = (double[]) suitability_raster.evaluate(position);
+			return sample[0];
+		}
 	}
 }
