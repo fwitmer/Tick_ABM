@@ -97,14 +97,22 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	} catch (IOException e) {
 		System.out.println("Error loading NLCD landcover raster.");
 	}
-	
-		// Loading habitat suitability raster - this will be parameterized in future implementations	
-	try {
-		habitat_suitability_coverage = loadRaster("./data/brt_prob_map_NAD83.tif", context);
-		geography.addCoverage("Habitat Suitability", habitat_suitability_coverage);
-	} catch (IOException e) {
-		System.out.println("Error loading habitat suitability raster.");
-	}
+		
+		// Setting habitat suitability settings - if value is < 0 we'll load the raster, otherwise use constant value
+		// specified by the parameter sweep
+		double habitat_sample = (double)params.getValue("habitat_suitability");
+		if (habitat_sample > 0.0) {
+			Tick.set_habitat_sample(habitat_sample);
+		}
+		else {
+			Tick.set_habitat_sample(-1);
+			try {
+				habitat_suitability_coverage = loadRaster("./data/brt_prob_map_NAD83.tif", context);
+				geography.addCoverage("Habitat Suitability", habitat_suitability_coverage);
+			} catch (IOException e) {
+				System.out.println("Error loading habitat suitability raster.");
+			}
+		}
 		
 	
 		// Loading rasterized geospatial boundary for optimization purposes
