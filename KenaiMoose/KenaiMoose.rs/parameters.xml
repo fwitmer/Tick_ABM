@@ -21,9 +21,9 @@
 		defaultValue="egg"
 	/>
 	
-	<parameter name="habitat_suitability_layer" displayName="Tick Habitat Suitability Raster" type="string"
+	<parameter name="habitat_suitability" displayName="Tick Habitat Suitability Raster" type="double"
 		isReadOnly="false"
-		defaultValue=""
+		defaultValue="-1"
 	/>
 
 </parameters>
