@@ -32,6 +32,7 @@ public abstract class Tick {
 	protected int attach_length; // must be defined by derived class
 	protected int attach_delay; // must be defined by derived class
 	protected Host host;
+	protected static double habitat_sample;
 	
 	// life cycle variables
 	protected static String START_LIFE_CYCLE; // static variable for defining what stage Ticks should start at during init
@@ -321,6 +322,10 @@ public abstract class Tick {
 		}
 		context.remove(this);
 		return;
+	}
+	
+	public void set_habitat_sample(double value) {
+		habitat_sample = value;
 	}
 	
 	public double habitat_sample() {
