@@ -80,10 +80,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
-		List<Coordinate> tickSpawn = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
-		Point spawn_point = geoFac.createPoint(tickSpawn.get(0));
-		Geometry spawn_zone = GeometryUtil.generateBuffer(geography, spawn_point, 500); // localize tick spawn into tighter area
-		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(spawn_zone, numTicks);
 		//List<Coordinate> voleCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numVoles);
 		
 		GridCoverage2D landuse_coverage = null;
@@ -164,6 +160,21 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		// Create Tick agents
 			// Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
 			// int mooseCount = (Integer) params.getValue("moose_count"); // establish max Moose count from RunEnvironment
+		
+		// Generating spawn area for beginning Tick population to localize in
+		List<Coordinate> tickSpawn = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
+		DirectPosition position = new DirectPosition2D(geography.getCRS(), tickSpawn.get(0).x, tickSpawn.get(0).y);
+        int[] sample = (int[]) landuse_coverage.evaluate(position); // TODO: Look into why there's two evaluations here
+        sample = landuse_coverage.evaluate(position, sample);
+        while (sample[0] == 11 || sample[0] == 12) {
+        	tickSpawn = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
+        	position = new DirectPosition2D(geography.getCRS(), tickSpawn.get(0).x, tickSpawn.get(0).y);
+        	sample = (int[]) landuse_coverage.evaluate(position);
+        	sample = landuse_coverage.evaluate(position, sample);
+        }
+		Point spawn_point = geoFac.createPoint(tickSpawn.get(0));
+		Geometry spawn_zone = GeometryUtil.generateBuffer(geography, spawn_point, 500); // localize tick spawn into tighter area
+		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(spawn_zone, numTicks);
 		cnt = 0;
 		System.out.println("Creating " + numTicks + " Tick agents...");
 		for (Coordinate coord : tickCoords) {
@@ -172,13 +183,13 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			context.add(tick);
 			
 			// Preparing to check for creation in water
-			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
-	        int[] sample = (int[]) landuse_coverage.evaluate(position);
+			position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+	        sample = (int[]) landuse_coverage.evaluate(position); // TODO: Look into why there's two evaluations here
 	        sample = landuse_coverage.evaluate(position, sample);
 			
 	        // Checking for creation in water - if in water, keep creating new Coordinates until one is found not in water
 	        while (sample[0] == 11 || sample[0] == 12) {
-	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
+	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(spawn_zone, 1);
 	        	coord = new_coord.get(0);
         		position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
         		sample = landuse_coverage.evaluate(position, sample);
