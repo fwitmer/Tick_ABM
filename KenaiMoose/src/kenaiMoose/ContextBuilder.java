@@ -48,7 +48,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	
 	public Context build(Context context) {
 		System.setProperty("org.geotools.referencing.forceXY", "true"); // suppress warnings caused by the visualized environment
-		RunEnvironment.getInstance().endAt(1825); // scheduling runs to end after 5 years worth of ticks
+		RunEnvironment.getInstance().endAt(450); // scheduling runs to end after 5 years of steps (450 steps due to 90 day active period)
 		RunEnvironment.getInstance().getCurrentSchedule().getTickCount(); // use to get run's current tick count
 		RepastEssentials.GetTickCount(); // another method of getting tick count
 		Parameters params = RunEnvironment.getInstance().getParameters(); // get RunEnvironment specified params
