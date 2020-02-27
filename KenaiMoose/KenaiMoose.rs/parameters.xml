@@ -24,6 +24,7 @@
 	<parameter name="habitat_suitability" displayName="Tick Habitat Suitability Raster" type="double"
 		isReadOnly="false"
 		defaultValue="-1"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 	/>
 
 </parameters>
