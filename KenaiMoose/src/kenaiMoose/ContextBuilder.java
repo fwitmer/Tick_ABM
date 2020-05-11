@@ -207,6 +207,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			count++;
 			
 		}
+		System.out.println(count + " " + agents.get(count).getClass().getName() + " agents created.");
 		return true;
 	}
 	
