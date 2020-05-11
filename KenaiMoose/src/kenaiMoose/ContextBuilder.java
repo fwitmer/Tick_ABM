@@ -164,8 +164,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			
 			// Preparing to check for creation in water
 			position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
-	        sample = (int[]) landuse_coverage.evaluate(position); // TODO: Look into why there's two evaluations here
-	        sample = landuse_coverage.evaluate(position, sample);
+	        sample = (int[]) landuse_coverage.evaluate(position);
 			
 	        // Checking for creation in water - if in water, keep creating new Coordinates until one is found not in water
 	        while (sample[0] == 11 || sample[0] == 12) {
@@ -175,8 +174,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
         		sample = landuse_coverage.evaluate(position, sample);
 	        }	
 			Point pnt = geoFac.createPoint(coord);
-			System.out.println("	Tick created at: " + coord.toString());
-			System.out.println("		Landuse value: " + sample[0]);
+			
 			geography.move(tick, pnt);
 			cnt++;
 		}
@@ -187,6 +185,29 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		loadFeatures("data/KenaiWatershed3D_NAD83.shp", context, geography);
 		
 		return context;
+	}
+	
+	private boolean move_agents(List<Coordinate> coords, List<Object> agents, Geography geography, GridCoverage2D landuse_coverage, Geometry boundary) {
+		GeometryFactory geoFac = new GeometryFactory();
+		int count = 0;
+		for (Coordinate coord : coords) {
+			DirectPosition pos = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+			int[] sample = (int[]) landuse_coverage.evaluate(pos);
+			
+			while (sample[0] == 11 || sample[0] == 12) {
+	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
+	        	coord = new_coord.get(0);
+        		pos = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
+        		sample = landuse_coverage.evaluate(pos, sample);
+	        }
+			Point pnt = geoFac.createPoint(coord);
+			System.out.println("	" + agents.get(count).getClass().getName() + " at: " + coord.toString());
+			System.out.println("		Landuse value: " + sample[0]);
+			geography.move(agents.get(count), pnt);
+			count++;
+			
+		}
+		return true;
 	}
 	
 	// Load GeoTiff rasters and convert to a 2DGridCoverage to be returned
