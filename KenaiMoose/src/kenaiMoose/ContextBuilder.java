@@ -182,41 +182,10 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		}
 		System.out.println(cnt + " Tick agents created.");
 		
-		/*
-		//creating SmHost agents 
-		cnt = 0;
-		for (Coordinate coord : voleCoords) {
-			SmHost smHost = new SmHost("SmHost" + cnt);
-			context.add(smHost); //add each new agent to the context
-			
-			// Preparing to check for creation in water
-			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
-	        int[] sample = (int[]) landuse_coverage.evaluate(position);
-	        sample = landuse_coverage.evaluate(position, sample);
-			
-	        // Checking for creation in water - if in water, keep creating new Coordinates until one is found not in water
-	        while (sample[0] == 11 || sample[0] == 12) {
-	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
-	        	coord = new_coord.get(0);
-        		position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
-        		sample = landuse_coverage.evaluate(position, sample);
-	        }	
-			
-	      //making point geometry for agent and moving it there
-			Point pnt = geoFac.createPoint(coord); 
-			geography.move(smHost, pnt);
-			cnt++;
-			
-			//TODO set boundary here? Same as moose boundary, what about buffer as a boundary?
-		}
-		*/
-		
-
 		
 		// Loading shapefile features for visualization
 		loadFeatures("data/KenaiWatershed3D_NAD83.shp", context, geography);
 		
-		//geography.setCRS("EPSG:4269"); // setting CRS to NAD83 GCS for 3D visualization on GUI
 		return context;
 	}
 	
