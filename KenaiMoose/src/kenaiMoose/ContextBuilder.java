@@ -90,11 +90,11 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			Tick.set_habitat_sample(habitat_sample);
 		}
 		else {
-			Tick.setSuitability(habitat_suitability_coverage);
 			Tick.set_habitat_sample(-1);
 			try {
 				habitat_suitability_coverage = loadRaster("./data/brt_prob_map_NAD83.tif", context);
 				geography.addCoverage("Habitat Suitability", habitat_suitability_coverage);
+				Tick.setSuitability(habitat_suitability_coverage);
 			} catch (IOException e) {
 				System.out.println("Error loading habitat suitability raster.");
 			}
@@ -114,33 +114,10 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		// Create Moose agents
 		System.out.println("Creating " + numMoose + " Moose agents...");
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
-		int cnt = 0;
-		for (Coordinate coord : mooseCoords) {
-			Moose moose = new Moose("Moose " + cnt);
-			context.add(moose);
-			
-			DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
-	        int[] sample = (int[]) landuse_coverage.evaluate(position);
-	        sample = landuse_coverage.evaluate(position, sample);
-			
-	        // Checking for creation in water - if in water, keep creating new Coordinates until one is found not in water
-	        while (sample[0] == 11 || sample[0] == 12) {
-	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
-	        	coord = new_coord.get(0);
-        		position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
-        		sample = landuse_coverage.evaluate(position, sample);
-	        }	
-			Point pnt = geoFac.createPoint(coord); // Create the Point geometry for Moose agent
-			System.out.println("	Moose created at: " + coord.toString());
-			System.out.println("		Landuse value: " + sample[0]);
-			geography.move(moose, pnt); // Moving Moose agent to Point
-			cnt++;
-		}
+		List<Object> moose = create_agents(mooseCoords.size(), "Moose", context, start_lifestage);
+		move_agents(mooseCoords, moose, geography, landuse_coverage, boundary);
 		
-		System.out.println(cnt + " Moose agents created.\n");
-		
-		// Create Tick agents
-		
+		// Create Tick agents		
 		// Generating spawn area for beginning Tick population to localize in
 		List<Coordinate> tickSpawn = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
 		DirectPosition position = new DirectPosition2D(geography.getCRS(), tickSpawn.get(0).x, tickSpawn.get(0).y);
@@ -155,31 +132,8 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		Point spawn_point = geoFac.createPoint(tickSpawn.get(0));
 		Geometry spawn_zone = GeometryUtil.generateBuffer(geography, spawn_point, 500);
 		List<Coordinate> tickCoords = GeometryUtil.generateRandomPointsInPolygon(spawn_zone, numTicks);
-		cnt = 0;
-		System.out.println("Creating " + numTicks + " Tick agents...");
-		for (Coordinate coord : tickCoords) {
-			IxPacificus tick = new IxPacificus("Tick " + cnt, start_lifestage);
-			System.out.println("\t Lifestage:" + tick.getLifestate());
-			context.add(tick);
-			
-			// Preparing to check for creation in water
-			position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
-	        sample = (int[]) landuse_coverage.evaluate(position);
-			
-	        // Checking for creation in water - if in water, keep creating new Coordinates until one is found not in water
-	        while (sample[0] == 11 || sample[0] == 12) {
-	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(spawn_zone, 1);
-	        	coord = new_coord.get(0);
-        		position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
-        		sample = landuse_coverage.evaluate(position, sample);
-	        }	
-			Point pnt = geoFac.createPoint(coord);
-			
-			geography.move(tick, pnt);
-			cnt++;
-		}
-		System.out.println(cnt + " Tick agents created.");
-		
+		List<Object> ticks = create_agents(tickCoords.size(), "Tick", context, start_lifestage);
+		move_agents(tickCoords, ticks, geography, landuse_coverage, boundary);
 		
 		// Loading shapefile features for visualization
 		loadFeatures("data/KenaiWatershed3D_NAD83.shp", context, geography);
@@ -187,13 +141,35 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		return context;
 	}
 	
-	private boolean move_agents(List<Coordinate> coords, List<Object> agents, Geography geography, GridCoverage2D landuse_coverage, Geometry boundary) {
+	private List<Object> create_agents(int num_agents, String agent, Context context, String start_lifestage) {
+		List<Object> agent_list = new ArrayList<>();
+		for (int i = 0; i < num_agents; i++) {
+			switch(agent) {
+				case "Moose":
+					Moose new_moose = new Moose("Moose " + i);
+					agent_list.add(new_moose);
+					context.add(new_moose);
+					break;
+				case "Tick":
+					IxPacificus new_tick = new IxPacificus("Tick " + i, start_lifestage);
+					agent_list.add(new_tick);
+					context.add(new_tick);
+					break;
+				default:
+					System.out.println("Invalid agent requested of create_agents()!");
+					
+			}
+		}
+		return agent_list;
+	}
+	
+	private void move_agents(List<Coordinate> coords, List<Object> agents, Geography geography, GridCoverage2D landuse_coverage, Geometry boundary) {
 		GeometryFactory geoFac = new GeometryFactory();
 		int count = 0;
 		for (Coordinate coord : coords) {
 			DirectPosition pos = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
 			int[] sample = (int[]) landuse_coverage.evaluate(pos);
-			
+			// checking for inappropriate landuse values and regenerating the point if invalid
 			while (sample[0] == 11 || sample[0] == 12) {
 	        	List<Coordinate> new_coord = GeometryUtil.generateRandomPointsInPolygon(boundary, 1);
 	        	coord = new_coord.get(0);
@@ -203,12 +179,12 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			Point pnt = geoFac.createPoint(coord);
 			System.out.println("	" + agents.get(count).getClass().getName() + " at: " + coord.toString());
 			System.out.println("		Landuse value: " + sample[0]);
+			// moving the agent to the specified location
 			geography.move(agents.get(count), pnt);
 			count++;
 			
 		}
-		System.out.println(count + " " + agents.get(count).getClass().getName() + " agents created.");
-		return true;
+		System.out.println(count + " " + agents.get(0).getClass().getName() + " agents created.");
 	}
 	
 	// Load GeoTiff rasters and convert to a 2DGridCoverage to be returned
