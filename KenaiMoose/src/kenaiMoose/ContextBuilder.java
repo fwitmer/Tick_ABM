@@ -56,11 +56,6 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		GeographyParameters geoParams = new GeographyParameters();
 		geoParams.setCrs("EPSG:4269"); // Setting NAD83 GCS (GCS of 3338 Alaska Albers PCS)
 		Geography geography = GeographyFactoryFinder.createGeographyFactory(null).createGeography("Kenai", context, geoParams);
-		//geography.setCRS("EPSG:3338"); // Alternate method of setting CRS of projection
-		
-		// Placeholder for infection Network
-		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("infection network", context, true);
-		Network network = netBuilder.buildNetwork();
 		
 		// Geometry factory
 		GeometryFactory geoFac = new GeometryFactory();
