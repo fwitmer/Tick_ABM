@@ -167,11 +167,6 @@ public abstract class Tick {
 		return host;
 	}
 	
-	public static void setStartStage(String stage) {
-		START_LIFE_CYCLE = stage;
-		return;
-	}
-	
 	
 	// Logic for attaching to Host, expected to be called by the Host to be infected
 	public boolean attach(Host host) {
