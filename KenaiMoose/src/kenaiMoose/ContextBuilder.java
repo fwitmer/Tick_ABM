@@ -70,9 +70,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		int numTicks = (Integer) params.getValue("tick_count");
 		String start_lifestage = params.getValueAsString("tick_lifestage");
 		
-		// Creating random coords in Kenai boundary
-		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
-		
+		// placeholders for coverages
 		GridCoverage2D landuse_coverage = null;
 		GridCoverage2D habitat_suitability_coverage = null;
 		GridCoverage2D boundary_coverage = null;
@@ -92,6 +90,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			Tick.set_habitat_sample(habitat_sample);
 		}
 		else {
+			Tick.setSuitability(habitat_suitability_coverage);
 			Tick.set_habitat_sample(-1);
 			try {
 				habitat_suitability_coverage = loadRaster("./data/brt_prob_map_NAD83.tif", context);
@@ -106,23 +105,15 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 	try {
 		boundary_coverage = loadRaster("./data/KenaNAD83.tif", context);
 		geography.addCoverage("Boundary Raster", boundary_coverage);
-	} catch (IOException e) {
-		System.out.println("Error loading boundary raster.");
-	}
-		
-		Tick.setSuitability(habitat_suitability_coverage);
 		Host.setBoundary(boundary);
-		
-		/* // example of how RasterLayer would work if supported by context
-		File file = new File(".data/nlcd_GCS_NAD83.tif");
-		RasterLayer landuse_raster = new RasterLayer("NLCD Landuse", file);
-		context.addValueLayer(landuse_raster); // Doens't currently support RasterLayer
-		
-		int landuse_sample = landuse_raster.getIntegerGridValue(x, y); 
-		*/
+	} 
+	catch (IOException e) {
+		System.out.println("Error loading boundary raster.");
+	}	
 		
 		// Create Moose agents
 		System.out.println("Creating " + numMoose + " Moose agents...");
+		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
 		int cnt = 0;
 		for (Coordinate coord : mooseCoords) {
 			Moose moose = new Moose("Moose " + cnt);
