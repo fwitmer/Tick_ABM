@@ -65,17 +65,13 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		List<SimpleFeature> features = loadFeaturesFromShapefile(boundaryFile);
 		Geometry boundary = (MultiPolygon)features.iterator().next().getDefaultGeometry();
 		
+		// Grabbing relevant parameters for runtime instancing
 		int numMoose = getNumAgents(params, boundary, "large_host_density");
 		int numTicks = (Integer) params.getValue("tick_count");
-		//int numVoles = getNumAgents(params, boundary, "small_host_density");
 		String start_lifestage = params.getValueAsString("tick_lifestage");
-		
-//		Tick.setStartStage(start_lifestage);
-		
 		
 		// Creating random coords in Kenai boundary
 		List<Coordinate> mooseCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numMoose);
-		//List<Coordinate> voleCoords = GeometryUtil.generateRandomPointsInPolygon(boundary, numVoles);
 		
 		GridCoverage2D landuse_coverage = null;
 		GridCoverage2D habitat_suitability_coverage = null;
