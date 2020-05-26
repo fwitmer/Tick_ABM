@@ -46,6 +46,7 @@ import repast.simphony.space.graph.Network;
 
 public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder<T> {
 	
+	// primary method for establishing the context for the simulation, required by Repast
 	public Context build(Context context) {
 		System.setProperty("org.geotools.referencing.forceXY", "true"); // suppress warnings caused by the visualized environment
 		RunEnvironment.getInstance().endAt(450); // scheduling runs to end after 5 years of steps (450 steps due to 90 day active period)
@@ -141,6 +142,7 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		return context;
 	}
 	
+	// generic shell method for creating a list of the appropriate types of agents for adding to Context and Geography
 	private List<Object> create_agents(int num_agents, String agent, Context context, String start_lifestage) {
 		List<Object> agent_list = new ArrayList<>();
 		for (int i = 0; i < num_agents; i++) {
@@ -163,6 +165,8 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 		return agent_list;
 	}
 	
+	// generic shell method for moving the created agents to their appropriate starting locations within the Geography
+	// takes a list of coordinates to attempt to spawn and a list of agents of matching size to be moved to the appropriate coordinates
 	private void move_agents(List<Coordinate> coords, List<Object> agents, Geography geography, GridCoverage2D landuse_coverage, Geometry boundary) {
 		GeometryFactory geoFac = new GeometryFactory();
 		int count = 0;
@@ -299,6 +303,8 @@ public class ContextBuilder implements repast.simphony.dataLoader.ContextBuilder
 			}
 		}
 	}
+	
+	// reprojection method for reprojecting a Geometery feature from NAD 83 GCS to Alaska Albers PCS projections
 	private Geometry reproject_geom(Geometry boundary) throws NoSuchAuthorityCodeException, FactoryException, MismatchedDimensionException, TransformException {
 		// Source: https://gis.stackexchange.com/q/134637
 		// Their source: Not sure but it works
