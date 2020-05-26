@@ -7,6 +7,7 @@ import org.geotools.geometry.DirectPosition2D;
 import org.opengis.geometry.DirectPosition;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
@@ -97,21 +98,25 @@ public abstract class Tick {
 	
 	
 	public Coordinate getCoord() {
-		return new Coordinate(geography.getGeometry(this).getCoordinate());
+		System.out.println(name + " attempting to get Coordinate:");
+		Geometry geo_geom = geography.getGeometry(this);
+		System.out.println("\t Geometry: " + geo_geom.toString());
+		Coordinate geo_coord = geo_geom.getCoordinate();
+		System.out.println("\t Coordinate: " + geo_coord.x + "," + geo_coord.y);
+		return geo_coord;
+		//return new Coordinate(geography.getGeometry(this).getCoordinate());
 	}
 	
-	//Get lat and long for data sets
-	
+	// Get lat and long for data sets
 	public double getLong() {
 		Coordinate coord = getCoord();
 		return coord.x;
 	}
-
 	public double getLat() {
 		Coordinate coord = getCoord();
 		return coord.y;
 	}
-	
+	// get lifestage of tick agent for data output
 	public String getLifestate() {
 		return this.life_stage;
 	}
@@ -289,8 +294,9 @@ public abstract class Tick {
 		}
 	}
 	
-	// TODO: implement this
+	// mating behaviors are species specific and should be implemented individually in the child classes
 	protected abstract void mate();
+	
 	protected void lay_eggs() {
 		
 		if (eggs_remaining > 0) {
@@ -312,10 +318,13 @@ public abstract class Tick {
 	}
 	
 	public void die() {
+		System.out.println(name + " dying:");
 		if (attached) {
+			System.out.println("\tHost: " + host.getName());
 			detach();
 		}
 		context.remove(this);
+		System.out.println("\tSuccessfully removed from context.");
 		return;
 	}
 	
