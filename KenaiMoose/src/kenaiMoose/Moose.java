@@ -139,6 +139,7 @@ public class Moose extends Host {
 		updateInfectionZone();
 	}
 	
+	// wrapper method for determining if passed Coordinate is within the boundary raster
 	private boolean within_bound(Coordinate coord) {
 		GridCoverage2D boundary_coverage = geography.getCoverage("Boundary Raster");
 		DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
@@ -153,6 +154,7 @@ public class Moose extends Host {
 	
 	}
 	
+	// processes all Tick agents in a list and removes them in a manner safe for multithreading
 	protected void removeTicks(ArrayList<Tick> ticks) {
 			for (Iterator<Tick> iter = (Iterator)ticks.iterator(); iter.hasNext(); ) {
 				Tick tick = (Tick)iter.next();
