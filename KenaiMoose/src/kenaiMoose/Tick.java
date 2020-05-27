@@ -53,6 +53,11 @@ public abstract class Tick {
 	protected int lifecycle_counter; // basic counter used to count steps in all stages of lifecycle behaviors
 	protected boolean has_fed; // marker for whether or not tick has successfully fed at current life stage
 	
+	// mating behaviors are species specific and should be implemented individually in the child classes
+	protected abstract void mate();
+	// Abstract methods to force setting ATTACH_LENGTH specific to species
+	protected abstract void set_attach_length(String lifecycle);
+	
 	public Tick(String name) {
 		this.name = name;
 		determine_sex();
@@ -79,7 +84,7 @@ public abstract class Tick {
 		has_fed = false;
 		laying_eggs = false;
 	}
-	
+	// initial method for establishing the context and geography static variables for the class
 	@ScheduledMethod(start = 0)
 	public void init() {
 		context = ContextUtils.getContext(this);
@@ -87,6 +92,7 @@ public abstract class Tick {
 		System.out.println(this.name + " habitat sample: " + habitat_sample());
 	}
 	
+	// set the static suitability raster layer for the class
 	public static void setSuitability(GridCoverage2D raster) {
 		suitability_raster = raster;
 		return;
@@ -96,7 +102,7 @@ public abstract class Tick {
 		return laying_eggs;
 	}
 	
-	
+	// returns the Coordinate for the current position of the agent
 	public Coordinate getCoord() {
 		Geometry geo_geom = geography.getGeometry(this);
 		System.out.println("\t Geometry: " + geo_geom.toString());
@@ -117,12 +123,29 @@ public abstract class Tick {
 		Coordinate coord = getCoord();
 		return coord.y;
 	}
-	// get lifestage of tick agent for data output
+	
 	public String getLifestate() {
 		return this.life_stage;
 	}
 	
+	public Geography getGeo() {
+		return geography;
+	}
 	
+	public boolean isAttached() {
+		return attached;
+	}
+	
+	public boolean isFemale() {
+		return female;
+	}
+	
+	public Host getHost() {
+		return host;
+	}
+	
+	
+	// primary method for Tick agents, executed every step
 	@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
 		// if Tick is attached, update position to Host's new position
@@ -142,6 +165,8 @@ public abstract class Tick {
 		
 	}
 	
+	// this method runs every 90 steps to skip the simulation forward 275 days
+	// associated habitat suitability deaths and lifecycle behaviors are also advanced 275 days
 	@ScheduledMethod(start = 90, interval = 90)
 	public void skip_inactive_period() {
 		double prob_death = 1 - habitat_sample(); 
@@ -154,25 +179,6 @@ public abstract class Tick {
 		}
 		lifecycle_counter += 275;
 		return;
-	}
-	
-	// Abstract methods to force setting ATTACH_LENGTH and ATTACH_DELAY - protected
-	protected abstract void set_attach_length(String lifecycle);
-	
-	public Geography getGeo() {
-		return geography;
-	}
-	
-	public boolean isAttached() {
-		return attached;
-	}
-	
-	public boolean isFemale() {
-		return female;
-	}
-	
-	public Host getHost() {
-		return host;
 	}
 	
 	
@@ -214,7 +220,9 @@ public abstract class Tick {
 		}
 	}
 	
-	// determine what to do and update lifecycle counter
+	// this method handles the bulk of the lifecycle behaviors and is split between the different lifestates
+	// egg, larva and nymph lifestates are fairly simple, attempting to survive long enough to transform
+	// adult lifestates are more complex due to mating behaviors and have additional helper methods
 	private void lifecycle() {
 		lifecycle_counter++;
 		double prob_death = 1 - habitat_sample(); 
@@ -283,6 +291,7 @@ public abstract class Tick {
 		}
 	}
 	
+	// wrapper for hatching behavior transitioning egg to larva
 	private void hatch() {
 		lifecycle_counter = 0;
 		has_fed = false;
@@ -291,6 +300,7 @@ public abstract class Tick {
 		return;
 	}
 	
+	// wrapper for molting behavior, transitioning larva and nymphs to their next lifestages
 	private void molt() {
 		lifecycle_counter = 0;
 		has_fed = false;
@@ -306,9 +316,8 @@ public abstract class Tick {
 		}
 	}
 	
-	// mating behaviors are species specific and should be implemented individually in the child classes
-	protected abstract void mate();
-	
+	// egg laying behavior - eggs are laid over a period of days allowing female adults the possibility of
+	// dying to the habitat suitability layer during the egg laying process
 	protected void lay_eggs() {
 		
 		if (eggs_remaining > 0) {
@@ -330,6 +339,8 @@ public abstract class Tick {
 		}
 	}
 	
+	// this method handles the death process of Tick agents, detaching them from hosts and removing 
+	// all references to the contextual framework
 	public void die() {
 		if (attached) {
 			System.out.println("\tHost: " + host.getName());
@@ -344,6 +355,9 @@ public abstract class Tick {
 		habitat_sample = value;
 	}
 	
+	// returns the habitat sample value for the Tick agent
+	// if the habitat_sample variable is > 0, returns the constant parameterized value for the run
+	// otherwise, samples the habitat suitability raster at the corresponding location of the Tick agents
 	public double habitat_sample() {
 		// if habitat_sample > 0, we're using a constant parameterized habitat sample value
 		if (habitat_sample > 0)
