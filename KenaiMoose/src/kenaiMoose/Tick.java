@@ -351,6 +351,7 @@ public abstract class Tick {
 		return;
 	}
 	
+	// method for setting the static habitat_sample variable for the class
 	public static void set_habitat_sample(double value) {
 		habitat_sample = value;
 	}
