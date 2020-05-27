@@ -176,6 +176,13 @@ public abstract class Tick {
 			System.out.println(name + " dying from habitat sampling (275 day skip):");
 			System.out.println("\tHabitat Sample: " + habitat_sample());
 			die();
+			return;
+		}
+		
+		// kill any adult females that didn't lay their eggs before winter
+		if (this.laying_eggs) {
+			die();
+			return;
 		}
 		lifecycle_counter += 275;
 		return;
