@@ -98,7 +98,6 @@ public abstract class Tick {
 	
 	
 	public Coordinate getCoord() {
-		System.out.println(name + " attempting to get Coordinate:");
 		Geometry geo_geom = geography.getGeometry(this);
 		System.out.println("\t Geometry: " + geo_geom.toString());
 		Coordinate geo_coord = geo_geom.getCoordinate();
@@ -109,10 +108,12 @@ public abstract class Tick {
 	
 	// Get lat and long for data sets
 	public double getLong() {
+		System.out.println(name + " getting Coordinate for longitude (reporting):");
 		Coordinate coord = getCoord();
 		return coord.x;
 	}
 	public double getLat() {
+		System.out.println(name + " getting Coordinate for latitude (reporting):");
 		Coordinate coord = getCoord();
 		return coord.y;
 	}
@@ -126,7 +127,6 @@ public abstract class Tick {
 	public void step() {
 		// if Tick is attached, update position to Host's new position
 		if(attached) {
-			
 			Coordinate newPosition = host.getCoord();
 			Point newPoint = geoFac.createPoint(newPosition);
 			geography.move(this, newPoint);
@@ -147,8 +147,11 @@ public abstract class Tick {
 		double prob_death = 1 - habitat_sample(); 
 		double prob_death_per_day = prob_death / 365;
 		
-		if (Math.random() < (prob_death_per_day * 275) )
+		if (Math.random() < (prob_death_per_day * 275) ) {
+			System.out.println(name + " dying from habitat sampling (275 day skip):");
+			System.out.println("\tHabitat Sample: " + habitat_sample());
 			die();
+		}
 		lifecycle_counter += 275;
 		return;
 	}
@@ -216,8 +219,12 @@ public abstract class Tick {
 		lifecycle_counter++;
 		double prob_death = 1 - habitat_sample(); 
 		double prob_death_per_day = prob_death / 365;
-		if (Math.random() < prob_death_per_day) 
+		if (Math.random() < prob_death_per_day) {
+			System.out.println(name + " dying from habitat sampling (active 90 days):");
+			System.out.println("\tHabitat Sample: " + habitat_sample());
 			die();
+			return;
+		}
 		
 		switch (life_stage) {
 			case "egg":
@@ -240,6 +247,8 @@ public abstract class Tick {
 				// female behaviors are fairly simple - just need to check for mortality
 				if(female) {
 					if (lifecycle_counter > ADULT_LENGTH) {
+						System.out.println(name + " dying from being too old (adult female):");
+						System.out.println("\t Lifecycle Counter: " + lifecycle_counter);
 						die();
 						return;
 					}
@@ -250,6 +259,8 @@ public abstract class Tick {
 				// male behaviors - if attached, search for a viable mate
 				else {
 					if (lifecycle_counter > ADULT_LENGTH) {
+						System.out.println(name + " dying from being too old (adult male):");
+						System.out.println("\t Lifecycle Counter: " + lifecycle_counter);
 						die();
 						return;
 					}
@@ -268,6 +279,7 @@ public abstract class Tick {
 			default:
 				System.out.println("\tLife cycle error: " + name + " has invalid life stage. Removing agent.");
 				die();
+				return;
 		}
 	}
 	
@@ -300,6 +312,7 @@ public abstract class Tick {
 	protected void lay_eggs() {
 		
 		if (eggs_remaining > 0) {
+			System.out.println(name + " getting Coordinate for egg laying:");
 			Coordinate coord = getCoord();
 			for (int i = 0; i < 100 && eggs_remaining > 0; i++) {
 				IxPacificus new_tick = new IxPacificus("Child " + child_count + " of " + name, "egg");
@@ -312,13 +325,12 @@ public abstract class Tick {
 			//System.out.println(name + " has " + eggs_remaining + " eggs left.");
 		}
 		else {
-			//System.out.println(name + " has layed all their eggs.");
+			System.out.println(name + " dying from laying all eggs:");
 			die();
 		}
 	}
 	
 	public void die() {
-		System.out.println(name + " dying:");
 		if (attached) {
 			System.out.println("\tHost: " + host.getName());
 			detach();
