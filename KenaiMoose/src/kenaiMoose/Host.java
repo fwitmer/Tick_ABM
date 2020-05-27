@@ -101,15 +101,6 @@ public abstract class Host {
 		}
 	}
 	
-	
-	// TODO: See if possible to access individual elements added to Context to find boundary
-	//		 without having to pass in through constructor
-	// *** CURRENTLY DOES NOTHING! ***
-	private Geometry getBoundary() {
-		IndexedIterable objects = context.getObjects(Geometry.class);
-		return null;
-	}
-	
 	// Return Coordinate of Host agent used for attaching other agents
 	public Coordinate getCoord() {
 		Coordinate coord = new Coordinate(geography.getGeometry(this).getCoordinate());
