@@ -133,50 +133,6 @@ public class Moose extends Host {
 			//System.out.println("\tPoint: " + test_point.toString());
 			//System.out.println("\tOrigin: " + prev_coord.toString());
 			
-			/* commented due to unsolved "teleportation" issue occurring for Moose encountering water barriers
-			int left_or_right = random.nextInt(2); // Pick a direction
-			
-			System.out.println("\tOrigin coords: " + prev_coord.toString());
-			System.out.println("\tStarting direction: " + Math.toDegrees(direction));
-			
-			switch (left_or_right) {
-				case 0:
-					System.out.print("\tWent left ");
-					break;
-				case 1:
-					System.out.print("\tWent right ");
-					break;
-			}
-			x = 0;
-			
-			// TODO: Look into teleporting water behavior and reflect 180º if proper solution can't be found.
-			while (isWater(test_coord)) {
-				geography.move(this, prev_point); // moving back to start
-				switch (left_or_right) {
-					case 0: // left
-						direction = direction + (Math.PI/24); // 7.5º
-						break;
-					case 1: // right
-						direction = direction - (Math.PI/24);
-						break;
-						
-				}
-				if (direction > 2 * Math.PI) {
-					direction = direction - 2 * Math.PI;
-				}
-				if (direction < 0) {
-					direction = direction + 2 * Math.PI;
-				}
-				
-				geography.moveByVector(this, 50, direction);
-				test_coord = getCoord();
-				test_point = getPoint();
-				x++;
-			}
-			System.out.println(x + " times.");
-			System.out.println("\tEnding direction: " + Math.toDegrees(direction));
-			System.out.println("\tEnding coord: " + getCoord());
-			*/
 		}
 		
 		geography.move(this, test_point);
