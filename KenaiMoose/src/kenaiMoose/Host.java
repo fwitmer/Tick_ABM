@@ -176,11 +176,13 @@ public abstract class Host {
 		if (tick_list.size() > 0) {
 			is_infected = true;
 			infection_zone.setInfected(true);
+			return;
 		}
 		
 		else {
 			is_infected = false;
 			infection_zone.setInfected(false);
+			return;
 		}
 	}
 	
