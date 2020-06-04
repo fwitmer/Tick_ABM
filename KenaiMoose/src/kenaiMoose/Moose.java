@@ -21,7 +21,7 @@ public class Moose extends Host {
 
 	public Moose(String name) {
 		super(name);
-		infection_radius = 500;	
+		infection_radius = 50;	
 	}
 	
 	// init() called before first step of model - add things that may require
