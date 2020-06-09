@@ -180,6 +180,7 @@ public class Moose extends Host {
 		geography.move(infection_zone, infection_path);
 	}
 	
+	// overriding the Host getTicks() method to act over the infection path instead of just a single buffered circle
 	@Override
 	protected List<Tick> getTicks() {
 		Envelope infection_area = infection_path.getEnvelopeInternal();
