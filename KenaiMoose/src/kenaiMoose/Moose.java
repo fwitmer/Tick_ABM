@@ -11,14 +11,19 @@ import org.opengis.coverage.PointOutsideCoverageException;
 import org.opengis.geometry.DirectPosition;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.gis.util.GeometryUtil;
 
 public class Moose extends Host {
 	private double direction; // The mean direction for drawing Gaussian randoms
 	protected static int travel_dist_meters = 500; // travel distance of 500 meters per day
+	private Geometry infection_path;
 
 	public Moose(String name) {
 		super(name);
@@ -137,7 +142,7 @@ public class Moose extends Host {
 		}
 		
 		geography.move(this, test_point);
-		updateInfectionZone();
+		updateInfectionZone(prev_point, test_point);
 	}
 	
 	// wrapper method for determining if passed Coordinate is within the boundary raster
@@ -166,5 +171,28 @@ public class Moose extends Host {
 				}
 			}
 	}
+	
+	// overloaded method for updating infection zone for pathing visualization
+	protected void updateInfectionZone(Point start, Point end) {
+		Coordinate[] endpoints = {start.getCoordinate(), end.getCoordinate()};
+		LineString travel_path = geoFac.createLineString(endpoints);
+		infection_path = GeometryUtil.generateBuffer(geography, travel_path, infection_radius * 2);
+		geography.move(infection_zone, infection_path);
+	}
+	
+	@Override
+	protected List<Tick> getTicks() {
+		Envelope infection_area = infection_path.getEnvelopeInternal();
+		Iterable<Tick> infectingTicks = geography.getObjectsWithin(infection_area, IxPacificus.class);
+		List<Tick> tickList = new ArrayList();
+		
+		for (Tick tick : infectingTicks) {
+			if(!tick.isAttached()) {
+				tickList.add((Tick)tick);
+			}
+		}
+		return tickList;
+	}
+	
 	
 }
