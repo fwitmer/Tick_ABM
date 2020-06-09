@@ -18,6 +18,7 @@ import repast.simphony.engine.schedule.ScheduledMethod;
 
 public class Moose extends Host {
 	private double direction; // The mean direction for drawing Gaussian randoms
+	protected static int travel_dist_meters = 500; // travel distance of 500 meters per day
 
 	public Moose(String name) {
 		super(name);
@@ -63,7 +64,7 @@ public class Moose extends Host {
 		}
 		
 		// Moving Moose and getting test_coord and test_point for checking validity of move
-		geography.moveByVector(this, 50, direction);
+		geography.moveByVector(this, travel_dist_meters, direction);
 		Coordinate test_coord = getCoord();
 		Point test_point = getPoint();
 		
@@ -109,7 +110,7 @@ public class Moose extends Host {
 			}
 			// TODO: determine distance between prev_coord and boundary to get more accurate bounce behavior
 			//		 currently arbitrarily half of previous attempt to move that placed us out of bounds
-			geography.moveByVector(this, 100, direction); 
+			geography.moveByVector(this, travel_dist_meters / 2, direction); 
 			test_coord = getCoord();
 			test_point = getPoint();
 		}
@@ -125,7 +126,7 @@ public class Moose extends Host {
 			else {
 				direction = direction - Math.PI;
 			}
-			geography.moveByVector(this, 100, direction);
+			geography.moveByVector(this, travel_dist_meters / 2, direction);
 			test_coord = getCoord();
 			test_point = getPoint();
 			//System.out.println("\tDirection: " + direction);
