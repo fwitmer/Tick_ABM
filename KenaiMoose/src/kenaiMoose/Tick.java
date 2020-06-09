@@ -12,10 +12,13 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 import repast.simphony.context.Context;
+import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.parameter.Parameters;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.util.ContextUtils;
+import repast.simphony.util.collections.IndexedIterable;
 
 public abstract class Tick {
 	
@@ -90,6 +93,9 @@ public abstract class Tick {
 		context = ContextUtils.getContext(this);
 		geography = (Geography)context.getProjection("Kenai");
 		System.out.println(this.name + " habitat sample: " + habitat_sample());
+		System.out.println("Ensuring both sexes exist in initial population...");
+		check_both_sexes();
+		System.out.println("Done.");
 	}
 	
 	// set the static suitability raster layer for the class
@@ -224,6 +230,57 @@ public abstract class Tick {
 			case 1: // male
 				female = false;
 				break;
+		}
+	}
+	
+	private void check_both_sexes() {
+		Parameters params = RunEnvironment.getInstance().getParameters();
+		int numTicks = (Integer) params.getValue("tick_count");
+		IndexedIterable<Tick> tick_list = context.getObjects(Tick.class);
+		
+		boolean has_male = false;
+		boolean has_female = false;
+		
+		for (Tick tick : tick_list) {
+			if(tick.isFemale()) {
+				has_female = true;
+			}
+			else {
+				has_male = true;
+			}
+		}
+		
+		
+		// no females in initial tick group
+		if (!has_female) {
+			for (int i = 0; i < numTicks; i++) {
+				Tick temp_tick = tick_list.get(i);
+				if (temp_tick.isFemale()) {
+					continue;
+				}
+				// change a male to female and return
+				else {
+					System.out.println("\t" + temp_tick.name + " forced to female to ensure both sexes.");
+					temp_tick.female = true;
+					return;
+				}
+			}
+		}
+		
+		// no males in initial tick group
+		if (!has_male) {
+			for (int i = 0; i < numTicks; i++) {
+				Tick temp_tick = tick_list.get(i);
+				// change a female to male and return
+				if (temp_tick.isFemale()) {
+					System.out.println("\t" + temp_tick.name +  " forced to male to ensure both sexes.");
+					temp_tick.female = false;
+					return;
+				}
+				else 
+					continue;
+			}
+			
 		}
 	}
 	
