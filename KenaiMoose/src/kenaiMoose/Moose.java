@@ -11,17 +11,23 @@ import org.opengis.coverage.PointOutsideCoverageException;
 import org.opengis.geometry.DirectPosition;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 
 import repast.simphony.engine.schedule.ScheduleParameters;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.gis.util.GeometryUtil;
 
 public class Moose extends Host {
 	private double direction; // The mean direction for drawing Gaussian randoms
+	protected static int travel_dist_meters = 1000; // travel distance of 500 meters per day
+	private Geometry infection_path;
 
 	public Moose(String name) {
 		super(name);
-		infection_radius = 500;	
+		infection_radius = 50;	
 	}
 	
 	// init() called before first step of model - add things that may require
@@ -63,7 +69,7 @@ public class Moose extends Host {
 		}
 		
 		// Moving Moose and getting test_coord and test_point for checking validity of move
-		geography.moveByVector(this, 50, direction);
+		geography.moveByVector(this, travel_dist_meters, direction);
 		Coordinate test_coord = getCoord();
 		Point test_point = getPoint();
 		
@@ -109,7 +115,7 @@ public class Moose extends Host {
 			}
 			// TODO: determine distance between prev_coord and boundary to get more accurate bounce behavior
 			//		 currently arbitrarily half of previous attempt to move that placed us out of bounds
-			geography.moveByVector(this, 100, direction); 
+			geography.moveByVector(this, travel_dist_meters / 2, direction); 
 			test_coord = getCoord();
 			test_point = getPoint();
 		}
@@ -125,7 +131,7 @@ public class Moose extends Host {
 			else {
 				direction = direction - Math.PI;
 			}
-			geography.moveByVector(this, 100, direction);
+			geography.moveByVector(this, travel_dist_meters / 2, direction);
 			test_coord = getCoord();
 			test_point = getPoint();
 			//System.out.println("\tDirection: " + direction);
@@ -133,56 +139,13 @@ public class Moose extends Host {
 			//System.out.println("\tPoint: " + test_point.toString());
 			//System.out.println("\tOrigin: " + prev_coord.toString());
 			
-			/* commented due to unsolved "teleportation" issue occurring for Moose encountering water barriers
-			int left_or_right = random.nextInt(2); // Pick a direction
-			
-			System.out.println("\tOrigin coords: " + prev_coord.toString());
-			System.out.println("\tStarting direction: " + Math.toDegrees(direction));
-			
-			switch (left_or_right) {
-				case 0:
-					System.out.print("\tWent left ");
-					break;
-				case 1:
-					System.out.print("\tWent right ");
-					break;
-			}
-			x = 0;
-			
-			// TODO: Look into teleporting water behavior and reflect 180º if proper solution can't be found.
-			while (isWater(test_coord)) {
-				geography.move(this, prev_point); // moving back to start
-				switch (left_or_right) {
-					case 0: // left
-						direction = direction + (Math.PI/24); // 7.5º
-						break;
-					case 1: // right
-						direction = direction - (Math.PI/24);
-						break;
-						
-				}
-				if (direction > 2 * Math.PI) {
-					direction = direction - 2 * Math.PI;
-				}
-				if (direction < 0) {
-					direction = direction + 2 * Math.PI;
-				}
-				
-				geography.moveByVector(this, 50, direction);
-				test_coord = getCoord();
-				test_point = getPoint();
-				x++;
-			}
-			System.out.println(x + " times.");
-			System.out.println("\tEnding direction: " + Math.toDegrees(direction));
-			System.out.println("\tEnding coord: " + getCoord());
-			*/
 		}
 		
 		geography.move(this, test_point);
-		updateInfectionZone();
+		updateInfectionZone(prev_point, test_point);
 	}
 	
+	// wrapper method for determining if passed Coordinate is within the boundary raster
 	private boolean within_bound(Coordinate coord) {
 		GridCoverage2D boundary_coverage = geography.getCoverage("Boundary Raster");
 		DirectPosition position = new DirectPosition2D(geography.getCRS(), coord.x, coord.y);
@@ -197,6 +160,7 @@ public class Moose extends Host {
 	
 	}
 	
+	// processes all Tick agents in a list and removes them in a manner safe for multithreading
 	protected void removeTicks(ArrayList<Tick> ticks) {
 			for (Iterator<Tick> iter = (Iterator)ticks.iterator(); iter.hasNext(); ) {
 				Tick tick = (Tick)iter.next();
@@ -207,5 +171,29 @@ public class Moose extends Host {
 				}
 			}
 	}
+	
+	// overloaded method for updating infection zone for pathing visualization
+	protected void updateInfectionZone(Point start, Point end) {
+		Coordinate[] endpoints = {start.getCoordinate(), end.getCoordinate()};
+		LineString travel_path = geoFac.createLineString(endpoints);
+		infection_path = GeometryUtil.generateBuffer(geography, travel_path, infection_radius);
+		geography.move(infection_zone, infection_path);
+	}
+	
+	// overriding the Host getTicks() method to act over the infection path instead of just a single buffered circle
+	@Override
+	protected List<Tick> getTicks() {
+		Envelope infection_area = infection_path.getEnvelopeInternal();
+		Iterable<Tick> infectingTicks = geography.getObjectsWithin(infection_area, IxPacificus.class);
+		List<Tick> tickList = new ArrayList();
+		
+		for (Tick tick : infectingTicks) {
+			if(!tick.isAttached()) {
+				tickList.add((Tick)tick);
+			}
+		}
+		return tickList;
+	}
+	
 	
 }
