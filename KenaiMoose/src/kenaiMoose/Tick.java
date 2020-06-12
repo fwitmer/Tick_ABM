@@ -150,6 +150,9 @@ public abstract class Tick {
 		return host;
 	}
 	
+	public String getName() {
+		return this.name;
+	}
 	
 	// primary method for Tick agents, executed every step
 	@ScheduledMethod(start = 1, interval = 1)

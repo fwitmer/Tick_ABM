@@ -1,5 +1,5 @@
 <repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.6.0">
-  <name>TickNonAgg</name>
+  <name>density-new</name>
   <type>NON_AGGREGATE</type>
   <sourceType>kenaiMoose.Tick</sourceType>
   <inclTick>true</inclTick>
@@ -7,45 +7,29 @@
   <inclRandomSeed>false</inclRandomSeed>
   <scheduleParams>
     <start>1.0</start>
-    <interval>5.0</interval>
+    <interval>1.0</interval>
     <priority>-Infinity</priority>
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>805601964</hashCode>
+    <hashCode>1558302122</hashCode>
   </scheduleParams>
-  <atEnd>true</atEnd>
+  <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>Lifestate</string>
+      <string>lifestate</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>Lifestate</id>
+        <id>lifestate</id>
         <className>kenaiMoose.Tick</className>
         <methodName>getLifestate</methodName>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>Lat</string>
+      <string>name</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>Lat</id>
+        <id>name</id>
         <className>kenaiMoose.Tick</className>
-        <methodName>getLat</methodName>
-      </repast.simphony.data2.engine.MethodDataSourceDefinition>
-    </entry>
-    <entry>
-      <string>Long</string>
-      <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>Long</id>
-        <className>kenaiMoose.Tick</className>
-        <methodName>getLong</methodName>
-      </repast.simphony.data2.engine.MethodDataSourceDefinition>
-    </entry>
-    <entry>
-      <string>habitat_sample</string>
-      <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>habitat_sample</id>
-        <className>kenaiMoose.Tick</className>
-        <methodName>habitat_sample</methodName>
+        <methodName>getName</methodName>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
   </methodDataSources>
