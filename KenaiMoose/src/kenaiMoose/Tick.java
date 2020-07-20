@@ -150,6 +150,10 @@ public abstract class Tick {
 		return host;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
 	
 	// primary method for Tick agents, executed every step
 	@ScheduledMethod(start = 1, interval = 1)
@@ -200,7 +204,8 @@ public abstract class Tick {
 		// only adults and nymphs should attach
 		if (this.life_stage.equals("adult")) {
 			int num_ticks = host.tick_list.size();
-			double prob = 1.0 / (num_ticks + 2);
+			double prob = 1.0;
+			//double prob = 1.0 / (num_ticks + 2);
 			if (Math.random() < prob) {
 				attached = true;
 				this.host = host;
