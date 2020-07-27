@@ -22,7 +22,7 @@ import repast.simphony.gis.util.GeometryUtil;
 
 public class Moose extends Host {
 	private double direction; // The mean direction for drawing Gaussian randoms
-	protected static int travel_dist_meters = 1000; // travel distance of 500 meters per day
+	protected static int travel_dist_meters = 1000; // travel distance in meters per day
 	private Geometry infection_path;
 
 	public Moose(String name) {
