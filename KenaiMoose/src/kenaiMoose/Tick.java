@@ -203,7 +203,8 @@ public abstract class Tick {
 		// only adults and nymphs should attach
 		if (this.life_stage.equals("adult")) {
 			int num_ticks = host.tick_list.size();
-			double prob = 1.0 / (num_ticks + 2);
+			double prob = 1.0;
+			//double prob = 1.0 / (num_ticks + 2);
 			if (Math.random() < prob) {
 				attached = true;
 				this.host = host;
